@@ -1,0 +1,1528 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Asistente Médico Virtual</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #f0f4f8;
+        --fg: #111;
+        --card: #fff;
+        --primary: #00695c;
+        --accent: #00897b;
+        --success: #2e7d32;
+        --error: #c62828;
+      }
+      /* Modo oscuro: paleta médica renovada */
+      [data-theme="dark"] {
+        --bg: #1b1b2f;
+        --fg: #2150d1;
+        --card: #27293d;
+        --primary: #00adb5;
+        --accent: #00fff5;
+        --success: #66bb6a;
+        --error: #ff6b6b;
+      }
+      [data-theme="dark"] h1,
+      [data-theme="dark"] h2,
+      [data-theme="dark"] h3,
+      [data-theme="dark"] h4,
+      [data-theme="dark"] h5,
+      [data-theme="dark"] p {
+        color: var(--fg);
+      }
+      *, *::before, *::after {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        font-family: "Plus Jakarta Sans", sans-serif;
+        background: var(--bg);
+        color: var(--fg);
+        transition: background 0.3s ease, color 0.3s ease;
+      }
+      .container {
+        max-width: 900px;
+        margin: 20px auto;
+        background: var(--card);
+        border-radius: 12px;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+        overflow: hidden;
+      }
+      .header {
+        padding: 20px;
+        background: var(--primary);
+        color: #fff;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 2px solid var(--primary);
+        margin-bottom: 20px;
+      }
+      .header h1 {
+        margin: 0;
+        font-size: 1.8em;
+      }
+      .theme-switch {
+        cursor: pointer;
+        background: none;
+        border: none;
+        color: var(--accent);
+        font-size: 1.7em;
+        transition: color 0.3s;
+      }
+      /* Pestañas */
+      .tabs {
+        display: flex;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        background: var(--bg);
+        border-bottom: 1px solid #ccc;
+      }
+      .tabs li {
+        padding: 12px 20px;
+        cursor: pointer;
+        border: 1px solid transparent;
+        border-bottom: none;
+        transition: background 0.3s;
+        color: var(--fg);
+      }
+      .tabs li.active {
+        background: #fff;
+        border: 1px solid #ccc;
+        border-bottom: none;
+      }
+      .tabs li:hover {
+        background: #fff;
+      }
+      .tab-content {
+        padding: 20px;
+      }
+      .tab-pane {
+        display: none;
+      }
+      .tab-pane.active {
+        display: block;
+      }
+      /* Estilos generales */
+      label {
+        font-weight: 600;
+        margin-top: 20px;
+        display: block;
+      }
+      input[type="search"],
+      input[type="number"],
+      select {
+        width: 100%;
+        padding: 12px;
+        margin-top: 8px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        background: var(--bg);
+        color: var(--fg);
+        font-size: 1em;
+        transition: background 0.2s ease, color 0.2s ease;
+      }
+      button {
+        margin-top: 24px;
+        width: 100%;
+        padding: 14px;
+        border: none;
+        border-radius: 8px;
+        background: var(--primary);
+        color: #fff;
+        font-size: 1.1em;
+        cursor: pointer;
+        transition: background 0.25s ease;
+      }
+      button:hover {
+        background: var(--accent);
+      }
+      .diagnostico-container {
+        margin-top: 10px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .diagnostico-btn {
+        padding: 14px 20px;
+        border: none;
+        border-radius: 10px;
+        background: var(--primary);
+        color: #fff;
+        font-size: 0.95em;
+        font-weight: 600;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+        transition: transform 0.25s ease, box-shadow 0.25s ease;
+      }
+      .diagnostico-btn:hover {
+        transform: scale(1.07);
+        box-shadow: 0 5px 12px rgba(0,0,0,0.3);
+      }
+      .diagnostico-btn.selected {
+        background: var(--accent);
+      }
+      .result {
+        margin-top: 20px;
+        padding: 20px;
+        background: #e8f5e9;
+        border-radius: 8px;
+        border-left: 6px solid var(--success);
+        animation: fadeIn 0.5s ease;
+      }
+      .result h3,
+      .result h4 {
+        margin-top: 0;
+        color: var(--success);
+      }
+      .error {
+        color: var(--error);
+        font-weight: bold;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      @media (max-width: 600px) {
+        /* Ajustes para pantallas pequeñas */
+      }
+    </style>
+  </head>
+  <body data-theme="light">
+    <div class="container">
+      <div class="header">
+        <h1>Asistente Médico Integral</h1>
+        <button class="theme-switch" onclick="switchTheme()">🌙</button>
+        <div style="text-align:center; margin: 24px auto 16px auto;">
+  <button id="btnAdvertencia" style="background:#fff3cd; border:1.5px solid #ffeeba; color:#856404; padding:10px 28px; border-radius:8px; font-weight:bold; font-size:1.1em; cursor:pointer; box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+    Advertencia
+  </button>
+</div>
+      </div>
+      
+      <!-- Navegación en pestañas -->
+      <ul class="tabs">
+        <li data-tab="diagnostico" class="active">Diagnóstico Principal</li>
+        <li data-tab="dosis">Dosis Pediátrica</li>
+        <li data-tab="imc">Calculadora de IMC</li>
+        <li data-tab="interacciones">Interacciones</li>
+      </ul>
+      
+ <div class="tab-content">
+  <!-- Pestaña Diagnóstico Principal -->
+  <div id="diagnostico" class="tab-pane active">
+    <h2>Diagnóstico Principal</h2>
+    <div class="diagnostico-container" id="diagnosticoContainer">
+      <!-- Se generarán botones dinámicamente -->
+    </div>
+    <button onclick="mostrarTratamiento()">Ver tratamiento sugerido</button>
+    <div id="resultado" class="result" style="display: none;"></div>
+  </div>
+  
+  <!-- Pestaña Dosis Pediátrica -->
+  <div id="dosis" class="tab-pane">
+    <h2>Calculadora de Dosis Pediátrica</h2>
+    <label for="peso_pedi">Peso del niño (kg):</label>
+    <input type="number" id="peso_pedi" placeholder="Ingresa el peso" />
+    <label for="dosis_base">Dosis base (mg/kg):</label>
+    <input type="number" id="dosis_base" placeholder="Ejemplo: 10" />
+    <button onclick="calcularDosisPediatrica()">Calcular dosis</button>
+    <div id="resultadoDosis" class="result" style="display: none;"></div>
+  </div>
+  
+  <!-- Pestaña Calculadora de IMC -->
+  <div id="imc" class="tab-pane">
+    <h2>Calculadora de IMC</h2>
+    <label for="peso_imc">Peso (kg):</label>
+    <input type="number" id="peso_imc" placeholder="Ingresa tu peso" />
+    <label for="altura_imc">Altura (m):</label>
+    <input type="number" id="altura_imc" placeholder="Ingresa tu altura" />
+    <button onclick="calcularIMC()">Calcular IMC</button>
+    <div id="resultadoIMC" class="result" style="display: none;"></div>
+  </div>
+
+  <!-- Pestaña Interacciones SOLO aquí -->
+  <div id="interacciones" class="tab-pane">
+    <h2>Interacciones Medicamentosas</h2>
+    <label for="medicamentoSelect">Seleccione el medicamento:</label>
+    <select id="medicamentoSelect">
+      <option value="" disabled selected>Seleccione un medicamento</option>
+      <option value="aspirina">Aspirina</option>
+      <option value="diureticos">Diuréticos</option>
+      <option value="benzodiacepinas">Benzodiacepinas</option>
+      <option value="fenitoina">Fenitoína</option>
+      <option value="fenobarbital">Fenobarbital</option>
+      <option value="acido_valproico">Ácido Valproico</option>
+      <option value="antipsicoticos">Antipsicóticos / Sedantes</option>
+      <option value="betabloqueadores">Betabloqueadores</option>
+      <option value="bloqueadores_ca2">Bloqueadores del canal de Ca²⁺</option>
+      <option value="IECA">IECA</option>
+      <option value="ara_ii">ARA II</option>
+      <option value="cardiovasculares">Cardiovasculares</option>
+      <option value="antiplaquetarios">Antiplaquetarios / Antitrombóticos</option>
+      <option value="antidiabeticos">Antidiabéticos</option>
+      <option value="hormonas_endocrino">Hormonas / Endocrino</option>
+      <option value="antibioticos">Antibióticos</option>
+      <option value="antiasmaticos_epoc">Antiasmáticos y EPOC</option>
+      <option value="analgesicos_antiinflamatorios">Analgésicos / Antiinflamatorios</option>
+      <option value="gastrointestinales">Gastrointestinales</option>
+      <option value="suplementos_correcciones_metabolicas">Suplementos / Correcciones metabólicas</option>
+      <option value="dermatologicos_psoriasis">Dermatológicos / Psoriasis</option>
+      <option value="inmunomoduladores_biologicos">Inmunomoduladores / Biológicos</option>
+      <option value="antitoxinas_antidotos">Antitoxinas / Antídotos</option>
+      <option value="antibioticos_pt">Antibióticos PT</option>
+      <option value="gastrointestinales_pt">Gastrointestinales PT</option>
+      <option value="antiepilepticos_anestesicos_bloqueadores">Antiepilépticos / Anestésicos / Bloqueadores neuromusculares</option>
+      <option value="antifungicos_antivirales_pt2">Antifúngicos y antivirales PT2</option>
+      <option value="antidotos_antagonistas">Antídotos y antagonistas</option>
+    </select>
+    <button onclick="consultarInteracciones()">Consultar Interacciones</button>
+    <div id="resultadoInteracciones" class="result" style="display: none;"></div>
+  </div>
+</div>
+    
+    <script>
+      /* Función para cambiar el tema */
+      function switchTheme() {
+        const body = document.body;
+        body.setAttribute("data-theme", body.getAttribute("data-theme") === "light" ? "dark" : "light");
+      }
+      
+      /* Función para cambiar entre pestañas */
+      document.querySelectorAll(".tabs li").forEach((tab) => {
+        tab.addEventListener("click", function () {
+          document.querySelectorAll(".tabs li").forEach((el) => el.classList.remove("active"));
+          document.querySelectorAll(".tab-pane").forEach((pane) => pane.classList.remove("active"));
+          this.classList.add("active");
+          const activePane = document.getElementById(this.getAttribute("data-tab"));
+          if (activePane) activePane.classList.add("active");
+        });
+      });
+      
+      /* Array de diagnósticos principales */
+      const diagnosticos = [
+        "hipertensión arterial",
+        "evento cerebrovascular isquémico",
+        "evento cerebrovascular hemorrágico",
+        "hemorragia subaracnoidea aneurismática",
+        "estado confusional agudo",
+        "meningitis bacteriana aguda",
+        "cefalea",
+        "asma",
+        "epoc",
+        "estado epiléptico",
+        "trastornos en el ritmo y la conducción cardíaca",
+        "síndrome de Guillain barré",
+        "neumonía adquirida en la comunidad",
+        "infecciones del tracto urinario",
+        "insuficiencia renal aguda",
+        "hiponatremia",
+        "hipernatremia",
+        "hipopotasemia",
+        "hiperpotasemia",
+        "diabetes mellitus",
+        "hipertiroidismo",
+        "hemorragia de tubo digestivo alto (HTDA)",
+        "cirrosis hepática",
+        "fiebre tifoidea",
+        "lupus eritematoso sistémico",
+        "osteoartritis",
+        "sepsis",
+        "choque",
+        "intoxicación con plaguicidas inhibidores de la acetilcolinesterasas",
+        "intoxicación por bipiridilos",
+        "mordedura por ofidios",
+        "psoriasis",
+        "chikungunya",
+        "zika",
+        "malaria",
+        "enfermedad de chagas",
+        "leishmaniasis",
+        "infecciones de transmisión sexual y hepatitis virales",
+        "dengue"
+      ];
+      
+      /* Objeto con tratamientos para cada diagnóstico principal */
+      const tratamientosCompleto = {
+        "hipertensión arterial": `<h4>No farmacológico</h4>
+  <ul>
+    <li>Modificación del estilo de vida: dieta balanceada, ejercicio, reducción de sal, moderación en alcohol y cese del tabaquismo.</li>
+    <li>Objetivo: Alcanzar un IMC ≈ 25 kg/m².</li>
+  </ul>
+  <h4>Farmacológico</h4>
+  <ul>
+    <li>Diuréticos tiazídicos (Hidroclorotiazida 12.5–25 mg/día).</li>
+    <li>Espironolactona: 25–100 mg/día.</li>
+    <li>Betabloqueadores (Propranolol, Atenolol o Carvedilol).</li>
+    <li>Bloqueadores de Ca²⁺ (Nifedipina, Verapamilo o Amlodipina).</li>
+    <li>IECA o ARA II según criterio.</li>
+  </ul>`,
+        "evento cerebrovascular isquémico": `<h4>Medidas Generales</h4>
+  <ul>
+    <li>Temperatura >37.8 °C: antipiréticos (acetaminofén).</li>
+    <li>Hipoglicemia (<60 mg/dL): 25 ml de dextrosa 50%.</li>
+    <li>Mantener la glucemia entre 140-180 mg/dL; insulinoterapia según necesidad.</li>
+    <li>Líquidos IV: solución salina 0.9% o Hartmann (30 ml/kg/día).</li>
+    <li>Antiepilépticos según protocolo si hay crisis.</li>
+    <li>Profilaxis con heparina 5000 UI c/12 h.</li>
+    <li>Uso de antiagregantes y estatinas; en crisis hipertensiva, nitroprusiato o nitroglicerina IV.</li>
+  </ul>`,
+        "evento cerebrovascular hemorrágico": `<h4>Tratamiento</h4>
+  <ul>
+    <li>Oxígeno suplementario (saturación >94%) y aspiración de secreciones si es necesario.</li>
+    <li>Mantener la PA: sistólica 140-150 mmHg; media 100–110 mmHg (antihipertensivos IV).</li>
+  </ul>
+  <h4>Complicaciones</h4>
+  <ul>
+    <li>Hipertensión endocraneal, hidrocefalia, edema cerebral, status epiléptico y tromboembolismo pulmonar.</li>
+  </ul>`,
+        "hemorragia subaracnoidea aneurismática": `<h4>ABC y Soporte</h4>
+  <ul>
+    <li>Asegurar vías respiratorias, respiración y circulación.</li>
+    <li>Oxígeno suplementario; intubar y dar soporte ventilatorio si es necesario.</li>
+    <li>Colocar al paciente en posición a 30° para prevenir broncoaspiración y mantener eutermia.</li>
+  </ul>
+  <h4>Manejo</h4>
+  <ul>
+    <li>Corrección de hipoglicemia, líquidos IV y soporte hemodinámico.</li>
+    <li>Analgésicos (morfina o meperidina) y prevención del vasoespasmo (nimodipina).</li>
+  </ul>`,
+        "estado confusional agudo": `<h4>Tratamiento</h4>
+  <ul>
+    <li>Control de la agitación con antipsicóticos (Haloperidol o Clorpromazina) y/o benzodiazepinas (Diazepam o Lorazepam) con monitoreo.</li>
+  </ul>`,
+        "meningitis bacteriana aguda": `<h4>Medidas Generales</h4>
+  <ul>
+    <li>ABC: estabilizar funciones vitales, proteger la vía aérea y brindar soporte circulatorio/ventilatorio si es necesario.</li>
+    <li>Líquidos IV isotónicos, analgesia y profilaxis antitrombótica.</li>
+    <li>Mantener glucemia entre 120-150 mg/dL; tratar fiebre con acetaminofén 500 mg c/6 h.</li>
+  </ul>
+  <h4>Medidas Específicas</h4>
+  <ul>
+    <li>Dexametasona IV: 10 mg inicial y cada 6 h durante 3-4 días, antes de antibióticos.</li>
+    <li>Antibióticos: Ceftriaxona + Vancomicina, ajustadas según el patógeno.</li>
+  </ul>`,
+        "cefalea": `<h4>No farmacológico</h4>
+  <ul>
+    <li>Terapia de relajación, hidratación y ejercicio.</li>
+  </ul>
+  <h4>Farmacológico Agudo</h4>
+  <ul>
+    <li><strong>Migraña:</strong> Ergotamina/cafeína, Acetaminofén, Diclofenaco, Ibuprofeno o Ácido acetilsalicílico; para náuseas, Metoclopramida.</li>
+    <li><strong>Cefalea tensional:</strong> Tratamiento similar (sin ergotamina); opcional, hidratación IV + ketorolaco o diclofenaco.</li>
+  </ul>
+  <h4>Preventivo</h4>
+  <ul>
+    <li>Migraña: Propranolol, Amitriptilina, Valproato, Nimodipina o Topiramato.</li>
+    <li>Cefalea tensional: Amitriptilina, Imipramina o Duloxetina.</li>
+  </ul>`,
+        "asma": `<h4>Agentes Farmacológicos Relevantes</h4>
+  <ul>
+    <li>Ácido Acetilsalicílico, AINES, Beta Bloqueadores, Histamina, Metacolina, Sulfitos, Adenosina y colorantes para alimentos.</li>
+  </ul>
+  <h4>Niveles de Tratamiento</h4>
+  <ul>
+    <li><strong>Nivel 1:</strong> B2 agonista de corta acción cuando sea necesario.</li>
+    <li><strong>Nivel 2:</strong> Glucocorticoides inhalados (500 µg de Beclometasona o equivalente) + B2 agonista cortante.</li>
+    <li><strong>Nivel 3:</strong> Glucocorticoides inhalados (200–1000 µg DBP o equivalente) + B2 agonista de acción prolongada, o combinados con Teofilina.</li>
+    <li><strong>Nivel 4:</strong> Glucocorticoides inhalados (>1000 µg DPB o equivalentes) + B2 agonista de acción prolongada; si es necesario, añadir Teofilina, modificador de leucotrienos o esteroides orales.</li>
+  </ul>`,
+        "epoc": `<h4>Tratamiento Farmacológico en EPOC</h4>
+  <ul>
+    <li>Broncodilatadores de acción corta: anticolinérgicos y beta2 adrenérgicos (ej.: Salbutamol 100 mcg/inh cada 4-6h; Ipratropio 20–80 mcg/inh cada 6-8h).</li>
+    <li>Broncodilatadores de acción prolongada: (ej.: Formoterol 12 mcg/inh cada 12h o más).</li>
+    <li>Corticoides inhalados en EPOC moderada a grave.</li>
+    <li>Opcional: Teofilina de liberación prolongada.</li>
+    <li><strong>Ejemplo:</strong> Combinación de Salbutamol, Ipratropio y Formoterol, con dosis adaptadas según indicación clínica.</li>
+  </ul>`,
+        "neumonía adquirida en la comunidad": `<h4>Neumonía Adquirida en la Comunidad (NAC)</h4>
+  <ul>
+    <li><strong>Ambulatorio:</strong> Levofloxacina o Amoxicilina/ácido clavulánico.</li>
+    <li><strong>Hospitalario:</strong> Opciones: Ceftriaxona + Claritromicina; Amoxicilina/ácido clavulánico + Claritromicina; o Levofloxacina.</li>
+    <li><strong>UCI:</strong> Ceftriaxona a dosis altas combinada con Levofloxacina o Claritromicina.</li>
+    <li>Neumonía por aspiración: Amoxicilina/ácido clavulánico o Clindamicina + Ceftriaxona.</li>
+    <li>Para Pseudomona: Piperacilina-tazobactam, Imipenem o Meropenem + Ciprofloxacina/Levofloxacina; o con Amikacina.</li>
+    <li>Para MRSA: Vancomicina o Linezolid.</li>
+    <li><strong>Duración:</strong> Ambulatorio: 7–10 días; Hospitalario: 10–14 días; en casos graves, no menos de 14 días.</li>
+  </ul>`,
+        "infecciones del tracto urinario": `<h4>Infecciones del Tracto Urinario (ITU)</h4>
+  <ul>
+    <li><strong>Amoxicilina:</strong> 250–500 mg cada 8 h (no en alérgicos a la penicilina).</li>
+    <li><strong>Ciprofloxacina:</strong> 250–750 mg cada 12 h (precaución en antecedentes convulsivos).</li>
+    <li><strong>Ceftriaxona:</strong> 0.5–1 g cada 12 h (vía IV).</li>
+    <li><strong>Gentamicina:</strong> Dosis según peso y función renal.</li>
+    <li><strong>Amikacina:</strong> 15 mg/kg/día, ajustada según TFGe.</li>
+    <li><strong>Nitrofurantoína:</strong> 100 mg cada 12 h (si TFGe ≥50 ml/min).</li>
+  </ul>`,
+        "insuficiencia renal aguda": `<h4>Insuficiencia Renal Aguda (IRA)</h4>
+  <ul>
+    <li><strong>Manejo Conservador:</strong> Dieta rica en hidratos y aporte proteico (0.6–0.8 g/kg/día), monitorización de signos vitales, balance hídrico, sondaje y acceso venoso; rehidratación rápida con 500–1000 ml de solución salina.</li>
+    <li><strong>Manejo de LRA:</strong> Uso de diuréticos (ej.: Furosemida 100–200 mg IV en bolus) según diuresis y creatinina.</li>
+    <li><strong>Obstructiva:</strong> Liberar la obstrucción (evaluación urológica, sondaje o nefrostomía percutánea).</li>
+  </ul>`,
+        "hiponatremia": `<h4>Hiponatremia</h4>
+  <ul>
+    <li><strong>Primer nivel:</strong> Educación y referencia oportuna.</li>
+    <li><strong>Segundo/tercer nivel:</strong> Corregir inmediatamente y determinar el método adecuado de corrección.</li>
+    <li>En hiponatremia aguda y severa (<125 mmol/L) con síntomas neurológicos: corrección con solución salina 3% (máx. 2 mEq/L/hora, sin corrección total en 48 h).</li>
+    <li>En SIHAD moderado: restricción de líquidos (<1 L/día).</li>
+    <li>En hiponatremia crónica: corregir lentamente (no >4 mEq/L por día) para evitar mielinolisis central.</li>
+  </ul>`,
+        "hipernatremia": `<h4>Hipernatremia</h4>
+  <ul>
+    <li><strong>VEC bajo:</strong>
+      <ul>
+        <li>Inicial: utilizar soluciones isotónicas (0.9% salina).</li>
+        <li>Luego: emplear soluciones hipotónicas (5% glucosa, 0.45% salina o suero glucosalino) según el déficit hídrico.</li>
+      </ul>
+    </li>
+    <li><strong>VEC normal:</strong> Indicar ingesta libre de agua en casos de hipodipsia primaria o geriátrica.</li>
+    <li><strong>Diabetes insípida nefrogénica:</strong> Suspender fármacos responsables; dieta hipoproteica y baja en sal; usar hidroclorotiazida baja.</li>
+    <li><strong>VEC alto:</strong> En presencia de edema pulmonar, indicar furosemida y solución glucosada al 5%; con función renal alterada, consultar nefrología.</li>
+  </ul>`,
+        "hipopotasemia": `<h4>Hipopotasemia</h4>
+  <ul>
+    <li>Evitar administración de potasio si la causa es redistribución (salvo en parálisis periódica hipopotasémica).</li>
+    <li>Cálculo del déficit: en adulto masculino (~70 kg, ~50 mEq/kg), déficit ≈10% si 3.0 mEq/L; ≈15% si 2.5 mEq/L; ≈20% si 2.0 mEq/L.</li>
+  </ul>`,
+        "hiperpotasemia": `<h4>Hiperpotasemia</h4>
+  <ul>
+    <li>Nebulizaciones con Salbutamol reducen 0.5–1 mEq/L en 30 minutos (efecto de 2 horas).</li>
+    <li>Gluconato de calcio IV al 10%: 10–30 ml en 3–4 minutos.</li>
+    <li>Insulina regular: 5 U con 25 g de dextrosa al 50% (inicio en 15–60 minutos, duración 4–6 horas).</li>
+    <li>Solución de bicarbonato de sodio: 1 mEq/kg IV durante 5–10 minutos.</li>
+    <li>Uso de diuréticos de asa si la diuresis es adecuada; monitorear potasio cada 4–6 horas.</li>
+    <li>En casos severos, considerar hemodiálisis o diálisis peritoneal.</li>
+  </ul>`,
+        "diabetes mellitus": `<h4>Diabetes Mellitus</h4>
+  <ul>
+    <li>Educación en salud, plan de alimentación, programa de ejercicio y farmacoterapia.</li>
+    <li>El plan alimenticio debe eliminar azúcares simples, favorecer cereales integrales, vegetales, proteínas y alto contenido en fibra, con moderada cantidad de sal.</li>
+    <li>Ejercicio diario (30–60 minutos) adaptado al paciente.</li>
+    <li>Farmacoterapia: insulina (dosis inicial 10 U o 0.2 U/kg/día, titulación según glucosa en ayuno) y/o antidiabéticos orales (metformina, sulfonilureas, etc.) según indicación.</li>
+  </ul>`,
+        "hipertiroidismo": `<h4>Hipertiroidismo</h4>
+  <ul>
+    <li><strong>Primer nivel:</strong> Iniciar betabloqueadores (Propranolol 40–240 mg en dosis fraccionadas o Atenolol 50–100 mg diarios) para controlar síntomas adrenérgicos.</li>
+    <li><strong>Segundo nivel:</strong> Continuar betabloqueadores; si hay contraindicación, usar Verapamilo 120–240 mg diarios.</li>
+    <li>Tionamidas: usar Propiltiouraculo o Metimazol (dosis según indicación clínica).</li>
+    <li><strong>Tercer nivel:</strong> En casos refractarios (tras 1 año, con complicaciones o reacciones adversas), considerar ablación con yodo radioactivo o tratamiento quirúrgico.</li>
+  </ul>`,
+        "hemorragia de tubo digestivo alto (HTDA)": `<h4>Hemorragia de Tubo Digestivo Alto (HTDA)</h4>
+  <ul>
+    <li><strong>Primer nivel:</strong> Acceso venoso. Iniciar infusión con solución salina normal 0.9% o lactato de Ringer.</li>
+    <li><strong>Segundo y tercer nivel:</strong> Mantener una adecuada saturación de oxígeno y, en casos masivos o con Hb <7 g/dL, transfusión de glóbulos rojos empacados.</li>
+    <li>En HTDA de origen no variceal: infusión IV de inhibidores de bomba de protones (bolo de 80 mg y luego infusión continua 8 mg/h durante 72 h).</li>
+    <li>En hemorragia por várices: usar octreotide (bolo IV de 50–100 μg, seguido de infusión de 25–50 μg/h durante 3–5 días).</li>
+    <li>Tratamiento endoscópico: ligadura con bandas elásticas o escleroterapia; inyección con epinefrina 1:10,000 en úlceras sangrantes.</li>
+    <li>Uso de antibióticos (quinolonas o Ceftriaxona 1 g IV cada 12 h) para disminuir complicaciones y mortalidad.</li>
+  </ul>`,
+        "cirrosis hepática": `<h4>Cirrosis Hepática</h4>
+  <ul>
+    <li>Tratar la causa desencadenante cuando sea posible.</li>
+    <li>Evitar bebidas alcohólicas y realizar reposo.</li>
+    <li>Restricción de ingesta de sodio y líquidos según necesidad.</li>
+    <li>Indicar diuréticos: en retención, espironolactona (100-400 mg/día) o furosemida (iniciando con 40 mg/día, máx. 160 mg/día).</li>
+    <li>Tratamiento de complicaciones: lactulosa (15-45 ml vía oral 2-4 veces al día o enemas) y metronidazol, corrigiendo siempre la causa desencadenante.</li>
+  </ul>`,
+        "fiebre tifoidea": `<h4>Fiebre Tifoidea</h4>
+  <ul>
+    <li><strong>Ambulatorio:</strong>
+      <ul>
+        <li>Trimetroprim/Sulfametoxazol 160/80 mg cada 12 h por 14 días (primera elección), o</li>
+        <li>Amoxicilina 1 g cada 8 h por 14 días (segunda elección).</li>
+      </ul>
+    </li>
+    <li><strong>En caso de alergia:</strong> Ceftriaxona 2 g IM cada 24 h por 10-14 días.</li>
+    <li><strong>Hospitalario:</strong>
+      <ul>
+        <li>Ampicilina 2 g IV cada 6 h por 14-21 días, o</li>
+        <li>Ceftriaxona 2 g IV cada 24 h por 10-14 días.</li>
+      </ul>
+    </li>
+  </ul>`,
+        "lupus eritematoso sistémico": `<h4>Lupus Eritematoso Sistémico</h4>
+  <ul>
+    <li>Tratamiento individualizado que incluya antiinflamatorios, inmunosupresores y, en algunos casos, corticosteroides.</li>
+    <li>Se recomienda coordinación con reumatología.</li>
+  </ul>`,
+        "osteoartritis": `<h4>Osteoartritis</h4>
+  <ul>
+    <li><strong>No farmacológico:</strong> Terapia física, control del peso y uso de dispositivos de apoyo (bastón, andadera).</li>
+    <li><strong>Farmacológico:</strong>
+      <ul>
+        <li>Acetaminofén 500 mg 2-3 veces al día, o</li>
+        <li>Ibuprofeno 400 mg 2-3 veces al día (máximo 2 semanas, con vigilancia de función renal y presión arterial), o combinación con tramadol/codeína en casos severos.</li>
+      </ul>
+    </li>
+    <li>AINE tópicos; tratamiento intraarticular (según especialista); esteroides en casos puntuales (no más de 3 veces al año).</li>
+    <li><strong>Quirúrgico:</strong> Artroscopia o reemplazo articular en casos avanzados.</li>
+  </ul>`,
+        "sepsis": `<h4>Sepsis</h4>
+  <ul>
+    <li><strong>Primer nivel:</strong> Hidratación IV con soluciones cristaloides (SSN o Hartmann) y administración de oxígeno; referir de inmediato.</li>
+    <li><strong>Segundo nivel:</strong> Hidratación IV hasta estabilización (PVC 8-12 mmHg, PAM ≥65 mmHg, diuresis >0.5 ml/kg/h); oxigenoterapia para saturación ≥90 %; inicio de antibióticos empíricos según el foco.</li>
+    <li><strong>Tercer nivel:</strong> Monitoreo invasivo en choque séptico refractario, manejo multidisciplinario en UCI y posible tratamiento quirúrgico; uso de esteroides en choque refractario.</li>
+  </ul>`,
+        "choque": `<h4>Choque</h4>
+  <ul>
+    <li><strong>Primer nivel:</strong> Hidratación IV con soluciones cristaloides y oxígeno; referir de inmediato.</li>
+    <li><strong>Segundo nivel:</strong>
+      <ul>
+        <li>Hidratación IV (PVC 8-12 mmHg, PAM ≥65 mmHg, diuresis >0.5 ml/kg/h);</li>
+        <li>Oxigenoterapia para mantener saturación ≥90 %;</li>
+        <li>Antibióticos empíricos en caso de choque séptico;</li>
+        <li>Evaluar transfusión en choque hemorrágico y uso de aminas vasoactivas.</li>
+      </ul>
+    </li>
+    <li><strong>Tercer nivel:</strong> Monitoreo invasivo, manejo multidisciplinario en UCI, tratamientos quirúrgicos complejos y uso de esteroides en choque séptico refractario.</li>
+  </ul>`,
+        "intoxicación con plaguicidas inhibidores de la acetilcolinesterasas": `<h4>Intoxicación con Inhibidores de la Acetilcolinesterasas</h4>
+  <ul>
+    <li><strong>Primer nivel:</strong> Retirar ropa contaminada, lavar con agua y jabón; lavado gástrico en la primera hora si hay ingestión.</li>
+    <li><strong>Segundo nivel:</strong> Soporte general: mantener vías aéreas, administrar oxígeno, tratar convulsiones y administrar atropina IV en dosis escalonadas.</li>
+    <li><strong>Tercer nivel:</strong> Manejo en UCI de complicaciones y cuidados especiales.</li>
+  </ul>`,
+        "intoxicación por bipiridilos": `<h4>Intoxicación por Bipiridilos</h4>
+  <ul>
+    <li>No administrar oxígeno de forma rutinaria (puede incrementar la toxicidad del paraquat).</li>
+    <li>Mantener la función cardiovascular con líquidos y electrolitos; fomentar diuresis (0.5-1 ml/kg/h).</li>
+    <li>Descontaminación: retirar ropa, lavar con abundante agua y jabón; irrigar contacto ocular durante al menos 15 minutos.</li>
+    <li>Lavado gástrico en la primera hora y administración de carbón activado (1 g/kg cada 6 h) según criterio.</li>
+    <li>Tratamiento de complicaciones según condición, ya que el paraquat no es dializable de forma convencional.</li>
+  </ul>`,
+        "mordedura por ofidios": `<h4>Tratamiento</h4>
+  <ul>
+    <li><strong>Atención en el primer nivel:</strong>
+      <ul>
+        <li>Tomar signos vitales y obtener un acceso venoso para estabilizar hemodinámicamente al paciente con soluciones isotónicas, si hay recurso humano disponible.</li>
+        <li>Indagar sobre el tipo y tamaño de la serpiente, hora del accidente y acciones previas.</li>
+        <li>Identificar el sitio de la lesión y datos agregados (vesículas, sangrado, equimosis, etc.), evaluando la severidad.</li>
+        <li>Medir el grado de evolución del edema cada 15-20 minutos y clasificar el grado de lesión.</li>
+        <li>Llenar la ficha epidemiológica.</li>
+        <li>Investigar la aplicación previa de suero derivado de equinos.</li>
+        <li>Verificar el esquema de vacunación; administrar antitoxina tetánica humana si no está vigente.</li>
+        <li>Referir inmediatamente al hospital para aplicación de suero antiofídico (idealmente con acceso venoso permeable) y acompañado por personal de salud.</li>
+      </ul>
+    </li>
+    <li><strong>Atención hospitalaria:</strong>
+      <ul>
+        <li>Verificar y establecer la permeabilidad de la vía aérea, ventilación pulmonar y circulación; medir signos vitales periódicamente y evaluar manifestaciones clínicas.</li>
+        <li>Establecer el estadio de envenenamiento al ingreso.</li>
+        <li>Confirmar si la mordedura corresponde a serpiente venenosa.</li>
+        <li>Garantizar acceso venoso permeable.</li>
+        <li>Gestionar el suero antiofídico pertinente, revisando fecha de vencimiento y cantidad adecuada según estadio:</li>
+        <ul>
+          <li>Estadio 0: observar durante 8 horas.</li>
+          <li>Casos leves: iniciar con 5 frascos.</li>
+          <li>Casos moderados: iniciar con 10 frascos.</li>
+          <li>Casos severos: iniciar con 15 frascos.</li>
+        </ul>
+      </ul>
+    </li>
+    <li><strong>Administración de sueros antiofídicos:</strong>
+      <ul>
+        <li>Administrar suero antiofídico específico o polivalente según gravedad.</li>
+        <li>En adultos diluir en 500 ml de SSN. Iniciar a 10 gotas/min los primeros 10 minutos. Si no hay reacción anafiláctica, pasar el resto en una hora.</li>
+        <li>Si la dosis fue adecuada, en 10 horas los signos y síntomas estarán controlados.</li>
+        <li>Si persisten, colocar dosis adicional de 5 o 10 frascos según la intensidad de los signos.</li>
+      </ul>
+    </li>
+  </ul>`,
+  "psoriasis": `<h4>Tratamiento</h4>
+  <ul>
+    <li><strong>Tópico:</strong>
+      <ul>
+        <li>Humectantes/emolientes: crema fría y/o vaselina 3-6 veces/día.</li>
+        <li>Esteroides tópicos: Acetato de Hidrocortisona 1% (cara, pliegues, genitales) y/o Valerato de Betametasona 0.1% (palmas, plantas, piel) 2 veces/día por 2-4 semanas, combinados con emolientes.</li>
+        <li>Análogos de vitamina D3 + esteroide: Calcipotriol/Betametasona ungüento o gel 1 vez/día en área afectada.</li>
+        <li>Agente reductor: Champú con alquitrán de hulla para piel cabelluda 3-5 veces/semana.</li>
+      </ul>
+    </li>
+    <li><strong>Sistémico:</strong>
+      <ul>
+        <li>Metotrexato 7.5-25 mg cada 12 h, 3 dosis/semana por 3-6 semanas. Vigilar función renal, hepática, hematológica y pulmonar.</li>
+        <li>Metotrexato parenteral IV 25 mg/1ml en casos intolerantes a vía oral o eritrodérmica.</li>
+        <li>Ciclosporina oral: 2.5-5 mg/kg/día en 2 dosis diarias o 1.5-1 mg/kg/día si hipertenso. No usar más de 1 año y no en pacientes renales.</li>
+        <li>En psoriasis pustulosa: se puede combinar con Metotrexato 7.5-15 mg/semana y ciclosporina 3 mg/kg/día.</li>
+      </ul>
+    </li>
+  </ul>`,
+  "chikungunya": `<h4>Tratamiento</h4>
+  <ul>
+    <li>Reposo en cama (uso de mosquitero durante fase febril).</li>
+    <li>Dieta normal y líquidos abundantes:
+      <ul>
+        <li>Adultos: al menos 5 vasos de 250 ml/día.</li>
+        <li>Niños: líquidos abundantes (leche, jugos, suero oral, agua de cebada/arroz/coco).</li>
+      </ul>
+    </li>
+    <li>Acetaminofén:
+      <ul>
+        <li>Adultos: 500 mg VO cada 4-6 h.</li>
+        <li>Niños: 10-15 mg/kg cada 4-6 h.</li>
+      </ul>
+    </li>
+    <li>En niños nacidos de madre sospechosa de chikungunya: monitoreo desde el nacimiento hasta 6 días.</li>
+  </ul>`,
+  "zika": `<h4>Tratamiento</h4>
+  <ul>
+    <li>No hay tratamiento específico, es ambulatorio.</li>
+    <li>Reposo relativo durante la fiebre.</li>
+    <li>Uso estricto de mosquitero y repelente.</li>
+    <li>Adecuada ingesta de líquidos:
+      <ul>
+        <li>Adultos: 6 vasos de 250 ml o más/día.</li>
+        <li>Niños: a libre demanda, mínimo según fórmula de Holliday y Segar + 5%.</li>
+      </ul>
+    </li>
+    <li>Acetaminofén:
+      <ul>
+        <li>Adultos: 500 mg cada 6 h (máx. 4 g/día).</li>
+        <li>Niños: 10 mg/kg cada 6 h (máx. 3 g/día).</li>
+      </ul>
+    </li>
+    <li>Antihistamínicos (clorfeniramina):
+      <ul>
+        <li>Adultos: 4 mg 2-3 veces/día.</li>
+        <li>Niños: 0.35 mg/kg/día en 3 tomas.</li>
+      </ul>
+    </li>
+    <li>Gotas oculares refrescantes (lágrimas artificiales).</li>
+    <li>Durante fase aguda:
+      <ul>
+        <li>Fiebre/mialgias: acetaminofén 500 mg VO cada 6 h, máx. 4 g/día.</li>
+        <li>Prurito: clorfeniramina 4 mg VO cada 8 h.</li>
+      </ul>
+    </li>
+  </ul>`,
+  "malaria": `<h4>Tratamiento</h4>
+  <ul>
+    <li><strong>Infección por P. vivax, P. ovale, P. malariae y P. knowlesi (fase eritrocitaria):</strong>
+      <ul>
+        <li>En áreas susceptibles a cloroquina: usar cloroquina.</li>
+        <li>En áreas resistentes: tratamiento combinado con artemisinina (TCA) artemeter y lumefantrina.</li>
+      </ul>
+    </li>
+    <li><strong>Fase hepática (P. vivax/P. ovale):</strong>
+      <ul>
+        <li>Primaquina 14 días (0.25 mg/kg/día), excepto en embarazo, lactantes &lt;6 meses, mujeres lactando &lt;6 meses y deficiencia de G6PD.</li>
+        <li>En deficiencia de G6PD: primaquina 0.75 mg/kg/semana por 8 semanas con vigilancia médica.</li>
+        <li>En embarazo/lactancia: profilaxis semanal con cloroquina (5 mg/kg) hasta parto y completar lactancia, luego primaquina según G6PD.</li>
+      </ul>
+    </li>
+    <li><strong>Malaria por P. falciparum no complicada:</strong>
+      <ul>
+        <li>Tratamiento combinado con artemisinina (TCA) artemeter y lumefantrina + primaquina 0.75 mg/kg/día única dosis el primer día (no en embarazo/lactancia &lt;6 meses).</li>
+      </ul>
+    </li>
+  </ul>`,
+  "enfermedad de chagas": `<h4>Tratamiento</h4>
+  <ul>
+    <li><strong>Nifurtimox (tableta 120 mg):</strong>
+      <ul>
+        <li>Recién nacidos a término y hasta 2 meses: 10-20 mg/kg/día en 2 tomas cada 12 h por 60 días.</li>
+        <li>Niños 2 meses-11 años &lt;40 kg: 15-20 mg/kg/día en 3 tomas cada 8 h por 60 días.</li>
+        <li>Adolescentes 12-18 años 40-60 kg: 12.5-15 mg/kg/día en 3 tomas cada 8 h por 60 días.</li>
+        <li>Adolescentes 12-18 años ≥60 kg y adultos ≥40 kg: 8-10 mg/kg/día en 3 tomas cada 8 h por 60 días (máx. 700 mg/día).</li>
+      </ul>
+    </li>
+    <li><strong>Benznidazol (tableta 100 mg):</strong>
+      <ul>
+        <li>Niños hasta 12 años: 5-10 mg/kg/día en 2 tomas cada 12 h por 60 días.</li>
+        <li>Adultos: 5-7 mg/kg/día en 2 tomas cada 12 h por 60 días (máx. 400 mg/día).</li>
+      </ul>
+    </li>
+  </ul>`, 
+  "leishmaniasis": `<h4>Tratamiento</h4>
+  <ul>
+    <li><strong>Antes de iniciar el tratamiento:</strong> Realizar: ECG, creatinina, fosfatasa alcalina, transaminasas, amilasa, lipasa, hemograma, glicemia, HCG, bilirrubinas y nitrógeno ureico.</li>
+    <li><strong>Durante el tratamiento:</strong> Repetir los mismos estudios a los 10 y 17 días para monitoreo de toxicidad y respuesta.</li>
+    <li>El tratamiento específico depende de la forma clínica y protocolos nacionales.</li>
+  </ul>`,
+  "infecciones de transmisión sexual y hepatitis virales": `<h4>Resumen de Tratamientos</h4>
+  <ul>
+    <li><strong>Gonorrea:</strong> Ceftriaxona 1g IM dosis única (adultos/adolescentes). Alternativas: Cefixima, Doxiciclina si hay coinfección con clamidia.</li>
+    <li><strong>Chancroide:</strong> Ciprofloxacina 500mg VO c/12h por 7 días. Alternativas: Claritromicina, Ceftriaxona, Azitromicina.</li>
+    <li><strong>Sífilis:</strong> Penicilina benzatínica 2.4M UI IM dosis única (primaria/secundaria/latente temprana). Latente tardía: 2.4M UI IM semanal x3. Neurosífilis: Penicilina G cristalina IV 10-14 días.</li>
+    <li><strong>Clamidia:</strong> Doxiciclina 100mg VO c/12h por 7-10 días. Alternativas: Claritromicina, Azitromicina.</li>
+    <li><strong>Herpes genital:</strong> Aciclovir 400mg VO c/8h por 7-10 días (primer episodio). Recurrente: 400mg c/8h por 5 días o supresor c/12h.</li>
+    <li><strong>Granuloma inguinal:</strong> Doxiciclina 100mg VO c/12h por 3 semanas. Alternativas: TMP/SMX, Claritromicina.</li>
+    <li><strong>Linfogranuloma venéreo:</strong> Doxiciclina 100mg VO c/12h por 21 días. Alternativa: Claritromicina.</li>
+    <li><strong>VPH/Verrugas:</strong> Podofilina 25% o ácido tricloroacético 80% tópico. En embarazadas: ácido tricloroacético o cauterio.</li>
+    <li><strong>Candidiasis vulvovaginal:</strong> Clotrimazol vaginal 1% por 7-14 noches. Alternativa: Fluconazol 150mg VO dosis única (no en embarazo).</li>
+    <li><strong>Vaginosis bacteriana:</strong> Metronidazol 500mg VO c/12h por 7 días. Alternativa: Metronidazol gel vaginal.</li>
+    <li><strong>Tricomoniasis:</strong> Metronidazol 2g VO dosis única. Alternativa: 500mg VO c/12h por 7 días.</li>
+    <li><strong>Pediculosis púbica:</strong> Permetrina 1% tópica, repetir en 1 semana.</li>
+    <li><strong>Escabiosis:</strong> Permetrina 5% tópica, dejar 8-10h y repetir en 1 semana.</li>
+    <li><strong>Hepatitis B:</strong> Tenofovir 300mg VO diario de por vida (adultos). Recién nacido de madre positiva: inmunoglobulina hiperinmune al nacer.</li>
+    <li><strong>Hepatitis C:</strong> Sofosbuvir/Velpatasvir 400/100mg VO diario por 12 semanas (adultos).</li>
+  </ul>
+  <details>
+    <summary>Ver detalles completos</summary>
+    <pre style="white-space: pre-wrap; font-size: 0.95em;">
+<strong>Leishmaniasis:</strong>
+- Antes y durante el tratamiento: ECG, creatinina, enzimas hepáticas y pancreáticas, hemograma, glicemia, HCG, bilirrubinas, nitrógeno ureico.
+- Monitoreo a los 10 y 17 días.
+
+<strong>Gonorrea:</strong>
+- Adultos: Ceftriaxona 1g IM dosis única. Alternativa: Cefixima 400mg VO dosis única.
+- Coinfección con clamidia: añadir Doxiciclina 100mg VO c/12h por 7-10 días.
+- Neonatos: Cefotaxima 100mg/kg IV dosis única.
+
+<strong>Chancroide:</strong>
+- Ciprofloxacina 500mg VO c/12h por 7 días. Alternativas: Claritromicina, Ceftriaxona, Azitromicina.
+
+<strong>Sífilis:</strong>
+- Congénita: Penicilina sódica 50,000 UI/kg/dosis IV según edad.
+- Primaria/secundaria/latente temprana: Penicilina benzatínica 2.4M UI IM dosis única.
+- Latente tardía: Penicilina benzatínica 2.4M UI IM semanal x3.
+- Neurosífilis: Penicilina G cristalina IV 10-14 días.
+
+<strong>Clamidia:</strong>
+- Doxiciclina 100mg VO c/12h por 7-10 días. Alternativas: Claritromicina, Azitromicina.
+
+<strong>Herpes genital:</strong>
+- Primer episodio: Aciclovir 400mg VO c/8h por 7-10 días.
+- Recurrente: 400mg c/8h por 5 días o supresor c/12h.
+
+<strong>Granuloma inguinal:</strong>
+- Doxiciclina 100mg VO c/12h por 3 semanas. Alternativas: TMP/SMX, Claritromicina.
+
+<strong>Linfogranuloma venéreo:</strong>
+- Doxiciclina 100mg VO c/12h por 21 días. Alternativa: Claritromicina.
+
+<strong>VPH/Verrugas:</strong>
+- Podofilina 25% o ácido tricloroacético 80% tópico. En embarazadas: ácido tricloroacético o cauterio.
+
+<strong>Candidiasis vulvovaginal:</strong>
+- Clotrimazol vaginal 1% por 7-14 noches. Alternativa: Fluconazol 150mg VO dosis única (no en embarazo).
+
+<strong>Vaginosis bacteriana:</strong>
+- Metronidazol 500mg VO c/12h por 7 días. Alternativa: Metronidazol gel vaginal.
+
+<strong>Tricomoniasis:</strong>
+- Metronidazol 2g VO dosis única. Alternativa: 500mg VO c/12h por 7 días.
+
+<strong>Pediculosis púbica:</strong>
+- Permetrina 1% tópica, repetir en 1 semana.
+
+<strong>Escabiosis:</strong>
+- Permetrina 5% tópica, dejar 8-10h y repetir en 1 semana.
+
+<strong>Hepatitis B:</strong>
+- Tenofovir 300mg VO diario de por vida (adultos). Recién nacido de madre positiva: inmunoglobulina hiperinmune al nacer.
+
+<strong>Hepatitis C:</strong>
+- Sofosbuvir/Velpatasvir 400/100mg VO diario por 12 semanas (adultos).
+    </pre>
+  </details>
+  `,
+  "dengue": `<h4>Tratamiento</h4>
+  <ul>
+    <li><strong>Dengue sin signos de alarma:</strong>
+      <ul>
+        <li>Reposo relativo en cama.</li>
+        <li>Líquidos por vía oral:
+          <ul>
+            <li>Adultos: al menos cinco vasos (250 ml) o más al día.</li>
+            <li>Niños: leche, jugos naturales (precaución en diabéticos), SRO, agua de cebada/arroz/coco. Evitar solo agua pura.</li>
+            <li>Prescribir cantidad en onzas (30 ml), vasos (250 ml) o litros (1000 ml).</li>
+          </ul>
+        </li>
+        <li>Acetaminofén:
+          <ul>
+            <li>Adultos: 500 mg VO cada 4-6 h, máx. 4 g/día.</li>
+            <li>Niños: 10 mg/kg/dosis cada 6 h. Especificar cantidad en cucharaditas (5 ml) o tabletas.</li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+    <li><strong>Dengue con condición o riesgo social asociado (grupo B1):</strong>
+      <ul>
+        <li>Hidratación oral con SRO; si no tolera, iniciar IV con cristaloides (lactato de Ringer o SSN 0.9%) a dosis de mantenimiento.</li>
+        <li>Uso estricto de mosquitero en fase febril.</li>
+        <li>Embarazadas (26-34 semanas): inducir madurez pulmonar fetal con dexametasona 6 mg IV cada 6 h, 4 dosis (excepto en choque).</li>
+        <li>Manejo específico para otras condiciones asociadas.</li>
+      </ul>
+    </li>
+    <li><strong>Dengue con signos de alarma (grupo B2):</strong>
+      <ul>
+        <li>Hemograma completo antes de hidratar (no retrasar hidratación si no hay resultado).</li>
+        <li>Administrar carga de cristaloide isotónica 10 ml/kg en la primera hora (lactato de Ringer o SSN 0.9%). Vigilar signos vitales.</li>
+        <li>Reevaluar cada hora:
+          <ul>
+            <li>Si no hay mejoría clínica y diuresis &lt; 1 ml/kg/h, repetir carga 1-2 veces más.</li>
+            <li>Si hay mejoría y diuresis ≥ 1 ml/kg/h, reducir goteo a 5-7 ml/kg/h por 2-4 h, luego reducir progresivamente.</li>
+            <li>Si persisten signos de alarma y diuresis &lt; 1 ml/kg/h, repetir carga. Si mejora, reducir a 3-5 ml/kg/h por 2-4 h y continuar según evolución.</li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+  </ul>`
+};
+      
+      /* Función para generar los botones del Diagnóstico Principal */
+      function cargarDiagnosticos() {
+        const container = document.getElementById("diagnosticoContainer");
+        diagnosticos.forEach((dx) => {
+          const btn = document.createElement("button");
+          btn.classList.add("diagnostico-btn");
+          btn.innerHTML = "⚕️ " + dx;
+          btn.onclick = function () {
+            document.querySelectorAll(".diagnostico-btn").forEach((b) =>
+              b.classList.remove("selected")
+            );
+            this.classList.add("selected");
+            window.selectedDiagnostico = dx;
+          };
+          container.appendChild(btn);
+        });
+      }
+      
+      /* Función para mostrar el tratamiento del diagnóstico seleccionado */
+      function mostrarTratamiento() {
+        const resultadoDiv = document.getElementById("resultado");
+        resultadoDiv.style.display = "none";
+        if (!window.selectedDiagnostico) {
+          resultadoDiv.style.display = "block";
+          resultadoDiv.innerHTML = `<p class="error">Selecciona un diagnóstico principal.</p>`;
+          return;
+        }
+        const diagnostico = window.selectedDiagnostico;
+        let html = `<h3>Tratamiento para ${diagnostico}</h3>`;
+        let tratamientoPrincipal = tratamientosCompleto[diagnostico.toLowerCase()] || tratamientosCompleto[diagnostico];
+        if (tratamientoPrincipal) {
+          html += tratamientoPrincipal;
+        } else {
+          html += `<p class="error">No se encontraron datos para el diagnóstico seleccionado.</p>`;
+        }
+        resultadoDiv.innerHTML = html;
+        resultadoDiv.style.display = "block";
+      }
+      
+      /* Calculadora de Dosis Pediátrica */
+      function calcularDosisPediatrica() {
+        const peso = parseFloat(document.getElementById("peso_pedi").value);
+        const dosisBase = parseFloat(document.getElementById("dosis_base").value);
+        const resultadoDosis = document.getElementById("resultadoDosis");
+        if (isNaN(peso) || isNaN(dosisBase) || peso <= 0 || dosisBase <= 0) {
+          resultadoDosis.style.display = "block";
+          resultadoDosis.innerHTML = `<p class="error">Ingresa valores válidos para peso y dosis base.</p>`;
+          return;
+        }
+        const dosisCalculada = peso * dosisBase;
+        resultadoDosis.innerHTML = `<h3>Dosis Pediátrica Recomendada</h3>
+                                    <p>Con un peso de ${peso} kg y dosis base de ${dosisBase} mg/kg, la dosis es: <strong>${dosisCalculada.toFixed(2)} mg</strong>.</p>`;
+        resultadoDosis.style.display = "block";
+      }
+      
+      /* Calculadora de IMC */
+      function calcularIMC() {
+        const peso = parseFloat(document.getElementById("peso_imc").value);
+        const altura = parseFloat(document.getElementById("altura_imc").value);
+        const resultadoIMC = document.getElementById("resultadoIMC");
+        if (isNaN(peso) || isNaN(altura) || peso <= 0 || altura <= 0) {
+          resultadoIMC.style.display = "block";
+          resultadoIMC.innerHTML = `<p class="error">Ingresa valores válidos para peso y altura.</p>`;
+          return;
+        }
+        const imc = peso / (altura * altura);
+        let interpretacion = "";
+        if (imc < 18.5) {
+          interpretacion = "Bajo peso";
+        } else if (imc < 25) {
+          interpretacion = "Normal";
+        } else if (imc < 30) {
+          interpretacion = "Sobrepeso";
+        } else {
+          interpretacion = "Obesidad";
+        }
+        resultadoIMC.innerHTML = `<h3>Resultado del IMC</h3>
+                                  <p>Tu IMC es: <strong>${imc.toFixed(2)}</strong> (${interpretacion}).</p>`;
+        resultadoIMC.style.display = "block";
+      }
+      
+      /* Función para consultar interacciones medicinales */
+      function consultarInteracciones() {
+        const medicSelect = document.getElementById("medicamentoSelect");
+        const clave = medicSelect.value;
+        const resultadoDiv = document.getElementById("resultadoInteracciones");
+  
+        if (clave && interaccionesMedicamentosas[clave]) {
+          let html = `<h4>Interacciones para "${clave}":</h4><ul>`;
+          interaccionesMedicamentosas[clave].forEach((item) => {
+            html += `<li><strong>${item.medicamento}</strong>: ${item.motivo}</li>`;
+          });
+          html += `</ul>`;
+          resultadoDiv.innerHTML = html;
+        } else {
+          resultadoDiv.innerHTML = `<p class="error">No se encontraron interacciones para la opción seleccionada.</p>`;
+        }
+        resultadoDiv.style.display = "block";
+      }
+      
+            // Base de datos de interacciones
+      const interaccionesMedicamentosas = {
+        "aspirina": [
+          {
+            medicamento: "ibuprofeno",
+            motivo: "Puede interferir con la acción antiplaquetaria, incrementando el riesgo de complicaciones hemorrágicas."
+          },
+          {
+            medicamento: "anticoagulantes",
+            motivo: "La combinación eleva el riesgo de sangrado."
+          },
+          {
+            medicamento: "corticosteroides",
+            motivo: "Pueden potenciar la irritación gástrica, aumentando el riesgo de úlceras."
+          }
+        ],
+        "diureticos": [
+          {
+            medicamento: "Hidroclorotiazida",
+            motivo: "Disminuye la tolerancia a la glucosa y puede revelar diabetes latente. Contraindicado en hipersensibles a sulfonamidas; disminuye la acción de ciertos fármacos y aumenta la de otros. Contraindicación absoluta: gota; relativa: síndrome metabólico, intolerancia a la glucosa, embarazo, hiperpotasemia e hipopotasemia."
+          },
+          {
+            medicamento: "Furosemida",
+            motivo: "Diurético de asa que puede causar hipoglucemia. Contraindicado en diabéticos, hipersensibles a sulfonamidas y en anuria; debe evitarse su combinación con fármacos que potencien ototoxicidad y alteraciones electrolíticas."
+          },
+          {
+            medicamento: "Espironolactona",
+            motivo: "Antagonista de receptores mineralocorticoides. Contraindicada en casos de hipercaliemia o riesgo de desarrollarla, y puede interferir con la eliminación de glucósidos cardíacos."
+          }
+        ],
+        "benzodiacepinas": [
+          {
+            medicamento: "Diazepam",
+            motivo: "Puede exacerbar convulsiones y precipitar estado epiléptico si se interrumpe abruptamente; en combinación con valproato, riesgo de episodios psicóticos; precaución en vía IV por riesgo de depresión respiratoria."
+          },
+          {
+            medicamento: "Midazolam",
+            motivo: "Similar a Diazepam: riesgo de episodios psicóticos con valproato, exacerbación de convulsiones si se interrumpe bruscamente y riesgo de depresión respiratoria en vía IV."
+          }
+        ],
+        "fenitoina": [
+          {
+            medicamento: "Fenitoína",
+            motivo: "Reduce la eficacia de anticonceptivos orales (riesgo de embarazo no planificado), disminuye la concentración de carbamazepina, es teratogénica y puede provocar hiperglucemia. Precaución en IV por arritmias e hipotensión; contraindicado en insuficiencia hepática, cardiaca o renal y puede agravar la encefalopatía hepática."
+          }
+        ],
+        "fenobarbital": [
+          {
+            medicamento: "Fenobarbital",
+            motivo: "Reduce la acción de anticonceptivos orales; es teratogénico, puede causar alteraciones en la coagulación, anemia y osteomalacia. Sus niveles pueden incrementarse con ácido valproico; contraindicado en insuficiencia hepática, nefritis, lactancia, hipertiroidismo, anemia y porfiria aguda intermitente."
+          }
+        ],
+        "acido_valproico": [
+          {
+            medicamento: "Ácido Valproico",
+            motivo: "La interacción con fenitoína y fenobarbital aumenta sus niveles, pudiendo provocar hepatitis fulminante y pancreatitis aguda."
+          }
+        ],
+        "antipsicoticos": [
+          {
+            medicamento: "Haloperidol",
+            motivo: "Utilizado en esquizofrenia y manía aguda; provoca EPS, acatisia, hiperprolactinemia, sedación, aumento de peso e hipotensión. Evitar su uso IV por prolongación del QTc."
+          },
+          {
+            medicamento: "Clorpromazina",
+            motivo: "Indicada en esquizofrenia y manía aguda. Altas afinidades por M1, H1 y α1 ocasionan efectos anticolinérgicos, sedación, aumento de peso e hipotensión; menor prolongación del QTc, pero con alto riesgo de efectos metabólicos y fotosensibilidad."
+          },
+          {
+            medicamento: "Risperidona",
+            motivo: "Utilizada en esquizofrenia, manía aguda y el manejo del trastorno bipolar (en monoterapia o combinada con litio/valproato); riesgo moderado de efectos metabólicos y elevación de prolactina."
+          },
+          {
+            medicamento: "Olanzapina",
+            motivo: "Indicada en esquizofrenia, manía aguda y depresión bipolar (con fluoxetina). Potente antagonista muscarínico, con alto riesgo de efectos metabólicos y anticolinérgicos; puede inducir somnolencia, hipotensión y aumentar la mortalidad en ancianos con demencia."
+          },
+          {
+            medicamento: "Lorazepam",
+            motivo: "Sedante y ansiolítico utilizado en manejo de estado epiléptico, ansiedad, abstinencia alcohólica, preanestesia y en ciertos trastornos convulsivos."
+          }
+        ],
+        "betabloqueadores": [
+          {
+            medicamento: "Propranolol, Atenolol, Carvedilol",
+            motivo: "Deben evitarse en pacientes con enfermedad reactiva de las vías respiratorias (asma y EPOC) y con disfunción nodal SA o AV. Contraindicado con fármacos que inhiben la conducción AV; no suspender bruscamente para evitar síndrome de abstinencia y pueden causar hipoglucemia. Contraindicación absoluta: asma y bloqueo AV (grados 2 o 3); relativa: síndrome metabólico, intolerancia a la glucosa y en pacientes activos."
+          }
+        ],
+        "bloqueadores_ca2": [
+          {
+            medicamento: "Nifedipina, Verapamilo, Amlodipina",
+            motivo: "El verapamilo puede aumentar niveles plasmáticos de digoxina, ciclosporina y loperamida; su uso IV con betabloqueadores está contraindicado por riesgo de bloqueo AV o depresión ventricular; combinado con quinidina, puede causar hipotensión excesiva; se recomienda dosis reducidas en cirrosis. Contraindicación absoluta: bloqueo AV (grados 2 o 3), disfunción severa del VI e insuficiencia cardíaca."
+          }
+        ],
+        "IECA": [
+          {
+            medicamento: "Enalapril",
+            motivo: "La capsaicina puede empeorar la tos inducida; AINES reducen su efecto antihipertensivo; diuréticos ahorradores de K+ y suplementos pueden exacerbar hiperpotasemia; pueden aumentar niveles de digoxina y litio. Contraindicación absoluta: embarazo, angioedema, hiperpotasemia y estenosis arterial renal bilateral; relativa: mujeres en edad fértil."
+          }
+        ],
+        "ara_ii": [
+          {
+            medicamento: "Irbesartán, Candesartán",
+            motivo: "Pueden causar hiperpotasemia, especialmente en pacientes con enfermedad renal o que toman suplementos de K+ o diuréticos ahorradores. Contraindicación absoluta: embarazo, hiperpotasemia y estenosis arterial renal bilateral; relativa: mujeres en edad fértil."
+          }
+        ],
+        "cardiovasculares": [
+          {
+            medicamento: "Dobutamina",
+            motivo: "Usar con precaución en pacientes con hipertensión o arritmias; puede aumentar el tamaño de un infarto y en fibrilación auricular requerir ajuste (posible uso de digoxina)."
+          },
+          {
+            medicamento: "Dopamina",
+            motivo: "Requiere ajuste en pacientes con antihipertensivos tricíclicos; en feocromocitoma puede provocar crisis hipertensiva; en taquiarritmias ventriculares aumenta el riesgo de arritmias fatales, especialmente en hipertiroidismo no tratado o hipovolemia."
+          },
+          {
+            medicamento: "Norepinefrina",
+            motivo: "Puede ocasionar isquemia mesentérica o periférica por vasoconstricción severa; se debe usar con precaución en casos de trombosis vascular o alta sensibilidad a catecolaminas."
+          },
+          {
+            medicamento: "Nitroglicerina",
+            motivo: "La combinación con inhibidores de PDE5 o riociguat puede provocar vasodilatación catastrófica e hipotensión grave; vía sublingual puede causar bradicardia."
+          },
+          {
+            medicamento: "Nitroprusiato de sodio",
+            motivo: "Utilizado en situaciones críticas debido a su potente efecto vasodilatador; requiere monitoreo por riesgo de hipotensión severa."
+          }
+        ],
+        "antiplaquetarios": [
+          {
+            medicamento: "Ácido acetilsalicílico",
+            motivo: "Inhibe de forma irreversible y selectiva la COX a dosis bajas, reduciendo la función plaquetaria y prolongando el tiempo de sangrado. Se usa en dosis analgésicas, antipiréticas y para prevención de eventos cardiovasculares (máximo 4 g/día)."
+          },
+          {
+            medicamento: "Clopidogrel",
+            motivo: "Inhibe la función plaquetaria y se emplea en el manejo de enfermedades cardiovasculares; conlleva riesgo de hemorragia, especialmente en combinación con ácido acetilsalicílico o anticoagulantes, pudiendo causar púrpura trombocitopénica trombótica."
+          },
+          {
+            medicamento: "Heparina",
+            motivo: "Utilizada para profilaxis y tratamiento del tromboembolismo venoso, síndrome coronario agudo, intervenciones coronarias y cirugía cardiopulmonar. Es segura en insuficiencia renal y durante el embarazo."
+          },
+          {
+            medicamento: "Enoxaparina",
+            motivo: "Utilizada para profilaxis y tratamiento del tromboembolismo venoso, en síndrome coronario agudo y en pacientes con tromboembolismo asociado al cáncer."
+          }
+        ],
+        "antidiabeticos": [
+          {
+            medicamento: "Insulina de acción corta",
+            motivo: "Se usa en diabetes tipo 1 y 2 para controlar el aumento prandial de glucosa y corregir hiperglucemia aguda. Puede administrarse por infusión IV en DKA o en hospital; inyectada SC, IM o IV, inicia acción en 30-45 min y dura 4-6 h. Reacción adversa principal: hipoglucemia."
+          },
+          {
+            medicamento: "Insulina acción prolongada",
+            motivo: "Proporciona insulina basal en diabetes tipo 1 y 2, reduce la hiperglucemia en ayuno y se combina con insulina de acción corta en régimen basal/bolo. Generalmente se administra SC (dos veces al día o a la hora de dormir) con duración de 8-12 h. Riesgo: hipoglucemia."
+          },
+          {
+            medicamento: "Metformina",
+            motivo: "Tratamiento de primera línea en diabetes tipo 2, eficaz como monoterapia y utilizado también en el síndrome de ovario poliquístico. Actúa interfiriendo con la absorción de glucosa y sales biliares, aunque se ha asociado a una reducción del 20-30% en los niveles de vitamina B12."
+          }
+        ],
+        "hormonas_endocrino": [
+          {
+            medicamento: "Levotiroxina",
+            motivo: "Debe ajustarse la dosis en función de diversos factores. Fármacos y factores que aumentan los requerimientos: antiácidos (aluminio, IBP, sucralfato), secuestradores de ácidos biliares (colestiramina, colestipol, colesevelam), carbonato de calcio, aglutinantes de fosfato (carbonato de lantano, sevelamer), picolinato de cromo, raloxifeno, sales de hierro, alimentos y productos de soya, intolerancia a la lactosa; además, fármacos que aumentan el metabolismo de la tiroxina (rifampicina, carbamazepina, fenitoína, sertralina), disminuyen la conversión T4→T3 (amiodarona) y otros (estrógeno, embarazo, lovastatina, simvastatina, etionamida, inhibidores de tirosina quinasa). Factores que disminuyen requerimientos: edad avanzada (>65 años) y terapia androgénica en mujeres. Adicionalmente, metformina puede disminuir la TSH sin modificar la T4 libre. Un tratamiento excesivo puede provocar osteoporosis y fibrilación auricular."
+          },
+          {
+            medicamento: "Propiltiouraculo",
+            motivo: "Puede provocar agranulocitosis (dolor de garganta o fiebre) en las primeras semanas o meses de tratamiento, lo que requiere su suspensión. Se evita durante el resto del embarazo por el riesgo de insuficiencia hepática."
+          },
+          {
+            medicamento: "Metimazol",
+            motivo: "No debe usarse en el primer trimestre del embarazo debido a embriopatía; la agranulocitosis puede ocurrir en las primeras semanas o meses de tratamiento, requiriendo suspensión del medicamento."
+          }
+        ],
+        "antibioticos": [
+    {
+      medicamento: "Ceftriaxona",
+      motivo: "Puede causar ictericia y kernícterus en recién nacidos hiperbilirrubinémicos. Riesgo de pseudolitiasis biliar por afinidad con calcio. No administrar con soluciones que contengan calcio en neonatos (precipitados fatales). Hipersensibilidad a cefalosporinas."
+    },
+    {
+      medicamento: "Vancomicina",
+      motivo: "Heterorresistencia (especialmente S. aureus y Enterococcus faecium), nefrotoxicidad, deterioro auditivo, 'red man syndrome' con infusión rápida (eritema, prurito, hipotensión)."
+    },
+    {
+      medicamento: "Penicilina G",
+      motivo: "Hipersensibilidad a penicilinas. Transporte afectado por probenecid. Puede interferir con anticonceptivos orales."
+    },
+    {
+      medicamento: "Ampicilina",
+      motivo: "Contraindicado en mononucleosis infecciosa (rash). Con alopurinol aumenta riesgo de erupción. Sinergia con aminoglucósidos (administrar por separado)."
+    },
+    {
+      medicamento: "Meropenem",
+      motivo: "Hipersensibilidad a carbapenémicos/betalactámicos. Reduce niveles de valproato (riesgo de crisis). Potencia neurotoxicidad en insuficiencia renal."
+    },
+    {
+      medicamento: "Moxifloxacina",
+      motivo: "Hipersensibilidad a fluoroquinolonas. Prolonga QT (arritmias). Evitar en embarazo, lactancia y niños. Antiácidos y suplementos reducen absorción. Warfarina aumenta INR."
+    },
+    {
+      medicamento: "Levofloxacina",
+      motivo: "Hipersensibilidad a fluoroquinolonas. Prolonga QT. Riesgo de tendinopatía. Antiácidos y sucralfato disminuyen absorción. AINEs aumentan riesgo de convulsiones. Antidiabéticos: riesgo de hipo/hiperglucemia."
+    },
+    {
+      medicamento: "Ciprofloxacina",
+      motivo: "Hipersensibilidad a quinolonas. No usar con tizanidina (hipotensión, sedación). Evitar en embarazo, lactancia y niños. Antiácidos, hierro y sucralfato disminuyen absorción. Warfarina aumenta INR."
+    },
+    {
+      medicamento: "Claritromicina",
+      motivo: "Hipersensibilidad a macrólidos. Prolonga QT. Inhibidor potente de CYP3A4 (aumenta niveles de warfarina, teofilina, carbamazepina, ciclosporina). Riesgo de rabdomiolisis con estatinas. No combinar con ergotamina."
+    },
+    {
+      medicamento: "Clindamicina",
+      motivo: "Hipersensibilidad. Riesgo de colitis por C. difficile. Uso prolongado: sobreinfección fúngica. Potencia bloqueo neuromuscular. Antagonismo con eritromicina."
+    },
+    {
+      medicamento: "Imipenem",
+      motivo: "Hipersensibilidad a carbapenémicos/betalactámicos. Riesgo de convulsiones, especialmente en insuficiencia renal. Disminuye niveles de ácido valproico. Aumenta neurotoxicidad con ciclosporina."
+    },
+    {
+      medicamento: "Piperacilina-tazobactam",
+      motivo: "Hipersensibilidad a penicilinas/cefalosporinas. Historia de colitis pseudomembranosa. Vancomicina aumenta nefrotoxicidad. Warfarina aumenta INR. Aminoglucósidos: inactivación si se mezclan en la misma solución IV."
+    },
+    {
+      medicamento: "Linezolid",
+      motivo: "Uso con IMAO o ISRS: síndrome serotoninérgico. Hipertensión no controlada. Alimentos ricos en tiramina: crisis hipertensiva. Riesgo de mielosupresión con uso prolongado."
+    },
+    {
+      medicamento: "Gentamicina",
+      motivo: "Hipersensibilidad a aminoglucósidos. Insuficiencia renal. Riesgo de ototoxicidad con diuréticos de asa. Vancomicina, AINES aumentan nefrotoxicidad. Potencia bloqueo neuromuscular."
+    },
+    {
+      medicamento: "Amikacina",
+      motivo: "Hipersensibilidad a aminoglucósidos. Enfermedades neuromusculares. Nefrotoxicidad con vancomicina, cisplatino, AINES. Diuréticos ototóxicos aumentan sordera. Sinergia con betalactámicos (administrar por separado)."
+    },
+    {
+      medicamento: "Azitromicina",
+      motivo: "Hipersensibilidad a macrólidos. Prolonga QT. Warfarina aumenta INR. Menor inhibición de CYP3A4 que claritromicina, pero posible."
+    },
+    {
+      medicamento: "Amoxicilina",
+      motivo: "Hipersensibilidad a penicilinas. Alopurinol aumenta exantema. Puede reducir eficacia de anticonceptivos orales. Sinergia con aminoglucósidos (administrar separado)."
+    },
+    {
+      medicamento: "Amoxicilina/ácido clavulánico",
+      motivo: "Hipersensibilidad a penicilinas. Riesgo de hepatitis/colestasis. Alopurinol: riesgo de rash. Warfarina: eleva INR. Disminuye eficacia de anticonceptivos orales."
+    },
+    {
+      medicamento: "Metronidazol",
+      motivo: "Contraindicado en hipersensibilidad, embarazo (1º trimestre), alcoholismo activo, enfermedad hepática severa. Alcohol: reacción tipo disulfiram. Warfarina aumenta INR. Fenitoína/fenobarbital aumentan niveles de metronidazol."
+    },
+    {
+      medicamento: "Trimetoprim/Sulfametoxazol",
+      motivo: "Hipersensibilidad a sulfas/trimetoprim. Déficit de G6PD: anemia hemolítica. Embarazo: riesgo teratogénico. Warfarina aumenta INR. Metotrexato aumenta toxicidad hematológica."
+        }
+        ],
+      "antiasmaticos_epoc": [
+  {
+    medicamento: "Salbutamol",
+    motivo: "Hipopotasemia grave en predisposición a arritmias. Temblor, ansiedad, taquicardia, prolongación QT. Mayor riesgo en cardiopatía o arritmias. Riesgo cardiovascular aumenta con inhibidores MAO. Puede aumentar glucosa, ácidos grasos, insulina, piruvato y lactato (dosis altas)."
+  },
+  {
+    medicamento: "Ipratropio",
+    motivo: "Nebulizado puede precipitar glaucoma y retención urinaria en ancianos."
+  },
+  {
+    medicamento: "Formoterol",
+    motivo: "Riesgo de reagudizaciones graves y muertes si se usa sin esteroides. Contraindicado en asma."
+  },
+  {
+    medicamento: "Beclometasona",
+    motivo: "Causa hematomas, supresión suprarrenal, voz ronca, candidiasis. En niños puede disminuir velocidad de crecimiento."
+  },
+  {
+    medicamento: "Budesonida",
+    motivo: "Menos efectos sistémicos en altas dosis inhaladas. Voz ronca, candidiasis."
+  },
+  {
+    medicamento: "Teofilina",
+    motivo: "Arritmias, convulsiones, alteraciones conductuales en niños. Retiro en EPOC empeora síntomas. Eliminación aumentada por rifampicina, barbitúricos, etanol, tabaco. Disminuida por cimetidina, eritromicina, ciprofloxacina, alopurinol, insuficiencia cardíaca, hepatopatía, neumonía, edad avanzada. Riesgo de toxicidad."
+  },
+  {
+    medicamento: "Prednisona",
+    motivo: "Dosis altas suprimen eje HHS. Síndrome de abstinencia, retención de líquidos, aumento de peso, osteoporosis, hipertensión, úlcera, diabetes, cataratas, psicosis."
+  },
+  {
+    medicamento: "Hidrocortisona",
+    motivo: "Anafilaxia en asmáticos sensibles a AAS. Hiperglucemia, hipertensión, dislipidemia, infecciones, síndrome de Cushing, cataratas, glaucoma, candidiasis."
+  },
+  {
+    medicamento: "Metilprednisolona",
+    motivo: "Infecciones sistémicas, cataratas, glaucoma, muguet."
+  },
+  {
+    medicamento: "Montelukast",
+    motivo: "Asociado a disfunción hepática y síndrome de Churg-Strauss (si no hay corticoides concomitantes)."
+  }
+],
+"analgesicos_antiinflamatorios": [
+  {
+    medicamento: "Acetaminofén",
+    motivo: "Antipirético y analgésico, antiinflamatorio débil. Riesgo principal: hepatotoxicidad."
+  },
+  {
+    medicamento: "Ibuprofeno",
+    motivo: "Dolor, fiebre, artritis. Interactúa con efecto antiplaquetario de AAS. Toxicidad CV y hepática (rara)."
+  },
+  {
+    medicamento: "Diclofenaco",
+    motivo: "Dolor, migraña, artritis. Selectividad COX-2. Toxicidad hepática y CV. Dosis altas necesarias por corta vida media."
+  },
+  {
+    medicamento: "Ketorolaco",
+    motivo: "Dolor agudo moderado a grave. Potente analgésico, pobre antiinflamatorio. Máximo 5 días. Riesgo de toxicidad GI y renal."
+  },
+  {
+    medicamento: "Tramadol",
+    motivo: "Análogo de codeína, agonista MOR débil. Riesgo de convulsiones, no usar con IMAO, ISRS u otros que bajan umbral convulsivo."
+  },
+  {
+    medicamento: "Codeína",
+    motivo: "Profármaco de morfina, útil en dolor leve a moderado y antitusivo. Menos eficaz que morfina."
+  },
+  {
+    medicamento: "Sulfato de morfina",
+    motivo: "Analgésico fuerte, útil en dolor intenso, edema pulmonar y anestesia."
+  },
+  {
+    medicamento: "Meperidina",
+    motivo: "Agonista μ potente, no usar prolongado (metabolito neurotóxico). Puede causar convulsiones, constricción pupilar, efectos vestibulares."
+  },
+  {
+    medicamento: "Ácido acetilsalicílico",
+    motivo: "Antitrombótico a dosis bajas. Riesgo de sangrado, síndrome de Reye en niños, toxicidad GI y renal a dosis altas."
+  }
+],
+"gastrointestinales": [
+  {
+    medicamento: "Omeprazol / IBPs",
+    motivo: "Interacciones con warfarina, diazepam, ciclosporina. Disminuye absorción de vitamina B12 y otros fármacos. Riesgo de fractura ósea, neumonía, C. difficile, peritonitis bacteriana espontánea, enfermedad renal crónica y demencia."
+  },
+  {
+    medicamento: "Octreotida",
+    motivo: "No se reportan interacciones relevantes."
+  },
+  {
+    medicamento: "Lactulosa",
+    motivo: "Puede causar malestar abdominal y flatulencia."
+  },
+  {
+    medicamento: "Metoclopramida",
+    motivo: "Puede causar parkinsonismo, hiperprolactinemia, galactorrea, ginecomastia, amenorrea, impotencia, metahemoglobinemia en neonatos, riesgos cardíacos graves en ancianos. Interacción con ciclosporina, aumenta toxicidad."
+     }
+        ],
+    "suplementos_correcciones_metabolicas": [
+  {
+    medicamento: "Tiamina",
+    motivo: "En encefalopatía de Wernicke, administrar antes de glucosa IV para evitar precipitar la encefalopatía."
+  },
+  {
+    medicamento: "Dextrosa",
+    motivo: "Puede exacerbar hiperglucemia con glucocorticoides. Contraindicado en diabetes descompensada sin insulina, hipokalemia grave sin corrección, delirio hiperosmolar, hiponatremia dilucional. Ajustar insulina para evitar hipoglucemia. Puede diluir potasio y sodio. Tiamina debe darse antes si hay riesgo de encefalopatía de Wernicke."
+  },
+  {
+    medicamento: "Bicarbonato de sodio",
+    motivo: "Contraindicado en alcalosis metabólica/respiratoria, hipocalcemia severa, hipernatremia, edema pulmonar. Riesgo en insuficiencia cardiaca o renal. No mezclar con sales de calcio IV (precipitación). Alcalosis puede aumentar toxicidad de digoxina. Puede interferir con absorción de salicilatos y tetraciclinas."
+  },
+  {
+    medicamento: "Gluconato de calcio",
+    motivo: "Contraindicado en hipercalcemia y con bicarbonato de sodio en la misma línea IV (precipitación). Precaución con digoxina (arritmias fatales). Puede revertir toxicidad de bloqueadores de canales de calcio."
+  },
+  {
+    medicamento: "Soluciones salinas (Hartmann, SSN, glucosadas)",
+    motivo: "SSN: hipernatremia, acidosis hiperclorémica, ICC. Hartmann: hiperpotasemia, alcalosis metabólica, insuficiencia hepática. Glucosadas: hiperglucemia, síndrome hiperosmolar, hiponatremia. Diluyen electrolitos y fármacos. Insulina debe ajustarse en soluciones glucosadas. No administrar simultáneamente con sangre conservada en citrato."
+  }
+],
+"dermatologicos_psoriasis": [
+  {
+    medicamento: "Hidrocortisona tópica",
+    motivo: "Usada en dermatitis, pénfigo, dermatitis atópica, vitíligo, psoriasis. Eventos adversos locales: atrofia, estrías, exacerbación de enfermedades de la piel."
+  },
+  {
+    medicamento: "Valerato de betametasona",
+    motivo: "Usada en dermatitis, pénfigo, dermatitis atópica, vitíligo, psoriasis. Eventos adversos locales: atrofia, estrías, exacerbación de enfermedades de la piel."
+  },
+  {
+    medicamento: "Análogos de vitamina D3",
+    motivo: "Puede causar hipercalcemia."
+  }
+],
+"inmunomoduladores_biologicos": [
+  {
+    medicamento: "Inmunoglobulina",
+    motivo: "Hipersensibilidad a inmunoglobulinas humanas o excipientes (sorbitol, maltosa)."
+  },
+  {
+    medicamento: "Dexametasona",
+    motivo: "Usada en artritis reumatoide, púrpura trombocitopénica. Puede aumentar glucosa, presión arterial, peso, riesgo de infección, osteoporosis, glaucoma, cataratas, depresión, ansiedad, psicosis. Supresión suprarrenal a largo plazo."
+  }
+],
+"antitoxinas_antidotos": [
+  {
+    medicamento: "Atropina",
+    motivo: "Contraindicada en obstrucción urinaria, GI y glaucoma de ángulo cerrado. Efectos adversos: xerostomía, estreñimiento, visión borrosa, dispepsia, deterioro cognitivo. Dosis repetidas hasta desaparición de síntomas muscarínicos."
+  },
+  {
+    medicamento: "Suero antiofídico",
+    motivo: "Puede causar enfermedad del suero (urticaria, prurito, edema, fiebre). Riesgo de choque anafiláctico y reacciones de hipersensibilidad aguda."
+  },
+  {
+    medicamento: "N-acetilcisteína",
+    motivo: "Uso controversial. No se reportan interacciones clínicas relevantes."
+  }
+],
+"antibioticos_pt": [
+  {
+    medicamento: "Oxacilina",
+    motivo: "Contraindicado en hipersensibilidad a penicilinas/betalactámicos e insuficiencia hepática severa. Probenecid aumenta niveles. Puede disminuir eficacia de anticonceptivos orales. Riesgo de hepatotoxicidad."
+  },
+  {
+    medicamento: "Cefepimina",
+    motivo: "Contraindicado en hipersensibilidad a cefalosporinas/penicilinas e insuficiencia renal sin ajuste. Diuréticos de asa y aminoglucósidos aumentan nefrotoxicidad. Probenecid reduce excreción renal. Puede disminuir efecto de warfarina."
+  },
+  {
+    medicamento: "Ceftazidima",
+    motivo: "Contraindicado en hipersensibilidad a betalactámicos. Aminoglucósidos y diuréticos potentes aumentan nefrotoxicidad. Anticoagulantes aumentan riesgo de sangrado."
+  },
+  {
+    medicamento: "Aztreonam",
+    motivo: "Contraindicado en hipersensibilidad. Uso exclusivo en bacilos gramnegativos aeróbicos. Sinergia con aminoglucósidos (administrar por separado)."
+  },
+  {
+    medicamento: "Doxiciclina",
+    motivo: "Contraindicado en embarazo, lactancia, niños <8 años e hipersensibilidad a tetraciclinas. Antiácidos, calcio, hierro, magnesio disminuyen absorción. Warfarina aumenta efecto anticoagulante. Fotosensibilidad."
+  },
+  {
+    medicamento: "Eritromicina",
+    motivo: "Contraindicado en hipersensibilidad a macrólidos y enfermedad hepática activa. Terfenadina, cisaprida, pimozida: riesgo de arritmias graves. Potente inhibidor de CYP3A4. Digoxina: aumenta toxicidad. QT largo: riesgo de arritmias."
+  }
+],
+"gastrointestinales_pt": [
+  {
+    medicamento: "Ranitidina",
+    motivo: "Aumenta pH GI, puede aumentar absorción de fármacos básicos. Miglitol reduce absorción de propranolol y ranitidina. No recomendada para úlceras activas."
+  },
+  {
+    medicamento: "Sucralfato",
+    motivo: "Evitar en insuficiencia renal (sobrecarga de aluminio). Inhibe absorción de fenitoína, digoxina, cimetidina, ketoconazol, fluoroquinolonas. Tomar al menos 2h después de otros fármacos. Provoca constipación."
+  }
+],
+"antiepilepticos_anestesicos_bloqueadores": [
+  {
+    medicamento: "Carbamazepina",
+    motivo: "Puede causar retención de agua, hiponatremia, disminuye valproato, lamotrigina, tiagabina, topiramato. Reduce efecto de haloperidol. Inhibida por propoxifeno, eritromicina, cimetidina, fluoxetina, isoniacida. Contraindicada en discrasias sanguíneas, insuficiencia renal/hepática. Teratogénica."
+  },
+  {
+    medicamento: "Etomidato",
+    motivo: "No se reportan interacciones relevantes."
+  },
+  {
+    medicamento: "Rocuronio",
+    motivo: "No se reportan interacciones relevantes."
+  },
+  {
+    medicamento: "Vecuronio",
+    motivo: "No se reportan interacciones relevantes."
+  }
+],
+"antifungicos_antivirales_pt2": [
+  {
+    medicamento: "Anfotericina B",
+    motivo: "Toxicidad renal, hipopotasemia. Se prefiere formulación liposomal. Usada en leishmaniasis visceral y casos resistentes a antimonio."
+  },
+  {
+    medicamento: "Fluconazol",
+    motivo: "Inhibidor de CYP3A4 y CYP2C9. Contraindicado en embarazo. Puede causar hepatotoxicidad."
+  },
+  {
+    medicamento: "Aciclovir",
+    motivo: "Uso limitado a virus herpes. Eliminación renal, t1/2 prolongada en neonatos y anúricos. Seguro a largo plazo."
+  },
+  {
+    medicamento: "Ganciclovir",
+    motivo: "Actividad contra todos los herpesvirus, especialmente CMV. Efectos adversos: mielosupresión, neutropenia. Riesgo en embarazo no descartado."
+  }
+],
+"antidotos_antagonistas": [
+  {
+    medicamento: "Flumazenilo",
+    motivo: "Contraindicado en hipersensibilidad, intoxicaciones mixtas con antidepresivos tricíclicos, uso de benzodiacepinas para situaciones de riesgo vital. No revertir benzodiacepinas en estatus epiléptico. No se conocen interacciones clínicas significativas."
+  },
+  {
+    medicamento: "Naloxona",
+    motivo: "Antagonista opioide. Puede inducir hiperalgesia moderada. Requiere monitorización por posible recaída con agonistas de larga duración."
+  }
+]
+  }
+
+      // Función para consultar interacciones usando el menú select
+      function consultarInteracciones() {
+        // Obtenemos el valor seleccionado desde el select
+        const medicSelect = document.getElementById("medicamentoSelect");
+        const clave = medicSelect.value;
+        const resultadoDiv = document.getElementById("resultadoInteracciones");
+  
+        if (clave && interaccionesMedicamentosas[clave]) {
+          let html = `<h4>Interacciones para "${clave}":</h4><ul>`;
+          interaccionesMedicamentosas[clave].forEach(interaccion => {
+            html += `<li><strong>${interaccion.medicamento}</strong>: ${interaccion.motivo}</li>`;
+          });
+          html += `</ul>`;
+          resultadoDiv.innerHTML = html;
+        } else {
+          resultadoDiv.innerHTML = `<p class="error">No se encontraron interacciones para la opción seleccionada.</p>`;
+        }
+  
+        resultadoDiv.style.display = "block";
+      }
+
+      document.addEventListener("DOMContentLoaded", function () {
+        cargarDiagnosticos();
+document.getElementById('btnAdvertencia').onclick = function() {
+  alert("Esta herramienta no sustituye una consulta médica. Consulte siempre a un profesional de la salud.");
+};
+      });
+    </script>
+   <script type="module">
+  // Import the functions you need from the SDKs you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-analytics.js";
+  // TODO: Add SDKs for Firebase products that you want to use
+  // https://firebase.google.com/docs/web/setup#available-libraries
+
+  // Your web app's Firebase configuration
+  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+  const firebaseConfig = {
+    apiKey: "AIzaSyC0GPs7yffh_BRKzR3G4RFRNoZFQia5IW8",
+    authDomain: "asistente-medico-integral.firebaseapp.com",
+    projectId: "asistente-medico-integral",
+    storageBucket: "asistente-medico-integral.firebasestorage.app",
+    messagingSenderId: "448464524725",
+    appId: "1:448464524725:web:f42a651ec6241dea3335fc",
+    measurementId: "G-BXGVXKX9NM"
+  }; 
+   // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+</script>
+  </body>
+</html>
