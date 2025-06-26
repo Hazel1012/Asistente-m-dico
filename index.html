@@ -218,21 +218,59 @@
       
       <!-- Navegación en pestañas -->
       <ul class="tabs">
-        <li data-tab="diagnostico" class="active">Diagnóstico Principal</li>
-        <li data-tab="dosis">Dosis Pediátrica</li>
-        <li data-tab="imc">Calculadora de IMC</li>
-        <li data-tab="interacciones">Interacciones</li>
-      </ul>
-      
- <div class="tab-content">
-  <!-- Pestaña Diagnóstico Principal -->
-  <div id="diagnostico" class="tab-pane active">
-    <h2>Diagnóstico Principal</h2>
+  <li data-tab="diagnostico" class="active">Diagnóstico e Interacciones</li>
+  <li data-tab="dosis">Dosis Pediátrica</li>
+  <li data-tab="imc">Calculadora de IMC</li>
+</ul>
+
+<div class="tab-content">
+  <!-- Pestaña Diagnóstico e Interacciones UNIFICADA -->
+<div id="diagnostico" class="tab-pane active" style="position:relative;">
+  <h2>Diagnóstico Principal</h2>
+  <div id="resultado" class="result" style="display: none; margin-bottom: 18px;"></div>
+  <input type="search" id="buscadorDiagnostico" placeholder="Buscar diagnóstico..." style="width:100%;padding:12px;border-radius:8px;margin-bottom:8px;">
+  <div id="sugerenciasDiagnostico" style="background:#fff;border:1px solid #ccc;border-radius:8px;max-height:180px;overflow-y:auto;display:none;position:absolute;z-index:10;width:100%;"></div>
+  <button onclick="mostrarTratamiento()">Ver tratamiento sugerido</button>
+     <div id="resultado" class="result" style="display: none;"></div>
     <div class="diagnostico-container" id="diagnosticoContainer">
       <!-- Se generarán botones dinámicamente -->
     </div>
-    <button onclick="mostrarTratamiento()">Ver tratamiento sugerido</button>
-    <div id="resultado" class="result" style="display: none;"></div>
+    <hr>
+    <h2>Interacciones Medicamentosas</h2>
+    <label for="medicamentoSelect">Seleccione el medicamento:</label>
+    <select id="medicamentoSelect">
+      <option value="" disabled selected>Seleccione un medicamento</option>
+      <option value="aspirina">Aspirina</option>
+      <option value="diureticos">Diuréticos</option>
+      <option value="benzodiacepinas">Benzodiacepinas</option>
+      <option value="fenitoina">Fenitoína</option>
+      <option value="fenobarbital">Fenobarbital</option>
+      <option value="acido_valproico">Ácido Valproico</option>
+      <option value="antipsicoticos">Antipsicóticos / Sedantes</option>
+      <option value="betabloqueadores">Betabloqueadores</option>
+      <option value="bloqueadores_ca2">Bloqueadores del canal de Ca²⁺</option>
+      <option value="IECA">IECA</option>
+      <option value="ara_ii">ARA II</option>
+      <option value="cardiovasculares">Cardiovasculares</option>
+      <option value="antiplaquetarios">Antiplaquetarios / Antitrombóticos</option>
+      <option value="antidiabeticos">Antidiabéticos</option>
+      <option value="hormonas_endocrino">Hormonas / Endocrino</option>
+      <option value="antibioticos">Antibióticos</option>
+      <option value="antiasmaticos_epoc">Antiasmáticos y EPOC</option>
+      <option value="analgesicos_antiinflamatorios">Analgésicos / Antiinflamatorios</option>
+      <option value="gastrointestinales">Gastrointestinales</option>
+      <option value="suplementos_correcciones_metabolicas">Suplementos / Correcciones metabólicas</option>
+      <option value="dermatologicos_psoriasis">Dermatológicos / Psoriasis</option>
+      <option value="inmunomoduladores_biologicos">Inmunomoduladores / Biológicos</option>
+      <option value="antitoxinas_antidotos">Antitoxinas / Antídotos</option>
+      <option value="antibioticos_pt">Antibióticos PT</option>
+      <option value="gastrointestinales_pt">Gastrointestinales PT</option>
+      <option value="antiepilepticos_anestesicos_bloqueadores">Antiepilépticos / Anestésicos / Bloqueadores neuromusculares</option>
+      <option value="antifungicos_antivirales_pt2">Antifúngicos y antivirales PT2</option>
+      <option value="antidotos_antagonistas">Antídotos y antagonistas</option>
+    </select>
+    <button onclick="consultarInteracciones()">Consultar Interacciones</button>
+    <div id="resultadoInteracciones" class="result" style="display: none;"></div>
   </div>
   
   <!-- Pestaña Dosis Pediátrica -->
@@ -878,23 +916,37 @@
   </ul>`
 };
       
-      /* Función para generar los botones del Diagnóstico Principal */
-      function cargarDiagnosticos() {
-        const container = document.getElementById("diagnosticoContainer");
-        diagnosticos.forEach((dx) => {
-          const btn = document.createElement("button");
-          btn.classList.add("diagnostico-btn");
-          btn.innerHTML = "⚕️ " + dx;
-          btn.onclick = function () {
-            document.querySelectorAll(".diagnostico-btn").forEach((b) =>
-              b.classList.remove("selected")
-            );
-            this.classList.add("selected");
-            window.selectedDiagnostico = dx;
-          };
-          container.appendChild(btn);
-        });
-      }
+function cargarDiagnosticos() {
+  const input = document.getElementById("buscadorDiagnostico");
+  const sugerencias = document.getElementById("sugerenciasDiagnostico");
+  input.oninput = function () {
+    const val = input.value.toLowerCase();
+    sugerencias.innerHTML = "";
+    if (!val) {
+      sugerencias.style.display = "none";
+      window.selectedDiagnostico = null;
+      return;
+    }
+    const filtrados = diagnosticos.filter(dx => dx.toLowerCase().includes(val));
+    filtrados.forEach(dx => {
+      const div = document.createElement("div");
+      div.style.padding = "10px";
+      div.style.cursor = "pointer";
+      div.textContent = dx.charAt(0).toUpperCase() + dx.slice(1);
+      div.onmousedown = function () {
+        input.value = dx;
+        sugerencias.style.display = "none";
+        window.selectedDiagnostico = dx;
+        document.getElementById("resultado").style.display = "none";
+      };
+      sugerencias.appendChild(div);
+    });
+    sugerencias.style.display = filtrados.length ? "block" : "none";
+  };
+  input.onblur = function () {
+    setTimeout(() => sugerencias.style.display = "none", 150);
+  };
+}
       
       /* Función para mostrar el tratamiento del diagnóstico seleccionado */
       function mostrarTratamiento() {
@@ -1503,26 +1555,6 @@ document.getElementById('btnAdvertencia').onclick = function() {
       });
     </script>
    <script type="module">
-  // Import the functions you need from the SDKs you need
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-analytics.js";
-  // TODO: Add SDKs for Firebase products that you want to use
-  // https://firebase.google.com/docs/web/setup#available-libraries
-
-  // Your web app's Firebase configuration
-  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-  const firebaseConfig = {
-    apiKey: "AIzaSyC0GPs7yffh_BRKzR3G4RFRNoZFQia5IW8",
-    authDomain: "asistente-medico-integral.firebaseapp.com",
-    projectId: "asistente-medico-integral",
-    storageBucket: "asistente-medico-integral.firebasestorage.app",
-    messagingSenderId: "448464524725",
-    appId: "1:448464524725:web:f42a651ec6241dea3335fc",
-    measurementId: "G-BXGVXKX9NM"
-  }; 
-   // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  const analytics = getAnalytics(app);
 </script>
   </body>
 </html>
