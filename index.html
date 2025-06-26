@@ -10,203 +10,356 @@
     />
     <style>
       :root {
-        --bg: #f0f4f8;
-        --fg: #111;
-        --card: #fff;
-        --primary: #00695c;
-        --accent: #00897b;
-        --success: #2e7d32;
-        --error: #c62828;
-      }
-      /* Modo oscuro: paleta médica renovada */
-      [data-theme="dark"] {
-        --bg: #1b1b2f;
-        --fg: #2150d1;
-        --card: #27293d;
-        --primary: #00adb5;
-        --accent: #00fff5;
-        --success: #66bb6a;
-        --error: #ff6b6b;
-      }
-      [data-theme="dark"] h1,
-      [data-theme="dark"] h2,
-      [data-theme="dark"] h3,
-      [data-theme="dark"] h4,
-      [data-theme="dark"] h5,
-      [data-theme="dark"] p {
-        color: var(--fg);
-      }
-      *, *::before, *::after {
-        box-sizing: border-box;
-      }
-      body {
-        margin: 0;
-        font-family: "Plus Jakarta Sans", sans-serif;
-        background: var(--bg);
-        color: var(--fg);
-        transition: background 0.3s ease, color 0.3s ease;
-      }
-      .container {
-        max-width: 900px;
-        margin: 20px auto;
-        background: var(--card);
-        border-radius: 12px;
-        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
-        overflow: hidden;
-      }
-      .header {
-        padding: 20px;
-        background: var(--primary);
-        color: #fff;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        border-bottom: 2px solid var(--primary);
-        margin-bottom: 20px;
-      }
-      .header h1 {
-        margin: 0;
-        font-size: 1.8em;
-      }
-      .theme-switch {
-        cursor: pointer;
-        background: none;
-        border: none;
-        color: var(--accent);
-        font-size: 1.7em;
-        transition: color 0.3s;
-      }
-      /* Pestañas */
-      .tabs {
-        display: flex;
-        list-style: none;
-        margin: 0;
-        padding: 0;
-        background: var(--bg);
-        border-bottom: 1px solid #ccc;
-      }
-      .tabs li {
-        padding: 12px 20px;
-        cursor: pointer;
-        border: 1px solid transparent;
-        border-bottom: none;
-        transition: background 0.3s;
-        color: var(--fg);
-      }
-      .tabs li.active {
-        background: #fff;
-        border: 1px solid #ccc;
-        border-bottom: none;
-      }
-      .tabs li:hover {
-        background: #fff;
-      }
-      .tab-content {
-        padding: 20px;
-      }
-      .tab-pane {
-        display: none;
-      }
-      .tab-pane.active {
-        display: block;
-      }
-      /* Estilos generales */
-      label {
-        font-weight: 600;
-        margin-top: 20px;
-        display: block;
-      }
-      input[type="search"],
-      input[type="number"],
-      select {
-        width: 100%;
-        padding: 12px;
-        margin-top: 8px;
-        border: 1px solid #ccc;
-        border-radius: 8px;
-        background: var(--bg);
-        color: var(--fg);
-        font-size: 1em;
-        transition: background 0.2s ease, color 0.2s ease;
-      }
-      button {
-        margin-top: 24px;
-        width: 100%;
-        padding: 14px;
-        border: none;
-        border-radius: 8px;
-        background: var(--primary);
-        color: #fff;
-        font-size: 1.1em;
-        cursor: pointer;
-        transition: background 0.25s ease;
-      }
-      button:hover {
-        background: var(--accent);
-      }
-      .diagnostico-container {
-        margin-top: 10px;
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
-      }
-      .diagnostico-btn {
-        padding: 14px 20px;
-        border: none;
-        border-radius: 10px;
-        background: var(--primary);
-        color: #fff;
-        font-size: 0.95em;
-        font-weight: 600;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        gap: 5px;
-        box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
-        transition: transform 0.25s ease, box-shadow 0.25s ease;
-      }
-      .diagnostico-btn:hover {
-        transform: scale(1.07);
-        box-shadow: 0 5px 12px rgba(0,0,0,0.3);
-      }
-      .diagnostico-btn.selected {
-        background: var(--accent);
-      }
-      .result {
-        margin-top: 20px;
-        padding: 20px;
-        background: #e8f5e9;
-        border-radius: 8px;
-        border-left: 6px solid var(--success);
-        animation: fadeIn 0.5s ease;
-      }
-      .result h3,
-      .result h4 {
-        margin-top: 0;
-        color: var(--success);
-      }
-      .error {
-        color: var(--error);
-        font-weight: bold;
-      }
-      @keyframes fadeIn {
-        from {
-          opacity: 0;
-          transform: translateY(10px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
-      @media (max-width: 600px) {
-        /* Ajustes para pantallas pequeñas */
-      }
+  --bg: #f4fafd;
+  --fg: #1a2236;
+  --card: #ffffff;
+  --primary: #2ec4b6;
+  --accent: #3a86ff;
+  --secondary: #ffbe0b;
+  --success: #43e97b;
+  --error: #ff595e;
+  --info: #b5eaea;
+  --shadow: 0 6px 24px rgba(46,196,182,0.08);
+}
+[data-theme="dark"] {
+  --bg: #151a2e;
+  --fg: #f4fafd;
+  --card: #23283a;
+  --primary: #2ec4b6;
+  --accent: #3a86ff;
+  --secondary: #ffbe0b;
+  --success: #43e97b;
+  --error: #ff595e;
+  --info: #23395d;
+  --shadow: 0 6px 24px rgba(46,196,182,0.16);
+}
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  font-family: 'Plus Jakarta Sans', 'Segoe UI', Arial, sans-serif;
+  background: var(--bg);
+  color: var(--fg);
+  transition: background 0.5s, color 0.5s;
+}
+.container {
+  max-width: 900px;
+  margin: 32px auto;
+  background: var(--card);
+  border-radius: 22px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  padding-bottom: 24px;
+  border: 2px solid var(--info);
+  animation: fadeInUp 0.8s;
+}
+.header {
+  padding: 32px 24px 20px 24px;
+  background: linear-gradient(90deg, var(--primary) 60%, var(--accent) 100%);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  border-bottom: none;
+  border-radius: 0 0 32px 32px;
+  box-shadow: var(--shadow);
+  gap: 18px;
+}
+.header h1 {
+  margin: 0;
+  font-size: 2.1em;
+  letter-spacing: 1px;
+  color: #fff;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  animation: fadeIn 1.2s;
+}
+.logo-medico {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 12px rgba(46,196,182,0.12);
+  margin-right: 10px;
+  animation: pulse 2.2s infinite;
+}
+.theme-switch {
+  cursor: pointer;
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 2em;
+  transition: color 0.3s, transform 0.2s;
+  margin-left: auto;
+}
+.theme-switch:hover {
+  color: var(--secondary);
+  transform: rotate(-15deg) scale(1.1);
+}
+.tabs {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0 24px;
+  background: var(--bg);
+  border-bottom: 2px solid var(--info);
+  animation: fadeInDown 0.7s;
+}
+.tabs li {
+  padding: 14px 28px;
+  cursor: pointer;
+  border: 2px solid transparent;
+  border-bottom: none;
+  transition: background 0.3s, color 0.3s, transform 0.2s;
+  color: var(--fg);
+  font-weight: 700;
+  border-radius: 18px 18px 0 0;
+  margin-right: 8px;
+  letter-spacing: 0.5px;
+}
+.tabs li.active {
+  background: var(--card);
+  border: 2px solid var(--info);
+  border-bottom: none;
+  color: var(--primary);
+  transform: translateY(-2px) scale(1.05);
+}
+.tabs li:hover {
+  background: var(--info);
+  color: var(--primary);
+  transform: scale(1.07);
+}
+.tab-content {
+  padding: 32px 24px 0 24px;
+  animation: fadeInUp 0.8s;
+}
+.tab-pane {
+  display: none;
+}
+.tab-pane.active {
+  display: block;
+  animation: fadeInUp 0.7s;
+}
+label {
+  font-weight: 700;
+  margin-top: 18px;
+  display: block;
+  color: var(--accent);
+  letter-spacing: 0.3px;
+  animation: fadeIn 1s;
+}
+input[type="search"],
+input[type="number"],
+select {
+  width: 100%;
+  padding: 14px;
+  margin-top: 8px;
+  border: 2px solid var(--info);
+  border-radius: 12px;
+  background: var(--bg);
+  color: var(--fg);
+  font-size: 1em;
+  transition: background 0.2s, color 0.2s, border 0.2s, box-shadow 0.2s;
+  margin-bottom: 12px;
+  outline: none;
+  font-weight: 500;
+  box-shadow: 0 2px 8px rgba(46,196,182,0.04);
+  animation: fadeIn 1.1s;
+}
+input[type="search"]:focus,
+input[type="number"]:focus,
+select:focus {
+  border: 2px solid var(--primary);
+  background: #e7f9f7;
+  box-shadow: 0 0 0 2px var(--primary, #2ec4b6, 0.15);
+}
+button {
+  margin-top: 18px;
+  width: 100%;
+  padding: 16px;
+  border: none;
+  border-radius: 14px;
+  background: var(--primary);
+  color: #fff;
+  font-size: 1.1em;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.25s, color 0.25s, box-shadow 0.25s, transform 0.1s;
+  box-shadow: var(--shadow);
+  letter-spacing: 0.5px;
+  animation: fadeIn 1.2s;
+}
+button:hover {
+  background: var(--accent);
+  color: #fff;
+  transform: scale(0.98);
+  box-shadow: 0 2px 16px rgba(58,134,255,0.13);
+}
+.result {
+  margin-top: 12px;
+  padding: 22px 20px 18px 20px;
+  background: linear-gradient(90deg, #fff 80%, #e7f9f7 100%);
+  border-radius: 16px;
+  border-left: 7px solid var(--primary);
+  color: var(--fg);
+  box-shadow: 0 2px 12px rgba(46,196,182,0.07);
+  animation: fadeSlideIn 0.7s;
+}
+[data-theme="dark"] .result {
+  background: linear-gradient(90deg, #23283a 80%, #23395d 100%);
+  color: var(--fg);
+}
+.result h3,
+.result h4 {
+  margin-top: 0;
+  color: var(--success);
+  animation: fadeIn 1.1s;
+}
+.error {
+  color: var(--error);
+  font-weight: bold;
+  animation: shake 0.5s;
+}
+h2, h3, h4 {
+  color: var(--primary);
+  margin-bottom: 10px;
+  letter-spacing: 0.5px;
+  font-weight: 800;
+  animation: fadeIn 1s;
+}
+hr {
+  border: none;
+  border-top: 2px solid var(--info);
+  margin: 32px 0 24px 0;
+}
+#sugerenciasDiagnostico {
+  background: #fff;
+  border: 2px solid var(--accent);
+  border-radius: 12px;
+  max-height: 180px;
+  overflow-y: auto;
+  display: none;
+  position: absolute;
+  z-index: 10;
+  width: 100%;
+  box-shadow: 0 4px 16px rgba(58,134,255,0.10);
+  animation: fadeInDown 0.5s;
+}
+#sugerenciasDiagnostico div {
+  padding: 12px 18px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, transform 0.15s;
+  color: var(--fg);
+  font-weight: 500;
+  border-radius: 8px;
+}
+#sugerenciasDiagnostico div:hover {
+  background: var(--accent);
+  color: #fff;
+  transform: scale(1.04);
+  box-shadow: 0 2px 8px rgba(58,134,255,0.12);
+}
+.loader-medico {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 32px 0;
+  animation: fadeIn 1s;
+}
+.loader-medico svg {
+  width: 54px;
+  height: 54px;
+  animation: rotate 1.2s linear infinite;
+}
+.loader-medico .cross {
+  stroke: var(--primary);
+  stroke-width: 4;
+  stroke-linecap: round;
+  animation: pulse 1.2s infinite;
+}
+@keyframes fadeIn {
+  from { opacity: 0;}
+  to { opacity: 1;}
+}
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(30px);}
+  to { opacity: 1; transform: translateY(0);}
+}
+@keyframes fadeInDown {
+  from { opacity: 0; transform: translateY(-30px);}
+  to { opacity: 1; transform: translateY(0);}
+}
+@keyframes fadeSlideIn {
+  from { opacity: 0; transform: translateY(20px);}
+  to { opacity: 1; transform: translateY(0);}
+}
+@keyframes pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(46,196,182,0.18);}
+  50% { box-shadow: 0 0 0 12px rgba(46,196,182,0.10);}
+}
+@keyframes shake {
+  0% { transform: translateX(0);}
+  20% { transform: translateX(-6px);}
+  40% { transform: translateX(6px);}
+  60% { transform: translateX(-4px);}
+  80% { transform: translateX(4px);}
+  100% { transform: translateX(0);}
+}
+@keyframes rotate {
+  100% { transform: rotate(360deg);}
+}
+@media (max-width: 700px) {
+  .container {
+    max-width: 99vw;
+    margin: 0;
+    border-radius: 0;
+    padding-bottom: 0;
+  }
+  .header, .tab-content {
+    padding: 18px 6vw 0 6vw;
+  }
+  .tabs {
+    padding: 0 6vw;
+  }
+}
+::-webkit-scrollbar {
+  width: 8px;
+  background: #e7f9f7;
+}
+::-webkit-scrollbar-thumb {
+  background: #b5eaea;
+  border-radius: 8px;
+}
+[data-theme="dark"] #sugerenciasDiagnostico {
+  background: #23283a;
+  color: #2c5d76;
+  border-color: #3a86ff;
+}
+[data-theme="dark"] #sugerenciasDiagnostico div {
+  color: #1c4960;
+}
+[data-theme="dark"] #sugerenciasDiagnostico div:hover {
+  background: #3a86ff;
+  color: #844040;
+}
     </style>
   </head>
   <body data-theme="light">
     <div class="container">
       <div class="header">
+        <span class="logo-medico">
+  <svg width="38" height="38" viewBox="0 0 38 38" fill="none">
+    <circle cx="19" cy="19" r="19" fill="#2ec4b6"/>
+    <rect x="16" y="8" width="6" height="22" rx="3" fill="#fff"/>
+    <rect x="8" y="16" width="22" height="6" rx="3" fill="#fff"/>
+    <circle cx="19" cy="19" r="7" fill="#3a86ff" fill-opacity="0.18"/>
+  </svg>
+</span>
         <h1>Asistente Médico Integral</h1>
         <button class="theme-switch" onclick="switchTheme()">🌙</button>
         <div style="text-align:center; margin: 24px auto 16px auto;">
