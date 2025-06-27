@@ -1717,60 +1717,53 @@ function cargarDiagnosticos() {
 document.getElementById('btnAdvertencia').onclick = function() {
   alert("Esta herramienta no sustituye una consulta médica. Consulte siempre a un profesional de la salud.");
 };
+const OPENAI_API_KEY = "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"; 
 
-    </script>
-   <script type="module">
-</script>
-  <script>
+// Chat simple con OpenAI
 const chatForm = document.getElementById('chat-form');
 const chatInput = document.getElementById('chat-input');
 const chatMessages = document.getElementById('chat-messages');
+let chatHistory = [
+  {role: "system", content: "Eres un asistente médico virtual. Responde de forma clara, breve y profesional. Si la pregunta es de emergencia, recomienda acudir a un médico."}
+];
 
-// Pon tu API Key aquí
-const OPENAI_API_KEY = 'PON_AQUI_TU_API_KEY';
-
-chatForm.addEventListener('submit', async function(e) {
+chatForm?.addEventListener('submit', async function(e) {
   e.preventDefault();
   const userMsg = chatInput.value.trim();
   if (!userMsg) return;
-  appendMessage('Tú', userMsg);
+  chatMessages.innerHTML += `<div style="margin-bottom:8px;"><b>Tú:</b> ${userMsg}</div>`;
   chatInput.value = '';
-  appendMessage('IA', 'Pensando...');
-
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+  chatMessages.innerHTML += `<div id="ia-typing" style="color:#888;">IA está escribiendo...</div>`;
+  chatHistory.push({role: "user", content: userMsg});
   try {
-    const respuesta = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
+    const res = await fetch("https://b9212b81-317d-4efc-9d3e-cc9baa9d7443-00-2vleul465p683.riker.replit.dev/", {
+      method: "POST",
       headers: {
-        'Authorization': 'Bearer ' + OPENAI_API_KEY,
-        'Content-Type': 'application/json'
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + OPENAI_API_KEY
       },
       body: JSON.stringify({
-        model: 'gpt-3.5-turbo',
-        messages: [
-          {role: 'system', content: 'Eres un asistente médico virtual. Da respuestas claras, concisas y útiles, pero recuerda que no sustituyes una consulta profesional.'},
-          {role: 'user', content: userMsg}
-        ],
-        max_tokens: 250,
-        temperature: 0.3
+        model: "gpt-3.5-turbo",
+        messages: chatHistory,
+        max_tokens: 256,
+        temperature: 0.2
       })
     });
-    const data = await respuesta.json();
-    // Borra el "Pensando..." anterior
-    chatMessages.lastChild.remove();
-    appendMessage('IA', data.choices[0].message.content.trim());
-  } catch (error) {
-    chatMessages.lastChild.remove();
-    appendMessage('IA', 'Error al consultar la IA. Intenta de nuevo.');
+    const data = await res.json();
+    const iaMsg = data.choices?.[0]?.message?.content || "No se pudo obtener respuesta.";
+    document.getElementById('ia-typing').remove();
+    chatMessages.innerHTML += `<div style="margin-bottom:12px;"><b>IA:</b> ${iaMsg}</div>`;
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+    chatHistory.push({role: "assistant", content: iaMsg});
+  } catch (err) {
+    document.getElementById('ia-typing').remove();
+    chatMessages.innerHTML += `<div style="color:red;">Error al conectar con IA.</div>`;
   }
 });
-
-function appendMessage(remitente, texto) {
-  const div = document.createElement('div');
-  div.style.marginBottom = '10px';
-  div.innerHTML = '<strong>' + remitente + ':</strong> ' + texto;
-  chatMessages.appendChild(div);
-  chatMessages.scrollTop = chatMessages.scrollHeight;
-}
+      });
+    </script>
+   <script type="module">
 </script>
   </body>
 </html>
