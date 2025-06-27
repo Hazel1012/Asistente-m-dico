@@ -1,403 +1,401 @@
 <!DOCTYPE html>
 <html lang="es">
-  <cabeza>
+  <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="ancho=ancho-del-dispositivo, escala-inicial=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Asistente Médico Virtual</title>
-    <enlace
+    <link
       href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap"
-      rel="hoja de estilo"
+      rel="stylesheet"
     />
-    <estilo>
-      :raíz {
+    <style>
+      :root {
   --bg: #f4fafd;
   --fg: #1a2236;
-  --tarjeta: #ffffff;
-  --primario: #2ec4b6;
-  --acento: #3a86ff;
-  --secundario: #ffbe0b;
-  --éxito: #43e97b;
+  --card: #ffffff;
+  --primary: #2ec4b6;
+  --accent: #3a86ff;
+  --secondary: #ffbe0b;
+  --success: #43e97b;
   --error: #ff595e;
-  --información: #b5eaea;
-  --sombra: 0 6px 24px rgba(46,196,182,0.08);
+  --info: #b5eaea;
+  --shadow: 0 6px 24px rgba(46,196,182,0.08);
 }
-[tema de datos="oscuro"] {
+[data-theme="dark"] {
   --bg: #151a2e;
   --fg: #f4fafd;
-  --tarjeta: #23283a;
-  --primario: #2ec4b6;
-  --acento: #3a86ff;
-  --secundario: #ffbe0b;
-  --éxito: #43e97b;
+  --card: #23283a;
+  --primary: #2ec4b6;
+  --accent: #3a86ff;
+  --secondary: #ffbe0b;
+  --success: #43e97b;
   --error: #ff595e;
   --info: #23395d;
-  --sombra: 0 6px 24px rgba(46,196,182,0.16);
+  --shadow: 0 6px 24px rgba(46,196,182,0.16);
 }
-*, *::antes, *::después {
-  tamaño de caja: caja de borde;
+*, *::before, *::after {
+  box-sizing: border-box;
 }
-cuerpo {
-  margen: 0;
-  familia de fuentes: 'Plus Jakarta Sans', 'Segoe UI', Arial, sans-serif;
-  fondo: var(--bg);
+body {
+  margin: 0;
+  font-family: 'Plus Jakarta Sans', 'Segoe UI', Arial, sans-serif;
+  background: var(--bg);
   color: var(--fg);
-  transición: fondo 0,5 s, color 0,5 s;
+  transition: background 0.5s, color 0.5s;
 }
-.contenedor {
-  ancho máximo: 900px;
-  margen: 32px automático;
-  fondo: var(--card);
-  radio del borde: 22px;
-  caja-sombra: var(--sombra);
-  desbordamiento: oculto;
-  relleno inferior: 24px;
-  borde: 2px solid var(--info);
-  animación: fadeInUp 0.8s;
+.container {
+  max-width: 900px;
+  margin: 32px auto;
+  background: var(--card);
+  border-radius: 22px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  padding-bottom: 24px;
+  border: 2px solid var(--info);
+  animation: fadeInUp 0.8s;
 }
-.encabezado {
-  relleno: 32px 24px 20px 24px;
-  fondo: gradiente lineal (90 grados, var (--primario) 60%, var (--acento) 100%);
+.header {
+  padding: 32px 24px 20px 24px;
+  background: linear-gradient(90deg, var(--primary) 60%, var(--accent) 100%);
   color: #fff;
-  pantalla:flexible;
-  alinear-elementos: centro;
-  borde inferior: ninguno;
-  radio del borde: 0 0 32px 32px;
-  caja-sombra: var(--sombra);
-  espacio: 18px;
+  display: flex;
+  align-items: center;
+  border-bottom: none;
+  border-radius: 0 0 32px 32px;
+  box-shadow: var(--shadow);
+  gap: 18px;
 }
-.encabezado h1 {
-  margen: 0;
-  tamaño de fuente: 2.1em;
-  espaciado entre letras: 1px;
+.header h1 {
+  margin: 0;
+  font-size: 2.1em;
+  letter-spacing: 1px;
   color: #fff;
-  peso de la fuente: 800;
-  pantalla:flexible;
-  alinear-elementos: centro;
-  espacio: 12px;
-  animación: fadeIn 1.2s;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  animation: fadeIn 1.2s;
 }
 .logo-medico {
-  ancho: 48px;
-  altura: 48px;
-  radio del borde: 50%;
-  fondo: #fff;
-  pantalla:flexible;
-  alinear-elementos: centro;
-  justificar-contenido: centro;
-  caja-sombra: 0 2px 12px rgba(46,196,182,0.12);
-  margen derecho: 10px;
-  animación: pulso 2,2s infinito;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 12px rgba(46,196,182,0.12);
+  margin-right: 10px;
+  animation: pulse 2.2s infinite;
 }
-.cambio de tema {
-  cursor: puntero;
-  fondo: ninguno;
-  borde: ninguno;
+.theme-switch {
+  cursor: pointer;
+  background: none;
+  border: none;
   color: #fff;
-  tamaño de fuente: 2em;
-  transición: color 0,3 s, transformación 0,2 s;
-  margen izquierdo: auto;
+  font-size: 2em;
+  transition: color 0.3s, transform 0.2s;
+  margin-left: auto;
 }
-.cambio de tema:hover {
-  color: var(--secundario);
-  transformar: rotar(-15 grados) escala(1.1);
+.theme-switch:hover {
+  color: var(--secondary);
+  transform: rotate(-15deg) scale(1.1);
 }
-.pestañas {
-  pantalla:flexible;
-  estilo de lista: ninguno;
-  margen: 0;
-  relleno: 0 24px;
-  fondo: var(--bg);
-  borde inferior: 2px solid var(--info);
-  animación: fadeInDown 0,7 s;
+.tabs {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0 24px;
+  background: var(--bg);
+  border-bottom: 2px solid var(--info);
+  animation: fadeInDown 0.7s;
 }
 .tabs li {
-  relleno: 14px 28px;
-  cursor: puntero;
-  borde: 2px sólido transparente;
-  borde inferior: ninguno;
-  transición: fondo 0,3 s, color 0,3 s, transformación 0,2 s;
+  padding: 14px 28px;
+  cursor: pointer;
+  border: 2px solid transparent;
+  border-bottom: none;
+  transition: background 0.3s, color 0.3s, transform 0.2s;
   color: var(--fg);
-  peso de la fuente: 700;
-  radio del borde: 18px 18px 0 0;
-  margen derecho: 8px;
-  espaciado entre letras: 0,5px;
+  font-weight: 700;
+  border-radius: 18px 18px 0 0;
+  margin-right: 8px;
+  letter-spacing: 0.5px;
 }
 .tabs li.active {
-  fondo: var(--card);
-  borde: 2px solid var(--info);
-  borde inferior: ninguno;
-  color: var(--primario);
-  transformar: translateY(-2px) escala(1.05);
+  background: var(--card);
+  border: 2px solid var(--info);
+  border-bottom: none;
+  color: var(--primary);
+  transform: translateY(-2px) scale(1.05);
 }
 .tabs li:hover {
-  fondo: var(--info);
-  color: var(--primario);
-  transformar: escala(1.07);
+  background: var(--info);
+  color: var(--primary);
+  transform: scale(1.07);
 }
 .tab-content {
-  relleno: 32px 24px 0 24px;
-  animación: fadeInUp 0.8s;
+  padding: 32px 24px 0 24px;
+  animation: fadeInUp 0.8s;
 }
 .tab-pane {
-  pantalla: ninguna;
+  display: none;
 }
 .tab-pane.active {
-  pantalla: bloque;
-  animación: fadeInUp 0,7 s;
+  display: block;
+  animation: fadeInUp 0.7s;
 }
-etiqueta {
-  peso de la fuente: 700;
-  margen superior: 18px;
-  pantalla: bloque;
-  color: var(--acento);
-  espaciado entre letras: 0,3px;
-  animación: fadeIn 1s;
+label {
+  font-weight: 700;
+  margin-top: 18px;
+  display: block;
+  color: var(--accent);
+  letter-spacing: 0.3px;
+  animation: fadeIn 1s;
 }
-entrada[tipo="búsqueda"],
-entrada[tipo="número"],
-seleccionar {
-  ancho: 100%;
-  relleno: 14px;
-  margen superior: 8px;
-  borde: 2px solid var(--info);
-  radio del borde: 12px;
-  fondo: var(--bg);
+input[type="search"],
+input[type="number"],
+select {
+  width: 100%;
+  padding: 14px;
+  margin-top: 8px;
+  border: 2px solid var(--info);
+  border-radius: 12px;
+  background: var(--bg);
   color: var(--fg);
-  tamaño de fuente: 1em;
-  transición: fondo 0,2 s, color 0,2 s, borde 0,2 s, cuadro-sombra 0,2 s;
-  margen inferior: 12px;
-  contorno: ninguno;
-  peso de la fuente: 500;
-  caja-sombra: 0 2px 8px rgba(46,196,182,0.04);
-  animación: fadeIn 1.1s;
+  font-size: 1em;
+  transition: background 0.2s, color 0.2s, border 0.2s, box-shadow 0.2s;
+  margin-bottom: 12px;
+  outline: none;
+  font-weight: 500;
+  box-shadow: 0 2px 8px rgba(46,196,182,0.04);
+  animation: fadeIn 1.1s;
 }
-entrada[tipo="búsqueda"]:enfoque,
-entrada[tipo="número"]:enfoque,
-seleccionar:enfoque {
-  borde: var sólido de 2px (--primario);
-  fondo: #e7f9f7;
-  caja-sombra: 0 0 0 2px var(--primary, #2ec4b6, 0.15);
+input[type="search"]:focus,
+input[type="number"]:focus,
+select:focus {
+  border: 2px solid var(--primary);
+  background: #e7f9f7;
+  box-shadow: 0 0 0 2px var(--primary, #2ec4b6, 0.15);
 }
-botón {
-  margen superior: 18px;
-  ancho: 100%;
-  relleno: 16px;
-  borde: ninguno;
-  radio del borde: 14px;
-  fondo: var(--primary);
+button {
+  margin-top: 18px;
+  width: 100%;
+  padding: 16px;
+  border: none;
+  border-radius: 14px;
+  background: var(--primary);
   color: #fff;
-  tamaño de fuente: 1.1em;
-  peso de la fuente: 700;
-  cursor: puntero;
-  transición: fondo 0,25 s, color 0,25 s, cuadro-sombra 0,25 s, transformación 0,1 s;
-  caja-sombra: var(--sombra);
-  espaciado entre letras: 0,5px;
-  animación: fadeIn 1.2s;
+  font-size: 1.1em;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.25s, color 0.25s, box-shadow 0.25s, transform 0.1s;
+  box-shadow: var(--shadow);
+  letter-spacing: 0.5px;
+  animation: fadeIn 1.2s;
 }
-botón:hover {
-  fondo: var(--acento);
+button:hover {
+  background: var(--accent);
   color: #fff;
-  transformar: escala(0.98);
-  caja-sombra: 0 2px 16px rgba(58,134,255,0.13);
+  transform: scale(0.98);
+  box-shadow: 0 2px 16px rgba(58,134,255,0.13);
 }
-.resultado {
-  margen superior: 12px;
-  relleno: 22px 20px 18px 20px;
-  fondo: gradiente lineal (90 grados, #fff 80%, #e7f9f7 100%);
-  radio del borde: 16px;
-  borde izquierdo: 7px sólido var(--primary);
+.result {
+  margin-top: 12px;
+  padding: 22px 20px 18px 20px;
+  background: linear-gradient(90deg, #fff 80%, #e7f9f7 100%);
+  border-radius: 16px;
+  border-left: 7px solid var(--primary);
   color: var(--fg);
-  caja-sombra: 0 2px 12px rgba(46,196,182,0.07);
-  animación: fadeSlideIn 0,7 s;
+  box-shadow: 0 2px 12px rgba(46,196,182,0.07);
+  animation: fadeSlideIn 0.7s;
 }
-[data-theme="oscuro"] .result {
-  fondo: gradiente lineal (90 grados, #23283a 80 %, #23395d 100 %);
+[data-theme="dark"] .result {
+  background: linear-gradient(90deg, #23283a 80%, #23395d 100%);
   color: var(--fg);
 }
-.resultado h3,
-.resultado h4 {
-  margen superior: 0;
-  color: var(--éxito);
-  animación: fadeIn 1.1s;
+.result h3,
+.result h4 {
+  margin-top: 0;
+  color: var(--success);
+  animation: fadeIn 1.1s;
 }
 .error {
   color: var(--error);
-  peso de fuente: negrita;
-  animación: agitar 0,5 s;
+  font-weight: bold;
+  animation: shake 0.5s;
 }
 h2, h3, h4 {
-  color: var(--primario);
-  margen inferior: 10px;
-  espaciado entre letras: 0,5px;
-  peso de la fuente: 800;
-  animación: fadeIn 1s;
+  color: var(--primary);
+  margin-bottom: 10px;
+  letter-spacing: 0.5px;
+  font-weight: 800;
+  animation: fadeIn 1s;
 }
-hora {
-  borde: ninguno;
-  borde superior: 2px sólido var(--info);
-  margen: 32px 0 24px 0;
+hr {
+  border: none;
+  border-top: 2px solid var(--info);
+  margin: 32px 0 24px 0;
 }
-#sugerenciasDiagnóstico {
-  fondo: #fff;
-  borde: 2px sólido var(--accent);
-  radio del borde: 12px;
-  altura máxima: 180px;
-  desbordamiento-y: automático;
-  pantalla: ninguna;
-  posición: absoluta;
-  índice z: 10;
-  ancho: 100%;
-  caja-sombra: 0 4px 16px rgba(58,134,255,0.10);
-  animación: fadeInDown 0.5s;
+#sugerenciasDiagnostico {
+  background: #fff;
+  border: 2px solid var(--accent);
+  border-radius: 12px;
+  max-height: 180px;
+  overflow-y: auto;
+  display: none;
+  position: absolute;
+  z-index: 10;
+  width: 100%;
+  box-shadow: 0 4px 16px rgba(58,134,255,0.10);
+  animation: fadeInDown 0.5s;
 }
-#sugerenciasDiagnóstico div {
-  relleno: 12px 18px;
-  cursor: puntero;
-  transición: fondo 0,2 s, color 0,2 s, transformación 0,15 s;
+#sugerenciasDiagnostico div {
+  padding: 12px 18px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, transform 0.15s;
   color: var(--fg);
-  peso de la fuente: 500;
-  radio del borde: 8px;
+  font-weight: 500;
+  border-radius: 8px;
 }
 #sugerenciasDiagnostico div:hover {
-  fondo: var(--acento);
+  background: var(--accent);
   color: #fff;
-  transformar: escala(1.04);
-  caja-sombra: 0 2px 8px rgba(58,134,255,0.12);
+  transform: scale(1.04);
+  box-shadow: 0 2px 8px rgba(58,134,255,0.12);
 }
 .loader-medico {
-  pantalla:flexible;
-  alinear-elementos: centro;
-  justificar-contenido: centro;
-  margen: 32px 0;
-  animación: fadeIn 1s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 32px 0;
+  animation: fadeIn 1s;
 }
-.loader-medico SVG {
-  ancho: 54px;
-  altura: 54px;
-  animación: rotar 1.2s lineal infinito;
+.loader-medico svg {
+  width: 54px;
+  height: 54px;
+  animation: rotate 1.2s linear infinite;
 }
 .loader-medico .cross {
-  trazo: var(--primary);
-  ancho de trazo: 4;
-  trazo-línea de tapa: redondo;
-  animación: pulso 1,2s infinito;
+  stroke: var(--primary);
+  stroke-width: 4;
+  stroke-linecap: round;
+  animation: pulse 1.2s infinite;
 }
 @keyframes fadeIn {
-  desde { opacidad: 0;}
-  a { opacidad: 1;}
+  from { opacity: 0;}
+  to { opacity: 1;}
 }
 @keyframes fadeInUp {
-  desde { opacidad: 0; transformación: translateY(30px);}
-  a { opacidad: 1; transformar: translateY(0);}
+  from { opacity: 0; transform: translateY(30px);}
+  to { opacity: 1; transform: translateY(0);}
 }
 @keyframes fadeInDown {
-  desde { opacidad: 0; transformación: translateY(-30px);}
-  a { opacidad: 1; transformar: translateY(0);}
+  from { opacity: 0; transform: translateY(-30px);}
+  to { opacity: 1; transform: translateY(0);}
 }
 @keyframes fadeSlideIn {
-  desde { opacidad: 0; transformación: translateY(20px);}
-  a { opacidad: 1; transformar: translateY(0);}
+  from { opacity: 0; transform: translateY(20px);}
+  to { opacity: 1; transform: translateY(0);}
 }
-@keyframes pulso {
-  0%, 100% { sombra-de-caja: 0 0 0 0 rgba(46,196,182,0.18);}
-  50% { cuadro-sombra: 0 0 0 12px rgba(46,196,182,0.10);}
+@keyframes pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(46,196,182,0.18);}
+  50% { box-shadow: 0 0 0 12px rgba(46,196,182,0.10);}
 }
-@keyframes agitar {
-  0% { transformar: translateX(0);}
-  20% { transformar: translateX(-6px);}
-  40% { transformar: translateX(6px);}
-  60% { transformar: translateX(-4px);}
-  80% { transformar: translateX(4px);}
-  100% { transformar: translateX(0);}
+@keyframes shake {
+  0% { transform: translateX(0);}
+  20% { transform: translateX(-6px);}
+  40% { transform: translateX(6px);}
+  60% { transform: translateX(-4px);}
+  80% { transform: translateX(4px);}
+  100% { transform: translateX(0);}
 }
-@keyframes rotar {
-  100% { transformar: rotar(360deg);}
+@keyframes rotate {
+  100% { transform: rotate(360deg);}
 }
-@media (ancho máximo: 700px) {
-  .contenedor {
-    ancho máximo: 99vw;
-    margen: 0;
-    radio del borde: 0;
-    relleno inferior: 0;
+@media (max-width: 700px) {
+  .container {
+    max-width: 99vw;
+    margin: 0;
+    border-radius: 0;
+    padding-bottom: 0;
   }
-  .encabezado, .contenido de pestaña {
-    relleno: 18px 6vw 0 6vw;
+  .header, .tab-content {
+    padding: 18px 6vw 0 6vw;
   }
-  .pestañas {
-    relleno: 0 6vw;
+  .tabs {
+    padding: 0 6vw;
   }
 }
-::-barra de desplazamiento webkit {
-  ancho: 8px;
-  fondo: #e7f9f7;
+::-webkit-scrollbar {
+  width: 8px;
+  background: #e7f9f7;
 }
-::-webkit-barra-de-desplazamiento-miniatura {
-  fondo: #b5eaea;
-  radio del borde: 8px;
+::-webkit-scrollbar-thumb {
+  background: #b5eaea;
+  border-radius: 8px;
 }
-[data-theme="dark"] #sugerenciasDiagnóstico {
-  fondo: #23283a;
+[data-theme="dark"] #sugerenciasDiagnostico {
+  background: #23283a;
   color: #2c5d76;
-  color del borde: #3a86ff;
+  border-color: #3a86ff;
 }
-[data-theme="dark"] #sugerenciasDiagnóstico div {
+[data-theme="dark"] #sugerenciasDiagnostico div {
   color: #f4fafd;
 }
-[data-theme="dark"] #sugerenciasDiagnóstico div:hover {
-  fondo: #3a86ff;
+[data-theme="dark"] #sugerenciasDiagnostico div:hover {
+  background: #3a86ff;
   color: #844040;
 }
-    </estilo>
-  </cabeza>
-  <body data-theme="luz">
-    <div class="contenedor">
-      <div class="encabezado">
+    </style>
+  </head>
+  <body data-theme="light">
+    <div class="container">
+      <div class="header">
         <span class="logo-medico">
-  <svg ancho="38" alto="38" viewBox="0 0 38 38" relleno="ninguno">
+  <svg width="38" height="38" viewBox="0 0 38 38" fill="none">
     <circle cx="19" cy="19" r="19" fill="#2ec4b6"/>
-    <rect x="16" y="8" ancho="6" alto="22" rx="3" relleno="#fff"/>
-    <rect x="8" y="16" ancho="22" alto="6" rx="3" relleno="#fff"/>
-    <circle cx="19" cy="19" r="7" relleno="#3a86ff" opacidad-de-relleno="0.18"/>
+    <rect x="16" y="8" width="6" height="22" rx="3" fill="#fff"/>
+    <rect x="8" y="16" width="22" height="6" rx="3" fill="#fff"/>
+    <circle cx="19" cy="19" r="7" fill="#3a86ff" fill-opacity="0.18"/>
   </svg>
 </span>
         <h1>Asistente Médico Integral</h1>
-        🌙
+        <button class="theme-switch" onclick="switchTheme()">🌙</button>
         <div style="text-align:center; margin: 24px auto 16px auto;">
-  <button id="btnAdvertencia" style="fondo:#fff3cd; borde:1.5px sólido #ffeeba; color:#856404; relleno:10px 28px; radio del borde:8px; peso de la fuente:negrita; tamaño de la fuente:1.1em; cursor:puntero; sombra del cuadro:0 2px 8px rgba(0,0,0,0.04);">
+  <button id="btnAdvertencia" style="background:#fff3cd; border:1.5px solid #ffeeba; color:#856404; padding:10px 28px; border-radius:8px; font-weight:bold; font-size:1.1em; cursor:pointer; box-shadow:0 2px 8px rgba(0,0,0,0.04);">
     Advertencia
-  </botón>
+  </button>
 </div>
       </div>
       
       <!-- Navegación en pestañas -->
       <ul class="tabs">
-  <li data-tab="diagnostico" class="active">Diagnóstico e interacciones</li>
+  <li data-tab="diagnostico" class="active">Diagnóstico e Interacciones</li>
   <li data-tab="dosis">Dosis Pediátrica</li>
   <li data-tab="imc">Calculadora de IMC</li>
   <li data-tab="ia">🤖 IA Médica</li>
 </ul>
 
 <div class="tab-content">
-  <!-- Pestaña Noticias -->
-    <div id="noticias" class="tab-pane active">
   <!-- Pestaña Diagnóstico e Interacciones UNIFICADA -->
 <div id="diagnostico" class="tab-pane active" style="position:relative;">
   <h2>Diagnóstico Principal</h2>
   <div id="resultado" class="result" style="display: none; margin-bottom: 18px;"></div>
-  <input type="search" id="buscadorDiagnóstico" placeholder="Buscar diagnóstico..." style="width:100%;padding:12px;border-radius:8px;margin-bottom:8px;">
-  <div id="sugerenciasDiagnóstico" style="fondo:#fff;borde:1px sólido #ccc;radio-del-borde:8px;altura-máxima:180px;desbordamiento-y:automático;visualización:ninguna;posición:absoluta;índice-z:10;ancho:100%;"></div>
+  <input type="search" id="buscadorDiagnostico" placeholder="Buscar diagnóstico..." style="width:100%;padding:12px;border-radius:8px;margin-bottom:8px;">
+  <div id="sugerenciasDiagnostico" style="background:#fff;border:1px solid #ccc;border-radius:8px;max-height:180px;overflow-y:auto;display:none;position:absolute;z-index:10;width:100%;"></div>
   <button onclick="mostrarTratamiento()">Ver tratamiento sugerido</button>
      <div id="resultado" class="result" style="display: none;"></div>
     <div class="diagnostico-container" id="diagnosticoContainer">
       <!-- Se generarán botones dinámicamente -->
     </div>
     <hr>
-    <h2>Interacciones Medicamentos</h2>
+    <h2>Interacciones Medicamentosas</h2>
     <label for="medicamentoSelect">Seleccione el medicamento:</label>
     <select id="medicamentoSelect">
-      <option value="" deshabilitado seleccionado>Seleccione un medicamento</option>
-      Aspirina
-      Diuréticos
+      <option value="" disabled selected>Seleccione un medicamento</option>
+      <option value="aspirina">Aspirina</option>
+      <option value="diureticos">Diuréticos</option>
       <option value="benzodiacepinas">Benzodiacepinas</option>
       <option value="fenitoina">Fenitoína</option>
       <option value="fenobarbital">Fenobarbital</option>
@@ -406,11 +404,11 @@ hora {
       <option value="betabloqueadores">Betabloqueadores</option>
       <option value="bloqueadores_ca2">Bloqueadores del canal de Ca²⁺</option>
       <option value="IECA">IECA</option>
-      ARA II
-      Cardiovasculares
-      Antiplaquetarios/Antitrombóticos
+      <option value="ara_ii">ARA II</option>
+      <option value="cardiovasculares">Cardiovasculares</option>
+      <option value="antiplaquetarios">Antiplaquetarios / Antitrombóticos</option>
       <option value="antidiabeticos">Antidiabéticos</option>
-      <option value="hormonas_endocrino">Hormonas/Endocrino</option>
+      <option value="hormonas_endocrino">Hormonas / Endocrino</option>
       <option value="antibioticos">Antibióticos</option>
       <option value="antiasmaticos_epoc">Antiasmáticos y EPOC</option>
       <option value="analgesicos_antiinflamatorios">Analgésicos / Antiinflamatorios</option>
@@ -419,12 +417,12 @@ hora {
       <option value="dermatologicos_psoriasis">Dermatológicos / Psoriasis</option>
       <option value="inmunomoduladores_biologicos">Inmunomoduladores / Biológicos</option>
       <option value="antitoxinas_antidotos">Antitoxinas / Antídotos</option>
-      Antibióticos PT
-      <option value="gastrointestinales_pt">PT Gastrointestinales</option>
+      <option value="antibioticos_pt">Antibióticos PT</option>
+      <option value="gastrointestinales_pt">Gastrointestinales PT</option>
       <option value="antiepilepticos_anestesicos_bloqueadores">Antiepilépticos / Anestésicos / Bloqueadores neuromusculares</option>
       <option value="antifungicos_antivirales_pt2">Antifúngicos y antivirales PT2</option>
       <option value="antidotos_antagonistas">Antídotos y antagonistas</option>
-    </seleccionar>
+    </select>
     <button onclick="consultarInteracciones()">Consultar Interacciones</button>
     <div id="resultadoInteracciones" class="result" style="display: none;"></div>
   </div>
@@ -433,32 +431,32 @@ hora {
   <div id="dosis" class="tab-pane">
     <h2>Calculadora de Dosis Pediátrica</h2>
     <label for="peso_pedi">Peso del niño (kg):</label>
-    <input type="número" id="peso_pedi" placeholder="Ingresa el peso" />
+    <input type="number" id="peso_pedi" placeholder="Ingresa el peso" />
     <label for="dosis_base">Dosis base (mg/kg):</label>
     <input type="number" id="dosis_base" placeholder="Ejemplo: 10" />
-    Calcular dosis
-    <div id="resultadoDosis" class="resultado" style="display: none;"></div>
+    <button onclick="calcularDosisPediatrica()">Calcular dosis</button>
+    <div id="resultadoDosis" class="result" style="display: none;"></div>
   </div>
   
   <!-- Pestaña Calculadora de IMC -->
-  <div id="imc" class="panel de pestañas">
-    Calculadora de IMC
+  <div id="imc" class="tab-pane">
+    <h2>Calculadora de IMC</h2>
     <label for="peso_imc">Peso (kg):</label>
     <input type="number" id="peso_imc" placeholder="Ingresa tu peso" />
     <label for="altura_imc">Altura (m):</label>
     <input type="number" id="altura_imc" placeholder="Ingresa tu altura" />
-    Calcular IMC
-    <div id="resultadoIMC" class="resultado" style="display: none;"></div>
+    <button onclick="calcularIMC()">Calcular IMC</button>
+    <div id="resultadoIMC" class="result" style="display: none;"></div>
   </div>
 
   <!-- Pestaña Interacciones SOLO aquí -->
   <div id="interacciones" class="tab-pane">
-    <h2>Interacciones Medicamentos</h2>
+    <h2>Interacciones Medicamentosas</h2>
     <label for="medicamentoSelect">Seleccione el medicamento:</label>
     <select id="medicamentoSelect">
-      <option value="" deshabilitado seleccionado>Seleccione un medicamento</option>
-      Aspirina
-      Diuréticos
+      <option value="" disabled selected>Seleccione un medicamento</option>
+      <option value="aspirina">Aspirina</option>
+      <option value="diureticos">Diuréticos</option>
       <option value="benzodiacepinas">Benzodiacepinas</option>
       <option value="fenitoina">Fenitoína</option>
       <option value="fenobarbital">Fenobarbital</option>
@@ -467,11 +465,11 @@ hora {
       <option value="betabloqueadores">Betabloqueadores</option>
       <option value="bloqueadores_ca2">Bloqueadores del canal de Ca²⁺</option>
       <option value="IECA">IECA</option>
-      ARA II
-      Cardiovasculares
-      Antiplaquetarios/Antitrombóticos
+      <option value="ara_ii">ARA II</option>
+      <option value="cardiovasculares">Cardiovasculares</option>
+      <option value="antiplaquetarios">Antiplaquetarios / Antitrombóticos</option>
       <option value="antidiabeticos">Antidiabéticos</option>
-      <option value="hormonas_endocrino">Hormonas/Endocrino</option>
+      <option value="hormonas_endocrino">Hormonas / Endocrino</option>
       <option value="antibioticos">Antibióticos</option>
       <option value="antiasmaticos_epoc">Antiasmáticos y EPOC</option>
       <option value="analgesicos_antiinflamatorios">Analgésicos / Antiinflamatorios</option>
@@ -480,49 +478,48 @@ hora {
       <option value="dermatologicos_psoriasis">Dermatológicos / Psoriasis</option>
       <option value="inmunomoduladores_biologicos">Inmunomoduladores / Biológicos</option>
       <option value="antitoxinas_antidotos">Antitoxinas / Antídotos</option>
-      Antibióticos PT
-      <option value="gastrointestinales_pt">PT Gastrointestinales</option>
+      <option value="antibioticos_pt">Antibióticos PT</option>
+      <option value="gastrointestinales_pt">Gastrointestinales PT</option>
       <option value="antiepilepticos_anestesicos_bloqueadores">Antiepilépticos / Anestésicos / Bloqueadores neuromusculares</option>
       <option value="antifungicos_antivirales_pt2">Antifúngicos y antivirales PT2</option>
       <option value="antidotos_antagonistas">Antídotos y antagonistas</option>
-    </seleccionar>
+    </select>
     <button onclick="consultarInteracciones()">Consultar Interacciones</button>
     <div id="resultadoInteracciones" class="result" style="display: none;"></div>
   </div>
 </div>
 
 <div id="ia" class="tab-pane">
-  Asistente IA Médica
-  <div id="chat-ia" style="fondo:#f4fafd;radio del borde:12px;relleno:18px;ancho máximo:500px;margen:automático;">
-    <div id="mensajes-de-chat" estilo="altura:260px;desbordamiento-y:automático;fondo:#fff;radio-del-borde:8px;relleno:12px 8px 12px 12px;margen-inferior:12px;borde:1.5px sólido #b5eaea;"></div>
+  <h2>Asistente IA Médica</h2>
+  <div id="chat-ia" style="background:#f4fafd;border-radius:12px;padding:18px;max-width:500px;margin:auto;">
+    <div id="chat-messages" style="height:260px;overflow-y:auto;background:#fff;border-radius:8px;padding:12px 8px 12px 12px;margin-bottom:12px;border:1.5px solid #b5eaea;"></div>
     <form id="chat-form" style="display:flex;gap:8px;">
       <input id="chat-input" type="text" placeholder="Escribe tu pregunta médica..." style="flex:1;padding:10px;border-radius:8px;border:1.5px solid #b5eaea;">
-      Enviar
+      <button type="submit" style="background:var(--primary);color:#fff;border:none;border-radius:8px;padding:10px 18px;font-weight:bold;">Enviar</button>
     </form>
     <small style="color:#888;">No sustituye una consulta médica profesional.</small>
   </div>
-</div>
     
-    <guión>
+    <script>
       /* Función para cambiar el tema */
-      función switchTheme() {
-        const cuerpo = documento.cuerpo;
-        body.setAttribute("tema-de-datos", body.getAttribute("tema-de-datos") === "claro" ? "oscuro" : "claro");
+      function switchTheme() {
+        const body = document.body;
+        body.setAttribute("data-theme", body.getAttribute("data-theme") === "light" ? "dark" : "light");
       }
       
       /* Función para cambiar entre pestañas */
-      documento.querySelectorAll(".tabs li").forEach((tab) => {
-        tab.addEventListener("clic", función () {
-          documento.querySelectorAll(".tabs li").forEach((el) => el.classList.remove("active"));
+      document.querySelectorAll(".tabs li").forEach((tab) => {
+        tab.addEventListener("click", function () {
+          document.querySelectorAll(".tabs li").forEach((el) => el.classList.remove("active"));
           document.querySelectorAll(".tab-pane").forEach((pane) => pane.classList.remove("active"));
-          this.classList.add("activo");
-          const activePane = document.getElementById(this.getAttribute("pestaña-datos"));
-          si (activePane) activePane.classList.add("activo");
+          this.classList.add("active");
+          const activePane = document.getElementById(this.getAttribute("data-tab"));
+          if (activePane) activePane.classList.add("active");
         });
       });
       
-      /* Matriz de diagnósticos principales */
-      const diagnósticos = [
+      /* Array de diagnósticos principales */
+      const diagnosticos = [
         "hipertensión arterial",
         "evento cerebrovascular isquémico",
         "evento cerebrovascular hemorrágico",
@@ -531,7 +528,7 @@ hora {
         "meningitis bacteriana aguda",
         "cefalea",
         "asma",
-        "época",
+        "epoc",
         "estado epiléptico",
         "trastornos en el ritmo y la conducción cardíaca",
         "síndrome de Guillain barré",
@@ -544,21 +541,21 @@ hora {
         "hiperpotasemia",
         "diabetes mellitus",
         "hipertiroidismo",
-        "hemorragia del tubo digestivo alto (HTDA)",
+        "hemorragia de tubo digestivo alto (HTDA)",
         "cirrosis hepática",
         "fiebre tifoidea",
         "lupus eritematoso sistémico",
         "osteoartritis",
-        "septicemia",
+        "sepsis",
         "choque",
         "intoxicación con plaguicidas inhibidores de la acetilcolinesterasas",
         "intoxicación por bipiridilos",
         "mordedura por ofidios",
-        "soriasis",
-        "chikunguña",
+        "psoriasis",
+        "chikungunya",
         "zika",
         "malaria",
-        "enfermedad de Chagas",
+        "enfermedad de chagas",
         "leishmaniasis",
         "infecciones de transmisión sexual y hepatitis virales",
         "dengue"
@@ -571,20 +568,20 @@ hora {
     <li>Modificación del estilo de vida: dieta balanceada, ejercicio, reducción de sal, moderación en alcohol y cese del tabaquismo.</li>
     <li>Objetivo: Alcanzar un IMC ≈ 25 kg/m².</li>
   </ul>
-  Farmacológico
+  <h4>Farmacológico</h4>
   <ul>
-    <li>Diuréticos tiazídicos (Hidroclorotiazida 12,5–25 mg/día).</li>
-    <li>Espironolactona: 25-100 mg/día.</li>
+    <li>Diuréticos tiazídicos (Hidroclorotiazida 12.5–25 mg/día).</li>
+    <li>Espironolactona: 25–100 mg/día.</li>
     <li>Betabloqueadores (Propranolol, Atenolol o Carvedilol).</li>
     <li>Bloqueadores de Ca²⁺ (Nifedipina, Verapamilo o Amlodipina).</li>
     <li>IECA o ARA II según criterio.</li>
   </ul>`,
         "evento cerebrovascular isquémico": `<h4>Medidas Generales</h4>
   <ul>
-    <li>Temperatura >37,8 °C: antipiréticos (acetaminofén).</li>
+    <li>Temperatura >37.8 °C: antipiréticos (acetaminofén).</li>
     <li>Hipoglicemia (<60 mg/dL): 25 ml de dextrosa 50%.</li>
     <li>Mantener la glucemia entre 140-180 mg/dL; insulinoterapia según necesidad.</li>
-    <li>Líquidos IV: solución salina 0,9% o Hartmann (30 ml/kg/día).</li>
+    <li>Líquidos IV: solución salina 0.9% o Hartmann (30 ml/kg/día).</li>
     <li>Antiepilépticos según protocolo si hay crisis.</li>
     <li>Profilaxis con heparina 5000 UI c/12 h.</li>
     <li>Uso de antiagregantes y estatinas; en crisis hipertensiva, nitroprusiato o nitroglicerina IV.</li>
@@ -592,11 +589,11 @@ hora {
         "evento cerebrovascular hemorrágico": `<h4>Tratamiento</h4>
   <ul>
     <li>Oxígeno suplementario (saturación >94%) y aspiración de secreciones si es necesario.</li>
-    <li>Mantener la PA: sistólica 140-150 mmHg; media 100-110 mmHg (antihipertensivos IV).</li>
+    <li>Mantener la PA: sistólica 140-150 mmHg; media 100–110 mmHg (antihipertensivos IV).</li>
   </ul>
-  Complicaciones
+  <h4>Complicaciones</h4>
   <ul>
-    <li>Hipertensión endocraneal, hidrocefalia, edema cerebral, estado epiléptico y tromboembolismo pulmonar.</li>
+    <li>Hipertensión endocraneal, hidrocefalia, edema cerebral, status epiléptico y tromboembolismo pulmonar.</li>
   </ul>`,
         "hemorragia subaracnoidea aneurismática": `<h4>ABC y Soporte</h4>
   <ul>
@@ -604,7 +601,7 @@ hora {
     <li>Oxígeno suplementario; intubar y dar soporte ventilatorio si es necesario.</li>
     <li>Colocar al paciente en posición a 30° para prevenir broncoaspiración y mantener eutermia.</li>
   </ul>
-  Manejo
+  <h4>Manejo</h4>
   <ul>
     <li>Corrección de hipoglicemia, líquidos IV y soporte hemodinámico.</li>
     <li>Analgésicos (morfina o meperidina) y prevención del vasoespasmo (nimodipina).</li>
@@ -617,23 +614,23 @@ hora {
   <ul>
     <li>ABC: estabilizar funciones vitales, proteger la vía aérea y brindar soporte circulatorio/ventilatorio si es necesario.</li>
     <li>Líquidos IV isotónicos, analgesia y profilaxis antitrombótica.</li>
-    <li>Mantener glucemia entre 120-150 mg/dL; tratar la fiebre con acetaminofén 500 mg c/6 h.</li>
+    <li>Mantener glucemia entre 120-150 mg/dL; tratar fiebre con acetaminofén 500 mg c/6 h.</li>
   </ul>
-  Medidas específicas
+  <h4>Medidas Específicas</h4>
   <ul>
     <li>Dexametasona IV: 10 mg inicial y cada 6 h durante 3-4 días, antes de antibióticos.</li>
-    <li>Antibióticos: Ceftriaxona + Vancomicina, ajustados según el patógeno.</li>
+    <li>Antibióticos: Ceftriaxona + Vancomicina, ajustadas según el patógeno.</li>
   </ul>`,
         "cefalea": `<h4>No farmacológico</h4>
   <ul>
     <li>Terapia de relajación, hidratación y ejercicio.</li>
   </ul>
-  Farmacológico Agudo
+  <h4>Farmacológico Agudo</h4>
   <ul>
-    <li><strong>Migraña:</strong> Ergotamina/cafeína, Acetaminofén, Diclofenaco, Ibuprofeno o Ácido acetilsalicílico; para náuseas, metoclopramida.</li>
+    <li><strong>Migraña:</strong> Ergotamina/cafeína, Acetaminofén, Diclofenaco, Ibuprofeno o Ácido acetilsalicílico; para náuseas, Metoclopramida.</li>
     <li><strong>Cefalea tensional:</strong> Tratamiento similar (sin ergotamina); opcional, hidratación IV + ketorolaco o diclofenaco.</li>
   </ul>
-  Preventivo
+  <h4>Preventivo</h4>
   <ul>
     <li>Migraña: Propranolol, Amitriptilina, Valproato, Nimodipina o Topiramato.</li>
     <li>Cefalea tensional: Amitriptilina, Imipramina o Duloxetina.</li>
@@ -647,44 +644,44 @@ hora {
     <li><strong>Nivel 1:</strong> B2 agonista de corta acción cuando sea necesario.</li>
     <li><strong>Nivel 2:</strong> Glucocorticoides inhalados (500 µg de Beclometasona o equivalente) + B2 agonista cortante.</li>
     <li><strong>Nivel 3:</strong> Glucocorticoides inhalados (200–1000 µg DBP o equivalente) + B2 agonista de acción prolongada, o combinados con Teofilina.</li>
-    <li><strong>Nivel 4:</strong> Glucocorticoides inhalados (>1000 µg DPB o equivalentes) + B2 agonista de acción prolongada; si es necesario, agregue Teofilina, modificador de leucotrienos o esteroides orales.</li>
+    <li><strong>Nivel 4:</strong> Glucocorticoides inhalados (>1000 µg DPB o equivalentes) + B2 agonista de acción prolongada; si es necesario, añadir Teofilina, modificador de leucotrienos o esteroides orales.</li>
   </ul>`,
         "epoc": `<h4>Tratamiento Farmacológico en EPOC</h4>
   <ul>
     <li>Broncodilatadores de acción corta: anticolinérgicos y beta2 adrenérgicos (ej.: Salbutamol 100 mcg/inh cada 4-6h; Ipratropio 20–80 mcg/inh cada 6-8h).</li>
     <li>Broncodilatadores de acción prolongada: (ej.: Formoterol 12 mcg/inh cada 12h o más).</li>
-    <li>Corticoides inhalados en EPOC moderado a grave.</li>
+    <li>Corticoides inhalados en EPOC moderada a grave.</li>
     <li>Opcional: Teofilina de liberación prolongada.</li>
     <li><strong>Ejemplo:</strong> Combinación de Salbutamol, Ipratropio y Formoterol, con dosis adaptadas según indicación clínica.</li>
   </ul>`,
-        "neumonía adquirida en la comunidad": `<h4>Neumonía adquirida en la Comunidad (NAC)</h4>
+        "neumonía adquirida en la comunidad": `<h4>Neumonía Adquirida en la Comunidad (NAC)</h4>
   <ul>
     <li><strong>Ambulatorio:</strong> Levofloxacina o Amoxicilina/ácido clavulánico.</li>
     <li><strong>Hospitalario:</strong> Opciones: Ceftriaxona + Claritromicina; Amoxicilina/ácido clavulánico + Claritromicina; o Levofloxacina.</li>
-    <li><strong>UCI:</strong> Ceftriaxona a dosis altas combinadas con Levofloxacina o Claritromicina.</li>
+    <li><strong>UCI:</strong> Ceftriaxona a dosis altas combinada con Levofloxacina o Claritromicina.</li>
     <li>Neumonía por aspiración: Amoxicilina/ácido clavulánico o Clindamicina + Ceftriaxona.</li>
-    <li>Para Pseudomonas: Piperacilina-tazobactam, Imipenem o Meropenem + Ciprofloxacina/Levofloxacina; o con Amikacina.</li>
+    <li>Para Pseudomona: Piperacilina-tazobactam, Imipenem o Meropenem + Ciprofloxacina/Levofloxacina; o con Amikacina.</li>
     <li>Para MRSA: Vancomicina o Linezolid.</li>
-    <li><strong>Duración:</strong> Ambulatorio: 7–10 días; Hospitalario: 10 a 14 días; en casos graves, no menos de 14 días.</li>
+    <li><strong>Duración:</strong> Ambulatorio: 7–10 días; Hospitalario: 10–14 días; en casos graves, no menos de 14 días.</li>
   </ul>`,
-        "infecciones del tracto urinario": `<h4>Infecciones del tracto urinario (UIT)</h4>
+        "infecciones del tracto urinario": `<h4>Infecciones del Tracto Urinario (ITU)</h4>
   <ul>
     <li><strong>Amoxicilina:</strong> 250–500 mg cada 8 h (no en alérgicos a la penicilina).</li>
     <li><strong>Ciprofloxacina:</strong> 250–750 mg cada 12 h (precaución en antecedentes convulsivos).</li>
-    <li><strong>Ceftriaxona:</strong> 0,5–1 g cada 12 h (vía IV).</li>
+    <li><strong>Ceftriaxona:</strong> 0.5–1 g cada 12 h (vía IV).</li>
     <li><strong>Gentamicina:</strong> Dosis según peso y función renal.</li>
     <li><strong>Amikacina:</strong> 15 mg/kg/día, ajustada según TFGe.</li>
     <li><strong>Nitrofurantoína:</strong> 100 mg cada 12 h (si TFGe ≥50 ml/min).</li>
   </ul>`,
         "insuficiencia renal aguda": `<h4>Insuficiencia Renal Aguda (IRA)</h4>
   <ul>
-    <li><strong>Manejo Conservador:</strong> Dieta rica en hidratos y aporte proteico (0,6–0,8 g/kg/día), monitorización de signos vitales, equilibrio hídrico, sondaje y acceso venoso; rehidratación rápida con 500–1000 ml de solución salina.</li>
-    <li><strong>Manejo de LRA:</strong> Uso de diuréticos (ej.: Furosemida 100–200 mg IV en bolo) según diuresis y creatinina.</li>
+    <li><strong>Manejo Conservador:</strong> Dieta rica en hidratos y aporte proteico (0.6–0.8 g/kg/día), monitorización de signos vitales, balance hídrico, sondaje y acceso venoso; rehidratación rápida con 500–1000 ml de solución salina.</li>
+    <li><strong>Manejo de LRA:</strong> Uso de diuréticos (ej.: Furosemida 100–200 mg IV en bolus) según diuresis y creatinina.</li>
     <li><strong>Obstructiva:</strong> Liberar la obstrucción (evaluación urológica, sondaje o nefrostomía percutánea).</li>
   </ul>`,
         "hiponatremia": `<h4>Hiponatremia</h4>
   <ul>
-    <li><strong>Primer nivel:</strong> Educación y referencia adecuada.</li>
+    <li><strong>Primer nivel:</strong> Educación y referencia oportuna.</li>
     <li><strong>Segundo/tercer nivel:</strong> Corregir inmediatamente y determinar el método adecuado de corrección.</li>
     <li>En hiponatremia aguda y severa (<125 mmol/L) con síntomas neurológicos: corrección con solución salina 3% (máx. 2 mEq/L/hora, sin corrección total en 48 h).</li>
     <li>En SIHAD moderado: restricción de líquidos (<1 L/día).</li>
@@ -694,52 +691,52 @@ hora {
   <ul>
     <li><strong>VEC bajo:</strong>
       <ul>
-        <li>Inicial: utilizar soluciones isotónicas (0,9% salina).</li>
+        <li>Inicial: utilizar soluciones isotónicas (0.9% salina).</li>
         <li>Luego: emplear soluciones hipotónicas (5% glucosa, 0.45% salina o suero glucosalino) según el déficit hídrico.</li>
       </ul>
     </li>
     <li><strong>VEC normal:</strong> Indicar ingesta libre de agua en casos de hipodipsia primaria o geriátrica.</li>
-    <li><strong>Diabetes insípida nefrogénica:</strong> Suspensores de fármacos responsables; dieta hipoproteica y baja en sal; usar hidroclorotiazida baja.</li>
+    <li><strong>Diabetes insípida nefrogénica:</strong> Suspender fármacos responsables; dieta hipoproteica y baja en sal; usar hidroclorotiazida baja.</li>
     <li><strong>VEC alto:</strong> En presencia de edema pulmonar, indicar furosemida y solución glucosada al 5%; con función renal alterada, consultar nefrología.</li>
   </ul>`,
         "hipopotasemia": `<h4>Hipopotasemia</h4>
   <ul>
     <li>Evitar administración de potasio si la causa es redistribución (salvo en parálisis periódica hipopotasémica).</li>
-    <li>Cálculo del déficit: en adulto masculino (~70 kg, ~50 mEq/kg), déficit ≈10% si 3.0 mEq/L; ≈15% si 2,5 mEq/L; ≈20% si 2,0 mEq/L.</li>
+    <li>Cálculo del déficit: en adulto masculino (~70 kg, ~50 mEq/kg), déficit ≈10% si 3.0 mEq/L; ≈15% si 2.5 mEq/L; ≈20% si 2.0 mEq/L.</li>
   </ul>`,
         "hiperpotasemia": `<h4>Hiperpotasemia</h4>
   <ul>
-    <li>Nebulizaciones con Salbutamol reducidas 0,5–1 mEq/L en 30 minutos (efecto de 2 horas).</li>
-    <li>Gluconato de calcio IV al 10%: 10-30 ml en 3-4 minutos.</li>
+    <li>Nebulizaciones con Salbutamol reducen 0.5–1 mEq/L en 30 minutos (efecto de 2 horas).</li>
+    <li>Gluconato de calcio IV al 10%: 10–30 ml en 3–4 minutos.</li>
     <li>Insulina regular: 5 U con 25 g de dextrosa al 50% (inicio en 15–60 minutos, duración 4–6 horas).</li>
-    <li>Solución de bicarbonato de sodio: 1 mEq/kg IV durante 5 a 10 minutos.</li>
-    <li>Uso de diuréticos de asa si la diuresis es adecuada; monitoree el potasio cada 4–6 horas.</li>
-    <li>En casos graves, considere hemodiálisis o diálisis peritoneal.</li>
+    <li>Solución de bicarbonato de sodio: 1 mEq/kg IV durante 5–10 minutos.</li>
+    <li>Uso de diuréticos de asa si la diuresis es adecuada; monitorear potasio cada 4–6 horas.</li>
+    <li>En casos severos, considerar hemodiálisis o diálisis peritoneal.</li>
   </ul>`,
-        "diabetes mellitus": `<h4>Diabetes mellitus</h4>
+        "diabetes mellitus": `<h4>Diabetes Mellitus</h4>
   <ul>
     <li>Educación en salud, plan de alimentación, programa de ejercicio y farmacoterapia.</li>
-    <li>El plan alimentario debe eliminar azúcares simples, favorecer cereales integrales, vegetales, proteínas y alto contenido en fibra, con moderada cantidad de sal.</li>
+    <li>El plan alimenticio debe eliminar azúcares simples, favorecer cereales integrales, vegetales, proteínas y alto contenido en fibra, con moderada cantidad de sal.</li>
     <li>Ejercicio diario (30–60 minutos) adaptado al paciente.</li>
-    <li>Farmacoterapia: insulina (dosis inicial 10 U o 0,2 U/kg/día, titulación según glucosa en ayuno) y/o antidiabéticos orales (metformina, sulfonilureas, etc.) según indicación.</li>
+    <li>Farmacoterapia: insulina (dosis inicial 10 U o 0.2 U/kg/día, titulación según glucosa en ayuno) y/o antidiabéticos orales (metformina, sulfonilureas, etc.) según indicación.</li>
   </ul>`,
         "hipertiroidismo": `<h4>Hipertiroidismo</h4>
   <ul>
-    <li><strong>Primer nivel:</strong> Iniciar betabloqueadores (Propranolol 40–240 mg en dosis fraccionadas o Atenolol 50–100 mg diarios) para controlar los síntomas adrenérgicos.</li>
-    <li><strong>Segundo nivel:</strong> Continuar betabloqueadores; Si hay contraindicación, use Verapamilo 120–240 mg diarios.</li>
+    <li><strong>Primer nivel:</strong> Iniciar betabloqueadores (Propranolol 40–240 mg en dosis fraccionadas o Atenolol 50–100 mg diarios) para controlar síntomas adrenérgicos.</li>
+    <li><strong>Segundo nivel:</strong> Continuar betabloqueadores; si hay contraindicación, usar Verapamilo 120–240 mg diarios.</li>
     <li>Tionamidas: usar Propiltiouraculo o Metimazol (dosis según indicación clínica).</li>
-    <li><strong>Tercer nivel:</strong> En casos refractarios (tras 1 año, con complicaciones o reacciones adversas), considere ablación con yodo radioactivo o tratamiento quirúrgico.</li>
+    <li><strong>Tercer nivel:</strong> En casos refractarios (tras 1 año, con complicaciones o reacciones adversas), considerar ablación con yodo radioactivo o tratamiento quirúrgico.</li>
   </ul>`,
-        "hemorragia de tubo digestivo alto (HTDA)": `<h4>Hemorragia de tubo digestivo alto (HTDA)</h4>
+        "hemorragia de tubo digestivo alto (HTDA)": `<h4>Hemorragia de Tubo Digestivo Alto (HTDA)</h4>
   <ul>
     <li><strong>Primer nivel:</strong> Acceso venoso. Iniciar infusión con solución salina normal 0.9% o lactato de Ringer.</li>
     <li><strong>Segundo y tercer nivel:</strong> Mantener una adecuada saturación de oxígeno y, en casos masivos o con Hb <7 g/dL, transfusión de glóbulos rojos empacados.</li>
     <li>En HTDA de origen no variceal: infusión IV de inhibidores de bomba de protones (bolo de 80 mg y luego infusión continua 8 mg/h durante 72 h).</li>
-    <li>En hemorragia por várices: usar octreotida (bolo IV de 50–100 μg, seguido de infusión de 25–50 μg/h durante 3–5 días).</li>
-    <li>Tratamiento endoscópico: ligadura con bandas elásticas o escleroterapia; inyección con epinefrina 1:10.000 en úlceras sangrantes.</li>
+    <li>En hemorragia por várices: usar octreotide (bolo IV de 50–100 μg, seguido de infusión de 25–50 μg/h durante 3–5 días).</li>
+    <li>Tratamiento endoscópico: ligadura con bandas elásticas o escleroterapia; inyección con epinefrina 1:10,000 en úlceras sangrantes.</li>
     <li>Uso de antibióticos (quinolonas o Ceftriaxona 1 g IV cada 12 h) para disminuir complicaciones y mortalidad.</li>
   </ul>`,
-        "cirrosis hepática": `<h4>Cirrosis hepática</h4>
+        "cirrosis hepática": `<h4>Cirrosis Hepática</h4>
   <ul>
     <li>Tratar la causa desencadenante cuando sea posible.</li>
     <li>Evitar bebidas alcohólicas y realizar reposo.</li>
@@ -747,9 +744,9 @@ hora {
     <li>Indicar diuréticos: en retención, espironolactona (100-400 mg/día) o furosemida (iniciando con 40 mg/día, máx. 160 mg/día).</li>
     <li>Tratamiento de complicaciones: lactulosa (15-45 ml vía oral 2-4 veces al día o enemas) y metronidazol, corrigiendo siempre la causa desencadenante.</li>
   </ul>`,
-        "fiebre tifoidea": `<h4>Fiebre tifoidea</h4>
+        "fiebre tifoidea": `<h4>Fiebre Tifoidea</h4>
   <ul>
-    <li><strong>Amblatorio:</strong>
+    <li><strong>Ambulatorio:</strong>
       <ul>
         <li>Trimetroprim/Sulfametoxazol 160/80 mg cada 12 h por 14 días (primera elección), o</li>
         <li>Amoxicilina 1 g cada 8 h por 14 días (segunda elección).</li>
@@ -763,9 +760,9 @@ hora {
       </ul>
     </li>
   </ul>`,
-        "lupus eritematoso sistémico": `<h4>Lupus eritematoso sistémico</h4>
+        "lupus eritematoso sistémico": `<h4>Lupus Eritematoso Sistémico</h4>
   <ul>
-    <li>Tratamiento individualizado que incluye antiinflamatorios, inmunosupresores y, en algunos casos, corticosteroides.</li>
+    <li>Tratamiento individualizado que incluya antiinflamatorios, inmunosupresores y, en algunos casos, corticosteroides.</li>
     <li>Se recomienda coordinación con reumatología.</li>
   </ul>`,
         "osteoartritis": `<h4>Osteoartritis</h4>
@@ -777,13 +774,13 @@ hora {
         <li>Ibuprofeno 400 mg 2-3 veces al día (máximo 2 semanas, con vigilancia de función renal y presión arterial), o combinación con tramadol/codeína en casos severos.</li>
       </ul>
     </li>
-    <li>AINE temas; tratamiento intraarticular (según especialista); esteroides en casos puntuales (no más de 3 veces al año).</li>
+    <li>AINE tópicos; tratamiento intraarticular (según especialista); esteroides en casos puntuales (no más de 3 veces al año).</li>
     <li><strong>Quirúrgico:</strong> Artroscopia o reemplazo articular en casos avanzados.</li>
   </ul>`,
         "sepsis": `<h4>Sepsis</h4>
   <ul>
     <li><strong>Primer nivel:</strong> Hidratación IV con soluciones cristaloides (SSN o Hartmann) y administración de oxígeno; referir de inmediato.</li>
-    <li><strong>Segundo nivel:</strong> Hidratación IV hasta estabilización (PVC 8-12 mmHg, PAM ≥65 mmHg, diuresis >0,5 ml/kg/h); oxigenoterapia para saturación ≥90 %; inicio de antibióticos empíricos según el foco.</li>
+    <li><strong>Segundo nivel:</strong> Hidratación IV hasta estabilización (PVC 8-12 mmHg, PAM ≥65 mmHg, diuresis >0.5 ml/kg/h); oxigenoterapia para saturación ≥90 %; inicio de antibióticos empíricos según el foco.</li>
     <li><strong>Tercer nivel:</strong> Monitoreo invasivo en choque séptico refractario, manejo multidisciplinario en UCI y posible tratamiento quirúrgico; uso de esteroides en choque refractario.</li>
   </ul>`,
         "choque": `<h4>Choque</h4>
@@ -791,7 +788,7 @@ hora {
     <li><strong>Primer nivel:</strong> Hidratación IV con soluciones cristaloides y oxígeno; referir de inmediato.</li>
     <li><strong>Segundo nivel:</strong>
       <ul>
-        <li>Hidratación IV (PVC 8-12 mmHg, PAM ≥65 mmHg, diuresis >0,5 ml/kg/h);</li>
+        <li>Hidratación IV (PVC 8-12 mmHg, PAM ≥65 mmHg, diuresis >0.5 ml/kg/h);</li>
         <li>Oxigenoterapia para mantener saturación ≥90 %;</li>
         <li>Antibióticos empíricos en caso de choque séptico;</li>
         <li>Evaluar transfusión en choque hemorrágico y uso de aminas vasoactivas.</li>
@@ -799,16 +796,16 @@ hora {
     </li>
     <li><strong>Tercer nivel:</strong> Monitoreo invasivo, manejo multidisciplinario en UCI, tratamientos quirúrgicos complejos y uso de esteroides en choque séptico refractario.</li>
   </ul>`,
-        "intoxicación con plaguicidas inhibidores de la acetilcolinesterasa": `<h4>Intoxicación con inhibidores de la acetilcolinesterasa</h4>
+        "intoxicación con plaguicidas inhibidores de la acetilcolinesterasas": `<h4>Intoxicación con Inhibidores de la Acetilcolinesterasas</h4>
   <ul>
-    <li><strong>Primer nivel:</strong> Retirar la ropa contaminada, lavar con agua y jabón; lavado gástrico en la primera hora si hay ingestión.</li>
+    <li><strong>Primer nivel:</strong> Retirar ropa contaminada, lavar con agua y jabón; lavado gástrico en la primera hora si hay ingestión.</li>
     <li><strong>Segundo nivel:</strong> Soporte general: mantener vías aéreas, administrar oxígeno, tratar convulsiones y administrar atropina IV en dosis escalonadas.</li>
     <li><strong>Tercer nivel:</strong> Manejo en UCI de complicaciones y cuidados especiales.</li>
   </ul>`,
-        "intoxicación por bipiridilos": `<h4>Intoxicación por bipiridilos</h4>
+        "intoxicación por bipiridilos": `<h4>Intoxicación por Bipiridilos</h4>
   <ul>
-    <li>No administrar oxígeno de forma rutinaria (puede aumentar la toxicidad del paraquat).</li>
-    <li>Mantener la función cardiovascular con líquidos y electrolitos; Fomentar la diuresis (0,5-1 ml/kg/h).</li>
+    <li>No administrar oxígeno de forma rutinaria (puede incrementar la toxicidad del paraquat).</li>
+    <li>Mantener la función cardiovascular con líquidos y electrolitos; fomentar diuresis (0.5-1 ml/kg/h).</li>
     <li>Descontaminación: retirar ropa, lavar con abundante agua y jabón; irrigar contacto ocular durante al menos 15 minutos.</li>
     <li>Lavado gástrico en la primera hora y administración de carbón activado (1 g/kg cada 6 h) según criterio.</li>
     <li>Tratamiento de complicaciones según condición, ya que el paraquat no es dializable de forma convencional.</li>
@@ -823,13 +820,13 @@ hora {
         <li>Medir el grado de evolución del edema cada 15-20 minutos y clasificar el grado de lesión.</li>
         <li>Llenar la ficha epidemiológica.</li>
         <li>Investigar la aplicación previa de suero derivado de equinos.</li>
-        <li>Verificar el esquema de vacunación; administre antitoxina tetánica humana si no está vigente.</li>
+        <li>Verificar el esquema de vacunación; administrar antitoxina tetánica humana si no está vigente.</li>
         <li>Referir inmediatamente al hospital para aplicación de suero antiofídico (idealmente con acceso venoso permeable) y acompañado por personal de salud.</li>
       </ul>
     </li>
     <li><strong>Atención hospitalaria:</strong>
       <ul>
-        <li>Verificar y establecer la permeabilidad de la vía aérea, ventilación pulmonar y circulación; medir los signos vitales periódicamente y evaluar las manifestaciones clínicas.</li>
+        <li>Verificar y establecer la permeabilidad de la vía aérea, ventilación pulmonar y circulación; medir signos vitales periódicamente y evaluar manifestaciones clínicas.</li>
         <li>Establecer el estadio de envenenamiento al ingreso.</li>
         <li>Confirmar si la mordedura corresponde a serpiente venenosa.</li>
         <li>Garantizar acceso venoso permeable.</li>
@@ -845,15 +842,15 @@ hora {
     <li><strong>Administración de sueros antiofídicos:</strong>
       <ul>
         <li>Administrar suero antiofídico específico o polivalente según gravedad.</li>
-        <li>En adultos diluir en 500 ml de SSN. Iniciar a 10 gotas/min los primeros 10 minutos. Si no hay reacción anafiláctica, pasará el resto en una hora.</li>
+        <li>En adultos diluir en 500 ml de SSN. Iniciar a 10 gotas/min los primeros 10 minutos. Si no hay reacción anafiláctica, pasar el resto en una hora.</li>
         <li>Si la dosis fue adecuada, en 10 horas los signos y síntomas estarán controlados.</li>
-        <li>Si persiste, coloque dosis adicional de 5 o 10 frascos según la intensidad de los signos.</li>
+        <li>Si persisten, colocar dosis adicional de 5 o 10 frascos según la intensidad de los signos.</li>
       </ul>
     </li>
   </ul>`,
   "psoriasis": `<h4>Tratamiento</h4>
   <ul>
-    <li><strong>Tema:</strong>
+    <li><strong>Tópico:</strong>
       <ul>
         <li>Humectantes/emolientes: crema fría y/o vaselina 3-6 veces/día.</li>
         <li>Esteroides tópicos: Acetato de Hidrocortisona 1% (cara, pliegues, genitales) y/o Valerato de Betametasona 0.1% (palmas, plantas, piel) 2 veces/día por 2-4 semanas, combinados con emolientes.</li>
@@ -863,23 +860,23 @@ hora {
     </li>
     <li><strong>Sistémico:</strong>
       <ul>
-        <li>Metotrexato 7,5-25 mg cada 12 h, 3 dosis/semana por 3-6 semanas. Vigilar función renal, hepática, hematológica y pulmonar.</li>
+        <li>Metotrexato 7.5-25 mg cada 12 h, 3 dosis/semana por 3-6 semanas. Vigilar función renal, hepática, hematológica y pulmonar.</li>
         <li>Metotrexato parenteral IV 25 mg/1ml en casos intolerantes a vía oral o eritrodérmica.</li>
-        <li>Ciclosporina oral: 2,5-5 mg/kg/día en 2 dosis diarias o 1,5-1 mg/kg/día si hipertenso. No usar más de 1 año y no en pacientes renales.</li>
-        <li>En psoriasis pustulosa: se puede combinar con Metotrexato 7,5-15 mg/semana y ciclosporina 3 mg/kg/día.</li>
+        <li>Ciclosporina oral: 2.5-5 mg/kg/día en 2 dosis diarias o 1.5-1 mg/kg/día si hipertenso. No usar más de 1 año y no en pacientes renales.</li>
+        <li>En psoriasis pustulosa: se puede combinar con Metotrexato 7.5-15 mg/semana y ciclosporina 3 mg/kg/día.</li>
       </ul>
     </li>
   </ul>`,
   "chikungunya": `<h4>Tratamiento</h4>
   <ul>
-    <li>Reposo en cama (uso de mosquito durante la fase febril).</li>
+    <li>Reposo en cama (uso de mosquitero durante fase febril).</li>
     <li>Dieta normal y líquidos abundantes:
       <ul>
         <li>Adultos: al menos 5 vasos de 250 ml/día.</li>
         <li>Niños: líquidos abundantes (leche, jugos, suero oral, agua de cebada/arroz/coco).</li>
       </ul>
     </li>
-    Acetaminofén:
+    <li>Acetaminofén:
       <ul>
         <li>Adultos: 500 mg VO cada 4-6 h.</li>
         <li>Niños: 10-15 mg/kg cada 4-6 h.</li>
@@ -891,14 +888,14 @@ hora {
   <ul>
     <li>No hay tratamiento específico, es ambulatorio.</li>
     <li>Reposo relativo durante la fiebre.</li>
-    <li>Uso estricto de mosquitos y repelente.</li>
-    <li>Ingesta adecuada de líquidos:
+    <li>Uso estricto de mosquitero y repelente.</li>
+    <li>Adecuada ingesta de líquidos:
       <ul>
         <li>Adultos: 6 vasos de 250 ml o más/día.</li>
         <li>Niños: a libre demanda, mínimo según fórmula de Holliday y Segar + 5%.</li>
       </ul>
     </li>
-    Acetaminofén:
+    <li>Acetaminofén:
       <ul>
         <li>Adultos: 500 mg cada 6 h (máx. 4 g/día).</li>
         <li>Niños: 10 mg/kg cada 6 h (máx. 3 g/día).</li>
@@ -907,11 +904,11 @@ hora {
     <li>Antihistamínicos (clorfeniramina):
       <ul>
         <li>Adultos: 4 mg 2-3 veces/día.</li>
-        <li>Niños: 0,35 mg/kg/día en 3 tomas.</li>
+        <li>Niños: 0.35 mg/kg/día en 3 tomas.</li>
       </ul>
     </li>
     <li>Gotas oculares refrescantes (lágrimas artificiales).</li>
-    <li>Durante la fase aguda:
+    <li>Durante fase aguda:
       <ul>
         <li>Fiebre/mialgias: acetaminofén 500 mg VO cada 6 h, máx. 4 g/día.</li>
         <li>Prurito: clorfeniramina 4 mg VO cada 8 h.</li>
@@ -928,14 +925,14 @@ hora {
     </li>
     <li><strong>Fase hepática (P. vivax/P. ovale):</strong>
       <ul>
-        <li>Primaquina 14 días (0.25 mg/kg/día), excepto en embarazo, lactantes <6 meses, mujeres lactando <6 meses y deficiencia de G6PD.</li>
+        <li>Primaquina 14 días (0.25 mg/kg/día), excepto en embarazo, lactantes &lt;6 meses, mujeres lactando &lt;6 meses y deficiencia de G6PD.</li>
         <li>En deficiencia de G6PD: primaquina 0.75 mg/kg/semana por 8 semanas con vigilancia médica.</li>
         <li>En embarazo/lactancia: profilaxis semanal con cloroquina (5 mg/kg) hasta parto y completar lactancia, luego primaquina según G6PD.</li>
       </ul>
     </li>
     <li><strong>Malaria por P. falciparum no complicada:</strong>
       <ul>
-        <li>Tratamiento combinado con artemisinina (TCA) artemeter y lumefantrina + primaquina 0.75 mg/kg/día única dosis el primer día (no en embarazo/lactancia <6 meses).</li>
+        <li>Tratamiento combinado con artemisinina (TCA) artemeter y lumefantrina + primaquina 0.75 mg/kg/día única dosis el primer día (no en embarazo/lactancia &lt;6 meses).</li>
       </ul>
     </li>
   </ul>`,
@@ -944,18 +941,18 @@ hora {
     <li><strong>Nifurtimox (tableta 120 mg):</strong>
       <ul>
         <li>Recién nacidos a término y hasta 2 meses: 10-20 mg/kg/día en 2 tomas cada 12 h por 60 días.</li>
-        <li>Niños 2 meses-11 años <40 kg: 15-20 mg/kg/día en 3 tomas cada 8 h por 60 días.</li>
-        <li>Adolescentes 12-18 años 40-60 kg: 12,5-15 mg/kg/día en 3 tomas cada 8 h por 60 días.</li>
+        <li>Niños 2 meses-11 años &lt;40 kg: 15-20 mg/kg/día en 3 tomas cada 8 h por 60 días.</li>
+        <li>Adolescentes 12-18 años 40-60 kg: 12.5-15 mg/kg/día en 3 tomas cada 8 h por 60 días.</li>
         <li>Adolescentes 12-18 años ≥60 kg y adultos ≥40 kg: 8-10 mg/kg/día en 3 tomas cada 8 h por 60 días (máx. 700 mg/día).</li>
       </ul>
     </li>
-    Benznidazol (tableta de 100 mg):
+    <li><strong>Benznidazol (tableta 100 mg):</strong>
       <ul>
         <li>Niños hasta 12 años: 5-10 mg/kg/día en 2 tomas cada 12 h por 60 días.</li>
         <li>Adultos: 5-7 mg/kg/día en 2 tomas cada 12 h por 60 días (máx. 400 mg/día).</li>
       </ul>
     </li>
-  </ul>`,
+  </ul>`, 
   "leishmaniasis": `<h4>Tratamiento</h4>
   <ul>
     <li><strong>Antes de iniciar el tratamiento:</strong> Realizar: ECG, creatinina, fosfatasa alcalina, transaminasas, amilasa, lipasa, hemograma, glicemia, HCG, bilirrubinas y nitrógeno ureico.</li>
@@ -968,48 +965,48 @@ hora {
     <li><strong>Chancroide:</strong> Ciprofloxacina 500mg VO c/12h por 7 días. Alternativas: Claritromicina, Ceftriaxona, Azitromicina.</li>
     <li><strong>Sífilis:</strong> Penicilina benzatínica 2.4M UI IM dosis única (primaria/secundaria/latente temprana). Latente tardía: 2.4M UI IM semanal x3. Neurosífilis: Penicilina G cristalina IV 10-14 días.</li>
     <li><strong>Clamidia:</strong> Doxiciclina 100mg VO c/12h por 7-10 días. Alternativas: Claritromicina, Azitromicina.</li>
-    <li><strong>Herpes genital:</strong> Aciclovir 400 mg VO c/8h por 7-10 días (primer episodio). Recurrente: 400mg c/8h por 5 días o supresor c/12h.</li>
-    <li><strong>Granuloma inguinal:</strong> Doxiciclina 100 mg VO c/12 h por 3 semanas. Alternativas: TMP/SMX, Claritromicina.</li>
+    <li><strong>Herpes genital:</strong> Aciclovir 400mg VO c/8h por 7-10 días (primer episodio). Recurrente: 400mg c/8h por 5 días o supresor c/12h.</li>
+    <li><strong>Granuloma inguinal:</strong> Doxiciclina 100mg VO c/12h por 3 semanas. Alternativas: TMP/SMX, Claritromicina.</li>
     <li><strong>Linfogranuloma venéreo:</strong> Doxiciclina 100mg VO c/12h por 21 días. Alternativa: Claritromicina.</li>
     <li><strong>VPH/Verrugas:</strong> Podofilina 25% o ácido tricloroacético 80% tópico. En embarazadas: ácido tricloroacético o cauterio.</li>
-    <li><strong>Candidiasis vulvovaginal:</strong> Clotrimazol vaginal 1% por 7-14 noches. Alternativa: Fluconazol 150 mg VO dosis única (no en embarazo).</li>
+    <li><strong>Candidiasis vulvovaginal:</strong> Clotrimazol vaginal 1% por 7-14 noches. Alternativa: Fluconazol 150mg VO dosis única (no en embarazo).</li>
     <li><strong>Vaginosis bacteriana:</strong> Metronidazol 500mg VO c/12h por 7 días. Alternativa: Metronidazol gel vaginal.</li>
     <li><strong>Tricomoniasis:</strong> Metronidazol 2g VO dosis única. Alternativa: 500mg VO c/12h por 7 días.</li>
     <li><strong>Pediculosis púbica:</strong> Permetrina 1% tópica, repetir en 1 semana.</li>
     <li><strong>Escabiosis:</strong> Permetrina 5% tópica, dejar 8-10h y repetir en 1 semana.</li>
-    <li><strong>Hepatitis B:</strong> Tenofovir 300 mg VO diario de por vida (adultos). Recién nacido de madre positiva: inmunoglobulina hiperinmune al nacer.</li>
-    <li><strong>Hepatitis C:</strong> Sofosbuvir/Velpatasvir 400/100 mg VO diario por 12 semanas (adultos).</li>
+    <li><strong>Hepatitis B:</strong> Tenofovir 300mg VO diario de por vida (adultos). Recién nacido de madre positiva: inmunoglobulina hiperinmune al nacer.</li>
+    <li><strong>Hepatitis C:</strong> Sofosbuvir/Velpatasvir 400/100mg VO diario por 12 semanas (adultos).</li>
   </ul>
-  <detalles>
+  <details>
     <summary>Ver detalles completos</summary>
-    <pre style="espacio en blanco: pre-wrap; tamaño de fuente: 0.95em;">
-Leishmaniasis:
+    <pre style="white-space: pre-wrap; font-size: 0.95em;">
+<strong>Leishmaniasis:</strong>
 - Antes y durante el tratamiento: ECG, creatinina, enzimas hepáticas y pancreáticas, hemograma, glicemia, HCG, bilirrubinas, nitrógeno ureico.
 - Monitoreo a los 10 y 17 días.
 
-Gonorrea:
-- Adultos: Ceftriaxona 1g IM dosis única. Alternativa: Cefixima 400 mg VO dosis única.
+<strong>Gonorrea:</strong>
+- Adultos: Ceftriaxona 1g IM dosis única. Alternativa: Cefixima 400mg VO dosis única.
 - Coinfección con clamidia: añadir Doxiciclina 100mg VO c/12h por 7-10 días.
-- Neonatos: Cefotaxima 100 mg/kg IV dosis única.
+- Neonatos: Cefotaxima 100mg/kg IV dosis única.
 
-Chancroide:
+<strong>Chancroide:</strong>
 - Ciprofloxacina 500mg VO c/12h por 7 días. Alternativas: Claritromicina, Ceftriaxona, Azitromicina.
 
-Sífilis:
-- Congénita: Penicilina sódica 50.000 UI/kg/dosis IV según edad.
-- Primaria/secundaria/latente temprana: Penicilina benzatónica 2.4M UI IM dosis única.
-- Latente tardía: Penicilina benzatónica 2.4M UI IM semanal x3.
+<strong>Sífilis:</strong>
+- Congénita: Penicilina sódica 50,000 UI/kg/dosis IV según edad.
+- Primaria/secundaria/latente temprana: Penicilina benzatínica 2.4M UI IM dosis única.
+- Latente tardía: Penicilina benzatínica 2.4M UI IM semanal x3.
 - Neurosífilis: Penicilina G cristalina IV 10-14 días.
 
-Clamidia:
+<strong>Clamidia:</strong>
 - Doxiciclina 100mg VO c/12h por 7-10 días. Alternativas: Claritromicina, Azitromicina.
 
 <strong>Herpes genital:</strong>
 - Primer episodio: Aciclovir 400mg VO c/8h por 7-10 días.
 - Recurrente: 400mg c/8h por 5 días o supresor c/12h.
 
-Granuloma inguinal:
-- Doxicilina 100mg VO c/12h por 3 semanas. Alternativas: TMP/SMX, Claritromicina.
+<strong>Granuloma inguinal:</strong>
+- Doxiciclina 100mg VO c/12h por 3 semanas. Alternativas: TMP/SMX, Claritromicina.
 
 <strong>Linfogranuloma venéreo:</strong>
 - Doxiciclina 100mg VO c/12h por 21 días. Alternativa: Claritromicina.
@@ -1017,8 +1014,8 @@ Granuloma inguinal:
 <strong>VPH/Verrugas:</strong>
 - Podofilina 25% o ácido tricloroacético 80% tópico. En embarazadas: ácido tricloroacético o cauterio.
 
-Candidiasis vulvovaginal:
-- Clotrimazol vaginal 1% por 7-14 noches. Alternativa: Fluconazol 150 mg VO dosis única (no en embarazo).
+<strong>Candidiasis vulvovaginal:</strong>
+- Clotrimazol vaginal 1% por 7-14 noches. Alternativa: Fluconazol 150mg VO dosis única (no en embarazo).
 
 <strong>Vaginosis bacteriana:</strong>
 - Metronidazol 500mg VO c/12h por 7 días. Alternativa: Metronidazol gel vaginal.
@@ -1029,54 +1026,54 @@ Candidiasis vulvovaginal:
 <strong>Pediculosis púbica:</strong>
 - Permetrina 1% tópica, repetir en 1 semana.
 
-Escabiosis:
+<strong>Escabiosis:</strong>
 - Permetrina 5% tópica, dejar 8-10h y repetir en 1 semana.
 
-Hepatitis B:
-- Tenofovir 300 mg VO diario de por vida (adultos). Recién nacido de madre positiva: inmunoglobulina hiperinmune al nacer.
+<strong>Hepatitis B:</strong>
+- Tenofovir 300mg VO diario de por vida (adultos). Recién nacido de madre positiva: inmunoglobulina hiperinmune al nacer.
 
-Hepatitis C:
-- Sofosbuvir/Velpatasvir 400/100 mg VO diario por 12 semanas (adultos).
+<strong>Hepatitis C:</strong>
+- Sofosbuvir/Velpatasvir 400/100mg VO diario por 12 semanas (adultos).
     </pre>
-  </detalles>
+  </details>
   `,
   "dengue": `<h4>Tratamiento</h4>
   <ul>
     <li><strong>Dengue sin signos de alarma:</strong>
       <ul>
         <li>Reposo relativo en cama.</li>
-        Líquidos por vía oral:
+        <li>Líquidos por vía oral:
           <ul>
             <li>Adultos: al menos cinco vasos (250 ml) o más al día.</li>
             <li>Niños: leche, jugos naturales (precaución en diabéticos), SRO, agua de cebada/arroz/coco. Evitar solo agua pura.</li>
             <li>Prescribir cantidad en onzas (30 ml), vasos (250 ml) o litros (1000 ml).</li>
           </ul>
         </li>
-        Acetaminofén:
+        <li>Acetaminofén:
           <ul>
             <li>Adultos: 500 mg VO cada 4-6 h, máx. 4 g/día.</li>
-            <li>Niños: 10 mg/kg/dosis cada 6 h. Especifique la cantidad en cucharaditas (5 ml) o tabletas.</li>
+            <li>Niños: 10 mg/kg/dosis cada 6 h. Especificar cantidad en cucharaditas (5 ml) o tabletas.</li>
           </ul>
         </li>
       </ul>
     </li>
     <li><strong>Dengue con condición o riesgo social asociado (grupo B1):</strong>
       <ul>
-        <li>Hidratación oral con SRO; Si no lo tolera, inicie IV con cristaloides (lactato de Ringer o SSN 0.9%) a dosis de mantenimiento.</li>
-        <li>Uso estricto de mosquitos en fase febril.</li>
+        <li>Hidratación oral con SRO; si no tolera, iniciar IV con cristaloides (lactato de Ringer o SSN 0.9%) a dosis de mantenimiento.</li>
+        <li>Uso estricto de mosquitero en fase febril.</li>
         <li>Embarazadas (26-34 semanas): inducir madurez pulmonar fetal con dexametasona 6 mg IV cada 6 h, 4 dosis (excepto en choque).</li>
         <li>Manejo específico para otras condiciones asociadas.</li>
       </ul>
     </li>
     <li><strong>Dengue con signos de alarma (grupo B2):</strong>
       <ul>
-        <li>Hemograma completo antes de hidratar (no retrasar la hidratación si no hay resultado).</li>
+        <li>Hemograma completo antes de hidratar (no retrasar hidratación si no hay resultado).</li>
         <li>Administrar carga de cristaloide isotónica 10 ml/kg en la primera hora (lactato de Ringer o SSN 0.9%). Vigilar signos vitales.</li>
-        Reevaluar cada hora:
+        <li>Reevaluar cada hora:
           <ul>
-            <li>Si no hay mejoría clínica y diuresis < 1 ml/kg/h, repetir carga 1-2 veces más.</li>
-            <li>Si hay mejoría y diuresis ≥ 1 ml/kg/h, reduzca el goteo a 5-7 ml/kg/h por 2-4 h, luego reduzca progresivamente.</li>
-            <li>Si persisten los signos de alarma y diuresis < 1 ml/kg/h, repetir carga. Si mejora, reduzca a 3-5 ml/kg/h por 2-4 horas y continúe según la evolución.</li>
+            <li>Si no hay mejoría clínica y diuresis &lt; 1 ml/kg/h, repetir carga 1-2 veces más.</li>
+            <li>Si hay mejoría y diuresis ≥ 1 ml/kg/h, reducir goteo a 5-7 ml/kg/h por 2-4 h, luego reducir progresivamente.</li>
+            <li>Si persisten signos de alarma y diuresis &lt; 1 ml/kg/h, repetir carga. Si mejora, reducir a 3-5 ml/kg/h por 2-4 h y continuar según evolución.</li>
           </ul>
         </li>
       </ul>
@@ -1085,33 +1082,33 @@ Hepatitis C:
 };
       
 function cargarDiagnosticos() {
-  const input = document.getElementById("buscadorDiagnóstico");
+  const input = document.getElementById("buscadorDiagnostico");
   const sugerencias = document.getElementById("sugerenciasDiagnostico");
-  entrada.oninput = función () {
-    const val = entrada.valor.toLowerCase();
+  input.oninput = function () {
+    const val = input.value.toLowerCase();
     sugerencias.innerHTML = "";
-    si (!val) {
-      sugerencias.style.display = "ninguno";
-      ventana.selectedDiagnostico = null;
-      devolver;
+    if (!val) {
+      sugerencias.style.display = "none";
+      window.selectedDiagnostico = null;
+      return;
     }
     const filtrados = diagnosticos.filter(dx => dx.toLowerCase().includes(val));
     filtrados.forEach(dx => {
       const div = document.createElement("div");
       div.style.padding = "10px";
-      div.style.cursor = "puntero";
+      div.style.cursor = "pointer";
       div.textContent = dx.charAt(0).toUpperCase() + dx.slice(1);
-      div.onmousedown = función () {
-        entrada.valor = dx;
-        sugerencias.style.display = "ninguno";
-        ventana.seleccionadoDiagnostico = dx;
+      div.onmousedown = function () {
+        input.value = dx;
+        sugerencias.style.display = "none";
+        window.selectedDiagnostico = dx;
         document.getElementById("resultado").style.display = "none";
       };
-      Sugerencias.appendChild(div);
+      sugerencias.appendChild(div);
     });
-    sugerencias.style.display = filtrados.length ? "bloque": "ninguno";
+    sugerencias.style.display = filtrados.length ? "block" : "none";
   };
-  entrada.onblur = función () {
+  input.onblur = function () {
     setTimeout(() => sugerencias.style.display = "none", 150);
   };
 }
@@ -1119,83 +1116,83 @@ function cargarDiagnosticos() {
       /* Función para mostrar el tratamiento del diagnóstico seleccionado */
       function mostrarTratamiento() {
         const resultadoDiv = document.getElementById("resultado");
-        resultadoDiv.style.display = "ninguno";
-        si (!ventana.seleccionadoDiagnóstico) {
-          resultadoDiv.style.display = "bloque";
+        resultadoDiv.style.display = "none";
+        if (!window.selectedDiagnostico) {
+          resultadoDiv.style.display = "block";
           resultadoDiv.innerHTML = `<p class="error">Selecciona un diagnóstico principal.</p>`;
-          devolver;
+          return;
         }
         const diagnostico = window.selectedDiagnostico;
         let html = `<h3>Tratamiento para ${diagnostico}</h3>`;
         let tratamientoPrincipal = tratamientosCompleto[diagnostico.toLowerCase()] || tratamientosCompleto[diagnostico];
-        si (tratamientoPrincipal) {
+        if (tratamientoPrincipal) {
           html += tratamientoPrincipal;
-        } demás {
+        } else {
           html += `<p class="error">No se encontraron datos para el diagnóstico seleccionado.</p>`;
         }
         resultadoDiv.innerHTML = html;
-        resultadoDiv.style.display = "bloque";
+        resultadoDiv.style.display = "block";
       }
       
       /* Calculadora de Dosis Pediátrica */
-      función calcularDosisPediatrica() {
+      function calcularDosisPediatrica() {
         const peso = parseFloat(document.getElementById("peso_pedi").value);
         const dosisBase = parseFloat(document.getElementById("dosis_base").value);
         const resultadoDosis = document.getElementById("resultadoDosis");
         if (isNaN(peso) || isNaN(dosisBase) || peso <= 0 || dosisBase <= 0) {
-          resultadoDosis.style.display = "bloque";
+          resultadoDosis.style.display = "block";
           resultadoDosis.innerHTML = `<p class="error">Ingresa valores válidos para peso y dosis base.</p>`;
-          devolver;
+          return;
         }
         const dosisCalculada = peso * dosisBase;
         resultadoDosis.innerHTML = `<h3>Dosis Pediátrica Recomendada</h3>
                                     <p>Con un peso de ${peso} kg y dosis base de ${dosisBase} mg/kg, la dosis es: <strong>${dosisCalculada.toFixed(2)} mg</strong>.</p>`;
-        resultadoDosis.style.display = "bloque";
+        resultadoDosis.style.display = "block";
       }
       
       /* Calculadora de IMC */
-      función calcularIMC() {
+      function calcularIMC() {
         const peso = parseFloat(document.getElementById("peso_imc").value);
         const altura = parseFloat(document.getElementById("altura_imc").value);
         const resultadoIMC = document.getElementById("resultadoIMC");
         if (isNaN(peso) || isNaN(altura) || peso <= 0 || altura <= 0) {
-          resultadoIMC.style.display = "bloque";
+          resultadoIMC.style.display = "block";
           resultadoIMC.innerHTML = `<p class="error">Ingresa valores válidos para peso y altura.</p>`;
-          devolver;
+          return;
         }
         const imc = peso / (altura * altura);
-        deja interpretacion = "";
-        si (imc < 18,5) {
+        let interpretacion = "";
+        if (imc < 18.5) {
           interpretacion = "Bajo peso";
-        } de lo contrario si (imc < 25) {
+        } else if (imc < 25) {
           interpretacion = "Normal";
-        } de lo contrario si (imc < 30) {
+        } else if (imc < 30) {
           interpretacion = "Sobrepeso";
-        } demás {
+        } else {
           interpretacion = "Obesidad";
         }
         resultadoIMC.innerHTML = `<h3>Resultado del IMC</h3>
                                   <p>Tu IMC es: <strong>${imc.toFixed(2)}</strong> (${interpretacion}).</p>`;
-        resultadoIMC.style.display = "bloque";
+        resultadoIMC.style.display = "block";
       }
       
       /* Función para consultar interacciones medicinales */
-      función consultarInteracciones() {
+      function consultarInteracciones() {
         const medicSelect = document.getElementById("medicamentoSelect");
-        constante clave = medicSelect.value;
+        const clave = medicSelect.value;
         const resultadoDiv = document.getElementById("resultadoInteracciones");
   
         if (clave && interaccionesMedicamentosas[clave]) {
           let html = `<h4>Interacciones para "${clave}":</h4><ul>`;
-          InfeccionesMedicamentosas[clave].forEach((item) => {
+          interaccionesMedicamentosas[clave].forEach((item) => {
             html += `<li><strong>${item.medicamento}</strong>: ${item.motivo}</li>`;
           });
           html += `</ul>`;
           resultadoDiv.innerHTML = html;
-        } demás {
-          resultadoDiv.innerHTML = `<p class="error">No se encontraron coincidencias para la opción seleccionada.</p>`;
+        } else {
+          resultadoDiv.innerHTML = `<p class="error">No se encontraron interacciones para la opción seleccionada.</p>`;
         }
-        resultadoDiv.style.display = "bloque";
+        resultadoDiv.style.display = "block";
       }
       
             // Base de datos de interacciones
@@ -1203,18 +1200,18 @@ function cargarDiagnosticos() {
         "aspirina": [
           {
             medicamento: "ibuprofeno",
-            motivo: "Puede interferir con la acción antiplaquetaria, incrementando el riesgo de complicaciones hemorrágicas".
+            motivo: "Puede interferir con la acción antiplaquetaria, incrementando el riesgo de complicaciones hemorrágicas."
           },
           {
             medicamento: "anticoagulantes",
-            motivo: "La combinación eleva el riesgo de sangrado".
+            motivo: "La combinación eleva el riesgo de sangrado."
           },
           {
             medicamento: "corticosteroides",
-            motivo: "Pueden potenciar la irritación gástrica, aumentando el riesgo de úlceras".
+            motivo: "Pueden potenciar la irritación gástrica, aumentando el riesgo de úlceras."
           }
         ],
-        "diuréticos": [
+        "diureticos": [
           {
             medicamento: "Hidroclorotiazida",
             motivo: "Disminuye la tolerancia a la glucosa y puede revelar diabetes latente. Contraindicado en hipersensibles a sulfonamidas; disminuye la acción de ciertos fármacos y aumenta la de otros. Contraindicación absoluta: gota; relativa: síndrome metabólico, intolerancia a la glucosa, embarazo, hiperpotasemia e hipopotasemia."
@@ -1238,25 +1235,25 @@ function cargarDiagnosticos() {
             motivo: "Similar a Diazepam: riesgo de episodios psicóticos con valproato, exacerbación de convulsiones si se interrumpe bruscamente y riesgo de depresión respiratoria en vía IV."
           }
         ],
-        "fenitoína": [
+        "fenitoina": [
           {
             medicamento: "Fenitoína",
-            motivo: "Reduce la eficacia de los anticonceptivos orales (riesgo de embarazo no planificado), disminuye la concentración de carbamazepina, es teratogénica y puede provocar hiperglucemia. Precaución en IV por arritmias e hipotensión; contraindicado en insuficiencia hepática, cardíaca o renal y puede agravar la encefalopatía hepática."
+            motivo: "Reduce la eficacia de anticonceptivos orales (riesgo de embarazo no planificado), disminuye la concentración de carbamazepina, es teratogénica y puede provocar hiperglucemia. Precaución en IV por arritmias e hipotensión; contraindicado en insuficiencia hepática, cardiaca o renal y puede agravar la encefalopatía hepática."
           }
         ],
         "fenobarbital": [
           {
             medicamento: "Fenobarbital",
-            motivo: "Reduce la acción de los anticonceptivos orales; es teratogénico, puede causar alteraciones en la coagulación, anemia y osteomalacia. Sus niveles pueden incrementarse con ácido valproico; contraindicado en insuficiencia hepática, nefritis, lactancia, hipertiroidismo, anemia y porfiria aguda intermitente."
+            motivo: "Reduce la acción de anticonceptivos orales; es teratogénico, puede causar alteraciones en la coagulación, anemia y osteomalacia. Sus niveles pueden incrementarse con ácido valproico; contraindicado en insuficiencia hepática, nefritis, lactancia, hipertiroidismo, anemia y porfiria aguda intermitente."
           }
         ],
         "acido_valproico": [
           {
             medicamento: "Ácido Valproico",
-            motivo: "La interacción con fenitoína y fenobarbital aumenta sus niveles, pudiendo provocar hepatitis fulminante y pancreatitis aguda".
+            motivo: "La interacción con fenitoína y fenobarbital aumenta sus niveles, pudiendo provocar hepatitis fulminante y pancreatitis aguda."
           }
         ],
-        "antipsicóticos": [
+        "antipsicoticos": [
           {
             medicamento: "Haloperidol",
             motivo: "Utilizado en esquizofrenia y manía aguda; provoca EPS, acatisia, hiperprolactinemia, sedación, aumento de peso e hipotensión. Evitar su uso IV por prolongación del QTc."
@@ -1275,25 +1272,25 @@ function cargarDiagnosticos() {
           },
           {
             medicamento: "Lorazepam",
-            motivo: "Sedante y ansiolítico utilizado en manejo de estado epiléptico, ansiedad, abstinencia alcohólica, preanestesia y en ciertos trastornos convulsivos".
+            motivo: "Sedante y ansiolítico utilizado en manejo de estado epiléptico, ansiedad, abstinencia alcohólica, preanestesia y en ciertos trastornos convulsivos."
           }
         ],
         "betabloqueadores": [
           {
-            medicamentos: "Propranolol, Atenolol, Carvedilol",
+            medicamento: "Propranolol, Atenolol, Carvedilol",
             motivo: "Deben evitarse en pacientes con enfermedad reactiva de las vías respiratorias (asma y EPOC) y con disfunción nodal SA o AV. Contraindicado con fármacos que inhiben la conducción AV; no suspender bruscamente para evitar síndrome de abstinencia y pueden causar hipoglucemia. Contraindicación absoluta: asma y bloqueo AV (grados 2 o 3); relativa: síndrome metabólico, intolerancia a la glucosa y en pacientes activos."
           }
         ],
         "bloqueadores_ca2": [
           {
             medicamento: "Nifedipina, Verapamilo, Amlodipina",
-            motivo: "El verapamilo puede aumentar los niveles plasmáticos de digoxina, ciclosporina y loperamida; su uso IV con betabloqueadores está contraindicado por riesgo de bloqueo AV o depresión ventricular; combinado con quinidina, puede causar hipotensión excesiva; se recomienda dosis reducidas en cirrosis. Contraindicación absoluta: bloqueo AV (grados 2 o 3), disfunción severa del VI e insuficiencia cardíaca."
+            motivo: "El verapamilo puede aumentar niveles plasmáticos de digoxina, ciclosporina y loperamida; su uso IV con betabloqueadores está contraindicado por riesgo de bloqueo AV o depresión ventricular; combinado con quinidina, puede causar hipotensión excesiva; se recomienda dosis reducidas en cirrosis. Contraindicación absoluta: bloqueo AV (grados 2 o 3), disfunción severa del VI e insuficiencia cardíaca."
           }
         ],
         "IECA": [
           {
             medicamento: "Enalapril",
-            motivo: "La capsaicina puede empeorar la tos inducida; AINES reducen su efecto antihipertensivo; diuréticos ahorradores de K+ y suplementos pueden exacerbar la hiperpotasemia; pueden aumentar niveles de digoxina y litio. Contraindicación absoluta: embarazo, angioedema, hiperpotasemia y estenosis arterial renal bilateral; relativa: mujeres en edad fértil."
+            motivo: "La capsaicina puede empeorar la tos inducida; AINES reducen su efecto antihipertensivo; diuréticos ahorradores de K+ y suplementos pueden exacerbar hiperpotasemia; pueden aumentar niveles de digoxina y litio. Contraindicación absoluta: embarazo, angioedema, hiperpotasemia y estenosis arterial renal bilateral; relativa: mujeres en edad fértil."
           }
         ],
         "ara_ii": [
@@ -1305,7 +1302,7 @@ function cargarDiagnosticos() {
         "cardiovasculares": [
           {
             medicamento: "Dobutamina",
-            motivo: "Usar con precaución en pacientes con hipertensión o arritmias; puede aumentar el tamaño de un infarto y en fibrilación auricular requerirá ajuste (posible uso de digoxina)."
+            motivo: "Usar con precaución en pacientes con hipertensión o arritmias; puede aumentar el tamaño de un infarto y en fibrilación auricular requerir ajuste (posible uso de digoxina)."
           },
           {
             medicamento: "Dopamina",
@@ -1720,50 +1717,52 @@ function cargarDiagnosticos() {
 document.getElementById('btnAdvertencia').onclick = function() {
   alert("Esta herramienta no sustituye una consulta médica. Consulte siempre a un profesional de la salud.");
 };
-<script>
-  const chatForm = document.getElementById("chat-form");
-  const chatInput = document.getElementById("chat-input");
-  const chatMessages = document.getElementById("chat-messages");
+const OPENAI_API_KEY = "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"; 
 
-  const chatHistory = [
-    { role: "system", content: "Eres un asistente médico que responde con claridad y cariño." }
-  ];
+// Chat simple con OpenAI
+const chatForm = document.getElementById('chat-form');
+const chatInput = document.getElementById('chat-input');
+const chatMessages = document.getElementById('chat-messages');
+let chatHistory = [
+  {role: "system", content: "Eres un asistente médico virtual. Responde de forma clara, breve y profesional. Si la pregunta es de emergencia, recomienda acudir a un médico."}
+];
 
-  chatForm.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const question = chatInput.value.trim();
-    if (!question) return;
-
-    chatMessages.innerHTML += `<div><b>Tú:</b> ${question}</div>`;
-    chatInput.value = "";
+chatForm?.addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const userMsg = chatInput.value.trim();
+  if (!userMsg) return;
+  chatMessages.innerHTML += `<div style="margin-bottom:8px;"><b>Tú:</b> ${userMsg}</div>`;
+  chatInput.value = '';
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+  chatMessages.innerHTML += `<div id="ia-typing" style="color:#888;">IA está escribiendo...</div>`;
+  chatHistory.push({role: "user", content: userMsg});
+  try {
+    const res = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + OPENAI_API_KEY
+      },
+      body: JSON.stringify({
+        model: "gpt-3.5-turbo",
+        messages: chatHistory,
+        max_tokens: 256,
+        temperature: 0.2
+      })
+    });
+    const data = await res.json();
+    const iaMsg = data.choices?.[0]?.message?.content || "No se pudo obtener respuesta.";
+    document.getElementById('ia-typing').remove();
+    chatMessages.innerHTML += `<div style="margin-bottom:12px;"><b>IA:</b> ${iaMsg}</div>`;
     chatMessages.scrollTop = chatMessages.scrollHeight;
-    chatMessages.innerHTML += `<div id="ia-typing">IA está escribiendo...</div>`;
-
-    chatHistory.push({ role: "user", content: question });
-
-    try {
-      const response = await fetch("https://b9212b81-317d-4efc-9d3e-cc9baa9d7443-00-2vleul465p683.riker.replit.dev/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: chatHistory })
+    chatHistory.push({role: "assistant", content: iaMsg});
+  } catch (err) {
+    document.getElementById('ia-typing').remove();
+    chatMessages.innerHTML += `<div style="color:red;">Error al conectar con IA.</div>`;
+  }
+});
       });
-
-      if (!response.ok) throw new Error("Error en la respuesta del servidor");
-
-      const data = await response.json();
-      const answer = data.result.content;
-
-      document.getElementById("ia-typing").remove();
-      chatMessages.innerHTML += `<div><b>IA:</b> ${answer}</div>`;
-      chatMessages.scrollTop = chatMessages.scrollHeight;
-      chatHistory.push({ role: "assistant", content: answer });
-
-    } catch (error) {
-      document.getElementById("ia-typing").remove();
-      chatMessages.innerHTML += `<div style="color:red;">Error: ${error.message}</div>`;
-    }
-  });
-</script>
+    </script>
    <script type="module">
 </script>
   </body>
