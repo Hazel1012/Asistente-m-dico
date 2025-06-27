@@ -1740,19 +1740,22 @@ chatForm?.addEventListener('submit', async function(e) {
   chatMessages.innerHTML += `<div id="ia-typing" style="color:#888;">IA está escribiendo...</div>`;
   chatHistory.push({role: "user", content: userMsg});
   try {
-    const res = await fetch("https://api.openai.com/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer " + OPENAI_API_KEY
-      },
-      body: JSON.stringify({
-        model: "gpt-3.5-turbo",
-        messages: chatHistory,
-        max_tokens: 256,
-        temperature: 0.2
-      })
-    });
+    const res = await fetch("https://b9212b81-317d-4efc-9d3e-cc9baa9d7443-00-2vleul465p683.riker.replit.dev/chat", {
+     method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    messages: [
+      { role: "system", content: "Eres un asistente médico." },
+      { role: "user", content: "Hola, ¿cuál es la capital de Francia?" }
+    ],
+  }),
+})
+.then(res => res.json())
+.then(data => {
+  console.log(data.result.content);
+});
     const data = await res.json();
     const iaMsg = data.choices?.[0]?.message?.content || "No se pudo obtener respuesta.";
     document.getElementById('ia-typing').remove();
