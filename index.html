@@ -341,7 +341,7 @@ hr {
   border-color: #3a86ff;
 }
 [data-theme="dark"] #sugerenciasDiagnostico div {
-  color: #1c4960;
+  color: #f4fafd;
 }
 [data-theme="dark"] #sugerenciasDiagnostico div:hover {
   background: #3a86ff;
@@ -374,9 +374,12 @@ hr {
   <li data-tab="diagnostico" class="active">Diagnóstico e Interacciones</li>
   <li data-tab="dosis">Dosis Pediátrica</li>
   <li data-tab="imc">Calculadora de IMC</li>
+  <li data-tab="ia">🤖 IA Médica</li>
 </ul>
 
 <div class="tab-content">
+  <!-- Pestaña Noticias -->
+    <div id="noticias" class="tab-pane active">
   <!-- Pestaña Diagnóstico e Interacciones UNIFICADA -->
 <div id="diagnostico" class="tab-pane active" style="position:relative;">
   <h2>Diagnóstico Principal</h2>
@@ -485,6 +488,18 @@ hr {
     </select>
     <button onclick="consultarInteracciones()">Consultar Interacciones</button>
     <div id="resultadoInteracciones" class="result" style="display: none;"></div>
+  </div>
+</div>
+
+<div id="ia" class="tab-pane">
+  <h2>Asistente IA Médica</h2>
+  <div id="chat-ia" style="background:#f4fafd;border-radius:12px;padding:18px;max-width:500px;margin:auto;">
+    <div id="chat-messages" style="height:260px;overflow-y:auto;background:#fff;border-radius:8px;padding:12px 8px 12px 12px;margin-bottom:12px;border:1.5px solid #b5eaea;"></div>
+    <form id="chat-form" style="display:flex;gap:8px;">
+      <input id="chat-input" type="text" placeholder="Escribe tu pregunta médica..." style="flex:1;padding:10px;border-radius:8px;border:1.5px solid #b5eaea;">
+      <button type="submit" style="background:var(--primary);color:#fff;border:none;border-radius:8px;padding:10px 18px;font-weight:bold;">Enviar</button>
+    </form>
+    <small style="color:#888;">No sustituye una consulta médica profesional.</small>
   </div>
 </div>
     
@@ -1705,6 +1720,50 @@ function cargarDiagnosticos() {
 document.getElementById('btnAdvertencia').onclick = function() {
   alert("Esta herramienta no sustituye una consulta médica. Consulte siempre a un profesional de la salud.");
 };
+const OPENAI_API_KEY = "sk-srYrkaliOPtKWHVgNqZJUU00rW97DyY-ZDKKShIpRbVz97FyZUUBfIu_YdGC94ySeoHbJ9KHbnT3BlbkFJNO1ipAlMHKjZZgMTjsTn8xuHfxtMI5HnFIjbqgQofsxob7rCAdtDo7uNw-XZvQGZNsJhd2gAoA"; 
+
+// Chat simple con OpenAI
+const chatForm = document.getElementById('chat-form');
+const chatInput = document.getElementById('chat-input');
+const chatMessages = document.getElementById('chat-messages');
+let chatHistory = [
+  {role: "system", content: "Eres un asistente médico virtual. Responde de forma clara, breve y profesional. Si la pregunta es de emergencia, recomienda acudir a un médico."}
+];
+
+chatForm?.addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const userMsg = chatInput.value.trim();
+  if (!userMsg) return;
+  chatMessages.innerHTML += `<div style="margin-bottom:8px;"><b>Tú:</b> ${userMsg}</div>`;
+  chatInput.value = '';
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+  chatMessages.innerHTML += `<div id="ia-typing" style="color:#888;">IA está escribiendo...</div>`;
+  chatHistory.push({role: "user", content: userMsg});
+  try {
+    const res = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + OPENAI_API_KEY
+      },
+      body: JSON.stringify({
+        model: "gpt-3.5-turbo",
+        messages: chatHistory,
+        max_tokens: 256,
+        temperature: 0.2
+      })
+    });
+    const data = await res.json();
+    const iaMsg = data.choices?.[0]?.message?.content || "No se pudo obtener respuesta.";
+    document.getElementById('ia-typing').remove();
+    chatMessages.innerHTML += `<div style="margin-bottom:12px;"><b>IA:</b> ${iaMsg}</div>`;
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+    chatHistory.push({role: "assistant", content: iaMsg});
+  } catch (err) {
+    document.getElementById('ia-typing').remove();
+    chatMessages.innerHTML += `<div style="color:red;">Error al conectar con IA.</div>`;
+  }
+});
       });
     </script>
    <script type="module">
