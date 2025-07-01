@@ -376,7 +376,24 @@ hr {
 
 <div class="tab-content">
   <!-- Pestaña Diagnóstico e Interacciones UNIFICADA -->
-<div id="diagnostico" class="tab-pane active" style="position:relative;">
+<div id="comorbilidades-section" style="margin-bottom:28px;">
+  <h2>Comorbilidades</h2>
+  <div id="comorbilidades-list" style="display:flex;flex-wrap:wrap;gap:18px 32px;">
+    <label><input type="checkbox" value="hipertension"> Hipertensión arterial</label>
+    <label><input type="checkbox" value="diabetes"> Diabetes mellitus</label>
+    <label><input type="checkbox" value="epoc"> EPOC</label>
+    <label><input type="checkbox" value="asma"> Asma</label>
+    <label><input type="checkbox" value="insuficiencia_renal"> Insuficiencia renal</label>
+    <label><input type="checkbox" value="insuficiencia_hepatica"> Insuficiencia hepática</label>
+    <label><input type="checkbox" value="embarazo"> Embarazo</label>
+    <label><input type="checkbox" value="alergia_aines"> Alergia a AINEs</label>
+    <label><input type="checkbox" value="ulcera_gastrica"> Úlcera gástrica</label>
+    <label><input type="checkbox" value="insuficiencia_cardiaca"> Insuficiencia cardíaca</label>
+  </div>
+  <button onclick="mostrarContraindicaciones()" style="margin-top:18px;">Elegir comorbilidad</button>
+  <div id="resultadoComorbilidades" class="result" style="display:none;margin-top:18px;"></div>
+</div>
+  <div id="diagnostico" class="tab-pane active" style="position:relative;">
   <h2>Diagnóstico Principal</h2>
   <div id="resultado" class="result" style="display: none; margin-bottom: 18px;"></div>
   <input type="search" id="buscadorDiagnostico" placeholder="Buscar diagnóstico..." style="width:100%;padding:12px;border-radius:8px;margin-bottom:8px;">
@@ -384,6 +401,29 @@ hr {
   <button onclick="mostrarTratamiento()">Ver tratamiento sugerido</button>
      <div id="resultado" class="result" style="display: none;"></div>
     <div class="diagnostico-container" id="diagnosticoContainer">
+      <!-- Sección Contraindicaciones -->
+<!-- Sección Contraindicaciones (selección múltiple de comorbilidades) -->
+<!-- Sección Contraindicaciones (checkboxes para comorbilidades) -->
+<div id="contraindicaciones-section" style="margin-bottom:28px;">
+  <h2>Contraindicaciones</h2>
+  <div id="comorbilidades-checkboxes" style="display:flex;flex-wrap:wrap;gap:18px 32px;margin-bottom:12px;">
+    <label><input type="checkbox" value="epoc"> EPOC</label>
+    <label><input type="checkbox" value="diabetes"> Diabetes mellitus</label>
+    <label><input type="checkbox" value="asma"> Asma</label>
+    <label><input type="checkbox" value="insuficiencia_renal"> Insuficiencia renal</label>
+    <!-- Agrega más si lo deseas -->
+  </div>
+  <label for="diagnosticoContraSelect">Diagnóstico principal:</label>
+  <select id="diagnosticoContraSelect">
+    <option value="" disabled selected>Selecciona diagnóstico</option>
+    <option value="hipertension">Hipertensión arterial</option>
+    <!-- Agrega más si lo deseas -->
+  </select>
+  <button onclick="verContraindicacionCheckbox()" style="margin-top:18px;">Ver contraindicaciones</button>
+  <div id="resultadoContraindicacion" class="result" style="display:none;margin-top:18px;"></div>
+</div>
+  </select>
+
       <!-- Se generarán botones dinámicamente -->
     </div>
     <hr>
@@ -498,6 +538,92 @@ hr {
         const body = document.body;
         body.setAttribute("data-theme", body.getAttribute("data-theme") === "light" ? "dark" : "light");
       }
+
+      const contraindicacionesComorbilidades = {
+  hipertension: [
+    "AINES (pueden elevar la presión arterial)",
+    "Descongestionantes (pseudoefedrina, fenilefrina)",
+    "Corticoides sistémicos (pueden retener sodio y agua)",
+    "Antiinflamatorios no esteroideos"
+  ],
+  diabetes: [
+    "Corticoides sistémicos (pueden elevar la glucosa)",
+    "Betabloqueadores (enmascaran hipoglucemia)",
+    "Diuréticos tiazídicos (pueden elevar glucosa)",
+    "Antipsicóticos atípicos"
+  ],
+  epoc: [
+    "Betabloqueadores no selectivos",
+    "Sedantes potentes (riesgo de depresión respiratoria)",
+    "Opioides en dosis altas"
+  ],
+  asma: [
+    "Betabloqueadores",
+    "AINES (pueden desencadenar crisis asmática)",
+    "IECA (pueden causar tos)"
+  ],
+  insuficiencia_renal: [
+    "AINES",
+    "Metformina (riesgo de acidosis láctica)",
+    "Diuréticos ahorradores de potasio",
+    "Contrastes yodados"
+  ],
+  insuficiencia_hepatica: [
+    "Paracetamol en dosis altas",
+    "Benzodiacepinas",
+    "AINEs",
+    "Anticoagulantes orales"
+  ],
+  embarazo: [
+    "IECA y ARA II",
+    "Warfarina",
+    "Tetraciclinas",
+    "Quinolonas",
+    "AINES en tercer trimestre"
+  ],
+  alergia_aines: [
+    "Todos los AINEs",
+    "Aspirina"
+  ],
+  ulcera_gastrica: [
+    "AINES",
+    "Corticoides sistémicos",
+    "Anticoagulantes"
+  ],
+  insuficiencia_cardiaca: [
+    "AINES",
+    "Corticoides sistémicos",
+    "Antiarritmicos clase I y III",
+    "Bloqueadores de canales de calcio no dihidropiridínicos"
+  ]
+};
+
+function mostrarContraindicaciones() {
+  const seleccionados = Array.from(document.querySelectorAll('#comorbilidades-list input:checked')).map(cb => cb.value);
+  const resultadoDiv = document.getElementById('resultadoComorbilidades');
+  if (seleccionados.length === 0) {
+    resultadoDiv.style.display = "block";
+    resultadoDiv.innerHTML = `<p class="error">Selecciona al menos una comorbilidad.</p>`;
+    return;
+  }
+  let comorbilidadesSeleccionadas = [];
+
+function guardarComorbilidadesSeleccionadas() {
+  comorbilidadesSeleccionadas = Array.from(document.querySelectorAll('#comorbilidades-list input:checked')).map(cb => cb.value);
+}
+  let html = `<h3>Fármacos contraindicados</h3>`;
+  seleccionados.forEach(comorb => {
+    const nombre = document.querySelector(`#comorbilidades-list input[value="${comorb}"]`).parentElement.textContent.trim();
+    const lista = contraindicacionesComorbilidades[comorb];
+    if (lista && lista.length) {
+      html += `<strong>${nombre}:</strong><ul>`;
+      lista.forEach(f => html += `<li>${f}</li>`);
+      html += `</ul>`;
+    }
+  });
+  resultadoDiv.innerHTML = html;
+  resultadoDiv.style.display = "block";
+}
       
       /* Array de diagnósticos principales */
       const diagnosticos = [
@@ -1114,7 +1240,37 @@ function cargarDiagnosticos() {
         resultadoDiv.innerHTML = html;
         resultadoDiv.style.display = "block";
       }
-      
+function verContraindicacionCheckbox() {
+  const comorbilidades = Array.from(document.querySelectorAll('#comorbilidades-checkboxes input:checked')).map(cb => cb.value);
+  const dx = document.getElementById('diagnosticoContraSelect').value;
+  const resultado = document.getElementById('resultadoContraindicacion');
+  resultado.style.display = "block";
+
+  if (!dx || comorbilidades.length === 0) {
+    resultado.innerHTML = `<span class="error">Selecciona al menos una comorbilidad y un diagnóstico.</span>`;
+    return;
+  }
+
+  let advertencias = [];
+
+  // Ejemplo: Si EPOC y el diagnóstico es hipertensión arterial, betabloqueadores están contraindicados
+  comorbilidades.forEach(comorb => {
+    if (comorb === "epoc" && dx === "hipertension") {
+      advertencias.push(`<li><b>Betabloqueadores</b> están contraindicados en pacientes con <b>EPOC</b> e hipertensión arterial.<br>
+      <span style="color:#ff595e;">No se recomienda su uso por riesgo de broncoespasmo.</span></li>`);
+    }
+    if (comorb === "diabetes" && dx === "hipertension") {
+      advertencias.push(`<li><b>Diuréticos tiazídicos</b> pueden elevar la glucosa en pacientes con <b>diabetes</b> e hipertensión.</li>`);
+    }
+    // Agrega más reglas aquí si lo deseas
+  });
+
+  if (advertencias.length > 0) {
+    resultado.innerHTML = `<b>Advertencia:</b><ul>${advertencias.join('')}</ul>`;
+  } else {
+    resultado.innerHTML = `<span style="color:green;">No se encontraron contraindicaciones relevantes para esta combinación.</span>`;
+  }
+}
       /* Calculadora de Dosis Pediátrica */
       function calcularDosisPediatrica() {
         const peso = parseFloat(document.getElementById("peso_pedi").value);
@@ -1698,38 +1854,51 @@ function cargarDiagnosticos() {
 document.getElementById('btnAdvertencia').onclick = function() {
   alert("Esta herramienta no sustituye una consulta médica. Consulte siempre a un profesional de la salud.");
 };
-const GEMINI_API_KEY = "AIzaSyATLbUjQkngBILn1cl3h9sv2OOPLUSFNRs"; 
+const GEMINI_API_KEY = "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"; 
 
-// Chat simple con Gemini
-async function askGemini(question) {
-  const response = await fetch("http://localhost:3000/api/chat", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ question })
-  });
-  const data = await response.json();
-  return data.answer;
-}
+// Chat simple con gemini
+const chatForm = document.getElementById('chat-form');
+const chatInput = document.getElementById('chat-input');
+const chatMessages = document.getElementById('chat-messages');
+let chatHistory = [
+  {role: "system", content: "Eres un asistente médico virtual. Responde de forma clara, breve y profesional. Si la pregunta es de emergencia, recomienda acudir a un médico."}
+];
 
-// Escuchar el envío del formulario del chat
-document.getElementById('chat-form').addEventListener('submit', async function(e) {
+chatForm?.addEventListener('submit', async function(e) {
   e.preventDefault();
-  const input = document.getElementById('chat-input');
-  const userMessage = input.value.trim();
-  if (!userMessage) return;
-
-  // Agrega mensaje del usuario al chat
-  document.getElementById('chat-messages').innerHTML += `<div><b>Tú:</b> ${userMessage}</div>`;
-
-  // Llama al backend usando la función askGemini
-  const iaAnswer = await askGemini(userMessage);
-
-  // Muestra la respuesta de la IA
-  document.getElementById('chat-messages').innerHTML += `<div><b>IA:</b> ${iaAnswer}</div>`;
-  input.value = '';
-});
+  const userMsg = chatInput.value.trim();
+  if (!userMsg) return;
+  chatMessages.innerHTML += `<div style="margin-bottom:8px;"><b>Tú:</b> ${userMsg}</div>`;
+  chatInput.value = '';
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+  chatMessages.innerHTML += `<div id="ia-typing" style="color:#888;">IA está escribiendo...</div>`;
+  chatHistory.push({role: "user", content: userMsg});
+  try {
+    const res = await fetch("https://b9212b81-317d-4efc-9d3e-cc9baa9d7443-00-2vleul465p683.riker.replit.dev/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + OPENAI_API_KEY
+      },
+      body: JSON.stringify({
+        model: "gpt-3.5-turbo",
+        messages: chatHistory,
+        max_tokens: 256,
+        temperature: 0.2
+      })
+    });
+    const data = await res.json();
+    const iaMsg = data.choices?.[0]?.message?.content || "No se pudo obtener respuesta.";
+    document.getElementById('ia-typing').remove();
+    chatMessages.innerHTML += `<div style="margin-bottom:12px;"><b>IA:</b> ${iaMsg}</div>`;
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+    chatHistory.push({role: "assistant", content: iaMsg});
+  } catch (err) {
+    document.getElementById('ia-typing').remove();
+    chatMessages.innerHTML += `<div style="color:red;">Error al conectar con IA.</div>`;
   }
-      );
+});
+      });
     </script>
    <script type="module">
 </script>
