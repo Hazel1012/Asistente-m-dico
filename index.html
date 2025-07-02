@@ -347,6 +347,7 @@ hr {
   background: #3a86ff;
   color: #844040;
 }
+
     </style>
   </head>
   <body data-theme="light">
@@ -402,27 +403,45 @@ hr {
      <div id="resultado" class="result" style="display: none;"></div>
     <div class="diagnostico-container" id="diagnosticoContainer">
       <!-- Sección Contraindicaciones -->
-<!-- Sección Contraindicaciones (selección múltiple de comorbilidades) -->
-<!-- Sección Contraindicaciones (checkboxes para comorbilidades) -->
-<div id="contraindicaciones-section" style="margin-bottom:28px;">
-  <h2>Contraindicaciones</h2>
-  <div id="comorbilidades-checkboxes" style="display:flex;flex-wrap:wrap;gap:18px 32px;margin-bottom:12px;">
-    <label><input type="checkbox" value="epoc"> EPOC</label>
-    <label><input type="checkbox" value="diabetes"> Diabetes mellitus</label>
-    <label><input type="checkbox" value="asma"> Asma</label>
-    <label><input type="checkbox" value="insuficiencia_renal"> Insuficiencia renal</label>
-    <!-- Agrega más si lo deseas -->
-  </div>
-  <label for="diagnosticoContraSelect">Diagnóstico principal:</label>
-  <select id="diagnosticoContraSelect">
+<!-- Sección Diagnóstico y Comorbilidades -->
+<div id="dx-comorb-section" style="margin-bottom:28px;">
+  <h2>Diagnóstico y Comorbilidades</h2>
+  <label for="dxSelect">Diagnóstico principal:</label>
+  <select id="dxSelect" onchange="actualizarComorbilidadesDx()">
     <option value="" disabled selected>Selecciona diagnóstico</option>
-    <option value="hipertension">Hipertensión arterial</option>
-    <!-- Agrega más si lo deseas -->
+    <option value="diabetes">Diabetes Mellitus</option>
+    <option value="hipotiroidismo">Hipotiroidismo</option>
+    <option value="hipertiroidismo">Hipertiroidismo</option>
+    <option value="insuf_renal">Insuficiencia Renal</option>
+    <option value="hipertension">Hipertensión Arterial</option>
+    <option value="epoc">EPOC</option>
+    <option value="cirrosis">Cirrosis Hepática</option>
+    <option value="sica">Síndrome Isquémico Coronario Agudo (SICA)</option>
+    <option value="osteoartritis">Osteoartritis</option>
+    <option value="delirium">Estado Confusional Agudo (delirium)</option>
+    <option value="icc">Insuficiencia Cardíaca Congestiva</option>
+    <option value="asma">Asma</option>
+    <option value="sepsis">Sepsis / Choque Séptico</option>
+    <option value="meningitis">Meningitis Bacteriana Aguda</option>
+    <option value="fiebre_tifoidea">Fiebre Tifoidea</option>
+    <option value="nac">Neumonía Adquirida en la Comunidad (NAC)</option>
+    <option value="epilepsia">Epilepsia / Estado Epiléptico</option>
+    <option value="hipernatremia">Hipernatremia</option>
+    <option value="hipopotasemia">Hipopotasemia</option>
+    <option value="hiperpotasemia">Hiperpotasemia</option>
+    <option value="lupus">Lupus Eritematoso Sistémico (LES)</option>
+    <option value="cefalea">Cefalea primaria</option>
+    <option value="itu">Infección del tracto urinario (ITU)</option>
+    <option value="pbe">Peritonitis bacteriana espontánea (PBE)</option>
+    <option value="intox_plaguicidas">Intoxicación por plaguicidas</option>
+    <option value="intox_bipiridilos">Intoxicación por bipiridilos</option>
+    <option value="mordedura_serpiente">Mordedura por serpiente venenosa</option>
+    <option value="mordedura_perro">Mordedura por perro (riesgo de rabia)</option>
   </select>
-  <button onclick="verContraindicacionCheckbox()" style="margin-top:18px;">Ver contraindicaciones</button>
-  <div id="resultadoContraindicacion" class="result" style="display:none;margin-top:18px;"></div>
+  <div id="comorbilidadesDx" style="margin:12px 0 0 0;"></div>
+  <button onclick="mostrarTratamientoContra()" style="margin-top:18px;">Ver tratamiento y contraindicaciones</button>
+  <div id="resultadoTratamientoContra" class="result" style="display:none;margin-top:18px;"></div>
 </div>
-  </select>
 
       <!-- Se generarán botones dinámicamente -->
     </div>
@@ -1185,7 +1204,17 @@ function guardarComorbilidadesSeleccionadas() {
         </li>
       </ul>
     </li>
-  </ul>`
+  </ul>
+  `,
+  "estado epiléptico": `<h4>Estado epiléptico (resumen)</h4>
+<ul>
+  <li><b>ABC:</b> Vía aérea, respiración, circulación, acceso venoso.</li>
+  <li>Monitoreo SV, O₂, glicemia. Líquidos IV (SSN). Dextrosa 50% si hipoglucemia. Tiamina si alcoholismo.</li>
+  <li><b>1ª línea:</b> Benzodiacepinas (Diazepam 10 mg IV o Midazolam 15 mg IV).</li>
+  <li><b>2ª línea:</b> Fenitoína, Fenobarbital, Ácido valproico (dosis según protocolo).</li>
+  <li><b>Si persiste:</b> UCI, soporte ventilatorio, monitoreo EEG, reimpregnación, propofol, pentobarbital, ketamina.</li>
+  <li><b>Refractario:</b> Intubación, soporte ventilatorio, reimpregnación, midazolam en infusión.</li>
+</ul>`
 };
       
 function cargarDiagnosticos() {
@@ -1240,36 +1269,392 @@ function cargarDiagnosticos() {
         resultadoDiv.innerHTML = html;
         resultadoDiv.style.display = "block";
       }
-function verContraindicacionCheckbox() {
-  const comorbilidades = Array.from(document.querySelectorAll('#comorbilidades-checkboxes input:checked')).map(cb => cb.value);
-  const dx = document.getElementById('diagnosticoContraSelect').value;
-  const resultado = document.getElementById('resultadoContraindicacion');
-  resultado.style.display = "block";
+// Diccionario de comorbilidades por diagnóstico
+const comorbilidadesPorDx = {
+  diabetes: ["Enfermedad renal", "Insuficiencia cardíaca", "Obesidad", "Hipertensión", "Dislipidemia"],
+  hipotiroidismo: ["Cardiopatías"],
+  hipertiroidismo: ["Arritmias", "Cardiopatías"],
+  insuf_renal: ["HTA", "Diabetes", "Hiperkalemia"],
+  hipertension: ["Insuficiencia renal", "Enfermedad cardiovascular", "Embarazo"],
+  epoc: ["Cardiopatías", "Diabetes", "Ansiedad"],
+  cirrosis: ["Ascitis", "Encefalopatía", "Hemorragia digestiva"],
+  sica: ["HTA", "Diabetes", "Enfermedad cerebrovascular"],
+  osteoartritis: ["Hipertensión", "Insuficiencia renal"],
+  delirium: ["Demencia", "Insuficiencia hepática", "Insuficiencia renal", "Alcoholismo"],
+  icc: ["Hipertensión", "Enfermedad renal", "Diabetes mellitus", "Arritmias", "TEP"],
+  asma: ["Rinitis alérgica", "EPOC", "Apnea del sueño", "Reflujo gastroesofágico"],
+  sepsis: ["Diabetes", "Inmunosupresión", "Enfermedad renal"],
+  meningitis: ["Inmunosupresión", "Sepsis", "Hipoglucemia"],
+  fiebre_tifoidea: ["Desnutrición", "Inmunosupresión"],
+  nac: ["Diabetes", "EPOC", "Cardiopatías", "Neuropatías", "Inmunosupresión"],
+  epilepsia: ["Alcoholismo", "Trastornos metabólicos", "Infecciones SNC"],
+  hipernatremia: ["Deshidratación", "Insuficiencia renal", "Diabetes insípida"],
+  hipopotasemia: ["Vómitos", "Diarrea", "Uso de diuréticos", "Alcalosis"],
+  hiperpotasemia: ["Enfermedad renal crónica", "Acidosis", "Uso de IECA/ARA II", "Hemólisis"],
+  lupus: ["Nefritis lúpica", "Anemia", "Vasculitis", "Alteraciones neurológicas"],
+  cefalea: ["Trastornos del sueño", "Ansiedad", "Depresión"],
+  itu: ["Diabetes mellitus", "Hipertrofia prostática", "Litiasis renal", "Infecciones recurrentes"],
+  pbe: ["Cirrosis hepática", "Ascitis"],
+  intox_plaguicidas: ["Enfermedades respiratorias crónicas", "Daño hepático", "Trastornos neurológicos previos"],
+  intox_bipiridilos: ["Daño pulmonar previo", "Enfermedad renal", "Hepatopatía"],
+  mordedura_serpiente: ["Coagulopatía", "Insuficiencia renal", "Alergia a suero antiofídico"],
+  mordedura_perro: ["Inmunosupresión", "Infección local", "Diabetes"]
+};
 
-  if (!dx || comorbilidades.length === 0) {
-    resultado.innerHTML = `<span class="error">Selecciona al menos una comorbilidad y un diagnóstico.</span>`;
+// Diccionario de tratamientos y contraindicaciones
+const infoDx = {
+  diabetes: {
+    tto: `<b>Tratamiento recomendado:</b><ul>
+      <li>Metformina (Biguanida)</li>
+      <li>Sulfonilureas (Glibenclamida)</li>
+      <li>Insulina</li>
+    </ul>`,
+    contra: `<b>Contraindicaciones y precauciones:</b>
+      <ul>
+        <li>❌ <b>Metformina:</b> No usar si hay insuficiencia renal (TFG &lt;30 ml/min), cardiaca (clase III o IV), hepática, anemia megaloblástica, isquemia tisular</li>
+        <li>❌ <b>Glibenclamida:</b> Contraindicado en insuficiencia renal (TFG &lt;50), hepática, embarazo, lactancia, alergia a sulfas</li>
+      </ul>`
+  },
+  hipotiroidismo: {
+    tto: `<b>Tratamiento recomendado:</b><ul>
+      <li>Levotiroxina, iniciar con 12.5 mcg/día si hay cardiopatía, ajustar cada 2 semanas</li>
+    </ul>`,
+    contra: `<b>Contraindicaciones y precauciones:</b>
+      <ul>
+        <li>❗ En presencia de cardiopatía, usar dosis reducida y monitorizar ECG y síntomas</li>
+      </ul>`
+  },
+  hipertiroidismo: {
+    tto: `<b>Tratamiento recomendado:</b><ul>
+      <li>Betabloqueadores (propranolol, atenolol)</li>
+      <li>Tionamidas: propiltiouracilo, metimazol</li>
+      <li>Verapamilo si betabloqueadores están contraindicados</li>
+    </ul>`,
+    contra: `<b>Contraindicaciones:</b>
+      <ul>
+        <li>❌ Evitar propranolol si hay asma o EPOC</li>
+        <li>❌ Metimazol y PTU pueden causar hepatotoxicidad: precaución en enfermedad hepática</li>
+      </ul>`
+  },
+  insuf_renal: {
+    tto: `<b>Tratamiento recomendado:</b><ul>
+      <li>Control de presión (IECA/ARA II si TFGe &gt; 30)</li>
+      <li>Control de líquidos y electrolitos</li>
+    </ul>`,
+    contra: `<b>Fármacos que deben evitarse:</b>
+      <ul>
+        <li>❌ IECA/ARA II si hay TFG &lt;15 ml/min o hiperkalemia</li>
+        <li>❌ AINES como ibuprofeno, diclofenaco → pueden agravar la función renal</li>
+      </ul>`
+  },
+  hipertension: {
+    tto: `<b>Tratamiento recomendado:</b><ul>
+      <li>Enalapril, Irbesartán, Amlodipina, Atenolol, Espironolactona</li>
+    </ul>`,
+    contra: `<b>Contraindicaciones:</b>
+      <ul>
+        <li>❌ IECA/ARA II: evitar en embarazo, hiperkalemia, TFG &lt;15 ml/min</li>
+        <li>❌ Betabloqueadores: cuidado en EPOC y asma por riesgo de broncoespasmo</li>
+      </ul>`
+  },
+  epoc: {
+    tto: `<b>Tratamiento recomendado:</b><ul>
+      <li>Salbutamol, Ipratropio, Formoterol, Beclometasona inhalada</li>
+      <li>Oxigenoterapia si PaO2 &lt; 55 mmHg o signos de insuficiencia cardíaca derecha</li>
+    </ul>`,
+    contra: `<b>Contraindicaciones:</b>
+      <ul>
+        <li>❌ Betabloqueadores no selectivos (propranolol) → riesgo de broncoespasmo</li>
+        <li>❌ Cuidado con esteroides sistémicos prolongados → osteoporosis, hiperglucemia</li>
+      </ul>`
+  },
+  cirrosis: {
+    tto: `<b>Tratamiento recomendado:</b><ul>
+      <li>Espironolactona (diurético de elección), restricción de sodio, evitar AINES</li>
+    </ul>`,
+    contra: `<b>Contraindicaciones:</b>
+      <ul>
+        <li>❌ AINES como ibuprofeno → riesgo de sangrado y nefrotoxicidad</li>
+        <li>❌ IECA/ARA II → agravan hiponatremia y disfunción renal</li>
+      </ul>`
+  },
+  sica: {
+    tto: `<b>Tratamiento recomendado:</b><ul>
+      <li>AAS, Clopidogrel, Enoxaparina, Betabloqueadores, Estatinas</li>
+      <li>Trombolíticos como estreptoquinasa en casos específicos</li>
+    </ul>`,
+    contra: `<b>Contraindicaciones trombolíticos (absolutas):</b>
+      <ul>
+        <li>❌ Hemorragia intracraneal previa</li>
+        <li>❌ ACV reciente</li>
+        <li>❌ Neoplasias SNC, disección aórtica, úlcera péptica activa</li>
+        <li>❌ Hipertensión no controlada (PAS &gt;180, PAD &gt;110)</li>
+      </ul>`
+  },
+  osteoartritis: {
+    tto: `<b>Tratamiento recomendado:</b><ul>
+      <li>Acetaminofén, Ibuprofeno (máx. 2 semanas), AINEs tópicos, Tramadol</li>
+    </ul>`,
+    contra: `<b>Contraindicaciones:</b>
+      <ul>
+        <li>❌ Ibuprofeno por más de 2 semanas en HTA o insuficiencia renal</li>
+      </ul>`
+  },
+  delirium: {
+    tto: `<b>Tratamiento recomendado:</b><ul>
+      <li>Antipsicóticos: Haloperidol, Risperidona</li>
+      <li>Benzodiacepinas si abstinencia alcohólica</li>
+    </ul>`,
+    contra: `<b>Contraindicaciones:</b>
+      <ul>
+        <li>❌ Benzodiacepinas en ancianos con demencia por riesgo de caídas y sedación</li>
+        <li>❌ Haloperidol en Parkinson</li>
+      </ul>`
+  },
+   icc: {
+    tto: `<b>Tratamiento recomendado:</b><ul>
+      <li>Enalapril</li>
+      <li>Carvedilol</li>
+      <li>Espironolactona</li>
+      <li>Furosemida</li>
+      <li>Digoxina</li>
+      <li>Vasodilatadores (Nitroglicerina, Nitroprusiato)</li>
+    </ul>`,
+    contra: `<b>Fármacos contraindicados:</b>
+      <ul>
+        <li>❌ AINES</li>
+        <li>❌ Calcioantagonistas no dihidropiridínicos en disfunción severa</li>
+      </ul>`
+  },
+  asma: {
+    tto: `<b>Tratamiento recomendado:</b><ul>
+      <li>Broncodilatadores (Salbutamol)</li>
+      <li>Corticoides inhalados (Beclometasona)</li>
+      <li>Agonistas beta-2 de acción prolongada (Formoterol)</li>
+      <li>Teofilina</li>
+    </ul>`,
+    contra: `<b>Fármacos contraindicados:</b>
+      <ul>
+        <li>❌ AINES (incluyendo aspirina)</li>
+        <li>❌ Betabloqueadores</li>
+      </ul>`
+  },
+  sepsis: {
+    tto: `<b>Tratamiento recomendado:</b><ul>
+      <li>Hidratación IV</li>
+      <li>Oxígeno</li>
+      <li>Antibióticos según foco</li>
+      <li>Aminas vasoactivas</li>
+    </ul>`,
+    contra: `<b>Fármacos contraindicados:</b>
+      <ul>
+        <li>❌ Cuidado con antibióticos nefrotóxicos (aminoglucósidos) si hay daño renal</li>
+      </ul>`
+  },
+  meningitis: {
+    tto: `<b>Tratamiento recomendado:</b><ul>
+      <li>Ceftriaxona</li>
+      <li>Vancomicina</li>
+      <li>Dexametasona</li>
+      <li>Soporte general</li>
+    </ul>`,
+    contra: `<b>Fármacos contraindicados:</b>
+      <ul>
+        <li>❌ AINES si hay disfunción renal/hepática coexistente</li>
+      </ul>`
+  },
+  fiebre_tifoidea: {
+    tto: `<b>Tratamiento recomendado:</b><ul>
+      <li>Trimetoprim/sulfametoxazol</li>
+      <li>Amoxicilina</li>
+      <li>Ceftriaxona</li>
+    </ul>`,
+    contra: `<b>Fármacos contraindicados:</b>
+      <ul>
+        <li>❌ Sulfas: en alergia conocida</li>
+        <li>❌ Amoxicilina: en alérgicos a penicilinas</li>
+      </ul>`
+  },
+  nac: {
+    tto: `<b>Tratamiento recomendado:</b><ul>
+      <li>Levofloxacina</li>
+      <li>Amoxicilina + Ácido clavulánico</li>
+      <li>Claritromicina</li>
+      <li>Ceftriaxona</li>
+    </ul>`,
+    contra: `<b>Fármacos contraindicados:</b>
+      <ul>
+        <li>❌ Aminoglucósidos si daño renal</li>
+        <li>❌ Evitar quinolonas en niños y embarazadas</li>
+      </ul>`
+  },
+  epilepsia: {
+    tto: `<b>Tratamiento recomendado:</b><ul>
+      <li>Diazepam, Midazolam</li>
+      <li>Fenitoína, Fenobarbital</li>
+      <li>Ácido valproico</li>
+      <li>Propofol, Ketamina</li>
+    </ul>`,
+    contra: `<b>Fármacos contraindicados:</b>
+      <ul>
+        <li>❌ Fenitoína: evitar en bradicardia o bloqueo AV</li>
+      </ul>`
+  },
+  hipernatremia: {
+    tto: `<b>Tratamiento recomendado:</b><ul>
+      <li>Solución salina 0.9% o glucosada al 5%</li>
+      <li>Hidratación IV</li>
+      <li>Manejo de causa base</li>
+    </ul>`,
+    contra: `<b>Fármacos contraindicados:</b>
+      <ul>
+        <li>❌ Corrección rápida → puede causar edema cerebral</li>
+      </ul>`
+  },
+  hipopotasemia: {
+    tto: `<b>Tratamiento recomendado:</b><ul>
+      <li>Suplemento de potasio oral o IV según déficit</li>
+    </ul>`,
+    contra: `<b>Fármacos contraindicados:</b>
+      <ul>
+        <li>❌ No administrar potasio si la causa es redistributiva sin síntomas (riesgo de hiperkalemia rebote)</li>
+      </ul>`
+  },
+  hiperpotasemia: {
+    tto: `<b>Tratamiento recomendado:</b><ul>
+      <li>Salbutamol nebulizado</li>
+      <li>Gluconato de calcio</li>
+      <li>Insulina con glucosa</li>
+      <li>Bicarbonato</li>
+      <li>Diálisis si severo</li>
+    </ul>`,
+    contra: `<b>Fármacos contraindicados:</b>
+      <ul>
+        <li>❌ Evitar succinilcolina (hiperkalemia grave)</li>
+        <li>❌ Evitar suplementos de potasio</li>
+      </ul>`
+  },
+  lupus: {
+    tto: `<b>Tratamiento recomendado:</b><ul>
+      <li>Evaluación por reumatología</li>
+      <li>Inmunosupresores</li>
+      <li>Manejo sintomático según órgano afectado</li>
+    </ul>`,
+    contra: `<b>Fármacos contraindicados:</b>
+      <ul>
+        <li>❌ AINES en nefritis activa</li>
+        <li>❌ Evitar fármacos fotosensibles (como sulfonamidas)</li>
+      </ul>`
+  },
+  cefalea: {
+    tto: `<b>Tratamiento recomendado:</b><ul>
+      <li>Ergotamina, AINES, triptanos, metoclopramida</li>
+      <li>Profilaxis con amitriptilina o propranolol</li>
+    </ul>`,
+    contra: `<b>Fármacos contraindicados:</b>
+      <ul>
+        <li>❌ Ergotamina en embarazo o enfermedad vascular periférica</li>
+        <li>❌ AINES en pacientes con insuficiencia renal</li>
+      </ul>`
+  },
+  itu: {
+    tto: `<b>Tratamiento recomendado:</b><ul>
+      <li>Nitrofurantoína</li>
+      <li>Ciprofloxacina</li>
+      <li>Ceftriaxona</li>
+      <li>Trimetoprim/Sulfametoxazol (TMP/SMX)</li>
+    </ul>`,
+    contra: `<b>Fármacos contraindicados:</b>
+      <ul>
+        <li>❌ Nitrofurantoína en insuficiencia renal (TFG &lt;60 ml/min)</li>
+        <li>❌ TMP/SMX si alergia a sulfas</li>
+      </ul>`
+  },
+  pbe: {
+    tto: `<b>Tratamiento recomendado:</b><ul>
+      <li>Cefotaxima</li>
+      <li>Ceftriaxona</li>
+      <li>Albúmina IV</li>
+    </ul>`,
+    contra: `<b>Fármacos contraindicados:</b>
+      <ul>
+        <li>❌ AINES y otros nefrotóxicos en pacientes con cirrosis</li>
+      </ul>`
+  },
+  intox_plaguicidas: {
+    tto: `<b>Tratamiento recomendado:</b><ul>
+      <li>Atropina</li>
+      <li>Pralidoxima</li>
+      <li>Lavado gástrico</li>
+      <li>Oxigenoterapia</li>
+    </ul>`,
+    contra: `<b>Fármacos contraindicados:</b>
+      <ul>
+        <li>❌ Benzodiacepinas en exceso si hay depresión respiratoria</li>
+        <li>❌ Succinilcolina (puede agravar la parálisis muscular)</li>
+      </ul>`
+  },
+  intox_bipiridilos: {
+    tto: `<b>Tratamiento recomendado:</b><ul>
+      <li>Carbón activado</li>
+      <li>Oxígeno (solo si hay hipoxia grave)</li>
+      <li>Soporte vital general</li>
+    </ul>`,
+    contra: `<b>Fármacos contraindicados:</b>
+      <ul>
+        <li>❌ Oxígeno a alto flujo (acelera daño pulmonar)</li>
+        <li>❌ Diuréticos sin control estricto</li>
+      </ul>`
+  },
+  mordedura_serpiente: {
+    tto: `<b>Tratamiento recomendado:</b><ul>
+      <li>Suero antiofídico polivalente</li>
+      <li>Hidratación IV</li>
+      <li>Analgésicos</li>
+      <li>Profilaxis antitetánica</li>
+    </ul>`,
+    contra: `<b>Fármacos contraindicados:</b>
+      <ul>
+        <li>❌ AINES (pueden agravar sangrado o daño renal)</li>
+        <li>❌ Antiveneno si antecedentes de reacción alérgica grave (se debe premedicar)</li>
+      </ul>`
+  },
+  mordedura_perro: {
+    tto: `<b>Tratamiento recomendado:</b><ul>
+      <li>Limpieza y desinfección de la herida</li>
+      <li>Vacuna antirrábica</li>
+      <li>Inmunoglobulina antirrábica</li>
+      <li>Antibióticos (Amoxicilina con ácido clavulánico)</li>
+    </ul>`,
+    contra: `<b>Fármacos contraindicados:</b>
+      <ul>
+        <li>❌ Corticoides si se sospecha rabia (disminuyen respuesta inmunitaria)</li>
+      </ul>`
+  }
+};
+
+function mostrarTratamientoContra() {
+  const dx = document.getElementById('dxSelect').value;
+  const resultado = document.getElementById('resultadoTratamientoContra');
+  if (!dx) {
+    resultado.style.display = "block";
+    resultado.innerHTML = `<span class="error">Selecciona un diagnóstico principal.</span>`;
     return;
   }
-
-  let advertencias = [];
-
-  // Ejemplo: Si EPOC y el diagnóstico es hipertensión arterial, betabloqueadores están contraindicados
-  comorbilidades.forEach(comorb => {
-    if (comorb === "epoc" && dx === "hipertension") {
-      advertencias.push(`<li><b>Betabloqueadores</b> están contraindicados en pacientes con <b>EPOC</b> e hipertensión arterial.<br>
-      <span style="color:#ff595e;">No se recomienda su uso por riesgo de broncoespasmo.</span></li>`);
-    }
-    if (comorb === "diabetes" && dx === "hipertension") {
-      advertencias.push(`<li><b>Diuréticos tiazídicos</b> pueden elevar la glucosa en pacientes con <b>diabetes</b> e hipertensión.</li>`);
-    }
-    // Agrega más reglas aquí si lo deseas
-  });
-
-  if (advertencias.length > 0) {
-    resultado.innerHTML = `<b>Advertencia:</b><ul>${advertencias.join('')}</ul>`;
-  } else {
-    resultado.innerHTML = `<span style="color:green;">No se encontraron contraindicaciones relevantes para esta combinación.</span>`;
+  let html = `<h3>${document.querySelector('#dxSelect option:checked').textContent}</h3>`;
+  html += infoDx[dx]?.tto || '';
+  html += infoDx[dx]?.contra || '';
+  // Mostrar comorbilidades asociadas
+  if (comorbilidadesPorDx[dx] && comorbilidadesPorDx[dx].length) {
+    html += `<h4>Comorbilidades asociadas:</h4><ul>`;
+    comorbilidadesPorDx[dx].forEach(comorb => {
+      html += `<li>${comorb}</li>`;
+    });
+    html += `</ul>`;
+    html += `<div style="margin-top:10px;color:#b85c00;"><b>Nota:</b> Los tratamientos o fármacos a evitar aplican para cualquiera de estas comorbilidades.</div>`;
   }
+  resultado.innerHTML = html;
+  resultado.style.display = "block";
 }
       /* Calculadora de Dosis Pediátrica */
       function calcularDosisPediatrica() {
