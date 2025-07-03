@@ -2259,18 +2259,19 @@ chatForm?.addEventListener('submit', async function(e) {
   chatMessages.innerHTML += `<div id="ia-typing" style="color:#888;">IA está escribiendo...</div>`;
   chatHistory.push({role: "user", content: userMsg});
   try {
-    const res = await fetch("https://api.openai.com/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer " + OPENAI_API_KEY
-      },
-      body: JSON.stringify({
-        model: "gpt-4o",
-        messages: chatHistory,
-        max_tokens: 256,
-        temperature: 0.2
-      })
+   // En tu frontend
+const response = await fetch('http://localhost:3000/api/chat', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    messages: [
+      { role: "system", content: "Eres un asistente médico." },
+      { role: "user", content: "Tengo dolor de cabeza, ¿qué hago?" }
+    ]
+  })
+});
+const data = await response.json();
+console.log(data);
     });
     const data = await res.json();
     const iaMsg = data.choices?.[0]?.message?.content || "No se pudo obtener respuesta.";
