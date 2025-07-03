@@ -2239,9 +2239,9 @@ function mostrarTratamientoContra() {
 document.getElementById('btnAdvertencia').onclick = function() {
   alert("Esta herramienta no sustituye una consulta médica. Consulte siempre a un profesional de la salud.");
 };
-const GEMINI_API_KEY = "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"; 
+const OPENAI_API_KEY = "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"; 
 
-// Chat simple con gemini
+// Chat simple con OPENAI
 const chatForm = document.getElementById('chat-form');
 const chatInput = document.getElementById('chat-input');
 const chatMessages = document.getElementById('chat-messages');
@@ -2259,14 +2259,14 @@ chatForm?.addEventListener('submit', async function(e) {
   chatMessages.innerHTML += `<div id="ia-typing" style="color:#888;">IA está escribiendo...</div>`;
   chatHistory.push({role: "user", content: userMsg});
   try {
-    const res = await fetch("https://b9212b81-317d-4efc-9d3e-cc9baa9d7443-00-2vleul465p683.riker.replit.dev/", {
+    const res = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         "Authorization": "Bearer " + OPENAI_API_KEY
       },
       body: JSON.stringify({
-        model: "gpt-3.5-turbo",
+        model: "gpt-4o",
         messages: chatHistory,
         max_tokens: 256,
         temperature: 0.2
