@@ -2239,50 +2239,43 @@ function mostrarTratamientoContra() {
 document.getElementById('btnAdvertencia').onclick = function() {
   alert("Esta herramienta no sustituye una consulta médica. Consulte siempre a un profesional de la salud.");
 };
-const OPENAI_API_KEY = "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"; 
+import ModelClient, { isUnexpected } from "@azure-rest/ai-inference";
+import { AzureKeyCredential } from "@azure/core-auth";
 
-// Chat simple con OPENAI
-const chatForm = document.getElementById('chat-form');
-const chatInput = document.getElementById('chat-input');
-const chatMessages = document.getElementById('chat-messages');
-let chatHistory = [
-  {role: "system", content: "Eres un asistente médico virtual. Responde de forma clara, breve y profesional. Si la pregunta es de emergencia, recomienda acudir a un médico."}
-];
+const token = process.env["GITHUB_TOKEN"];
+const endpoint = "https://models.github.ai/inference";
+const model = "openai/gpt-4.1";
 
-chatForm?.addEventListener('submit', async function(e) {
-  e.preventDefault();
-  const userMsg = chatInput.value.trim();
-  if (!userMsg) return;
-  chatMessages.innerHTML += `<div style="margin-bottom:8px;"><b>Tú:</b> ${userMsg}</div>`;
-  chatInput.value = '';
-  chatMessages.scrollTop = chatMessages.scrollHeight;
-  chatMessages.innerHTML += `<div id="ia-typing" style="color:#888;">IA está escribiendo...</div>`;
-  chatHistory.push({role: "user", content: userMsg});
-  try {
-   // En tu frontend
-const response = await fetch('http://localhost:3000/api/chat', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({
-    messages: [
-      { role: "system", content: "Eres un asistente médico." },
-      { role: "user", content: "Tengo dolor de cabeza, ¿qué hago?" }
-    ]
-  })
-});
-const data = await response.json();
-console.log(data);
-    });
-    const data = await res.json();
-    const iaMsg = data.choices?.[0]?.message?.content || "No se pudo obtener respuesta.";
-    document.getElementById('ia-typing').remove();
-    chatMessages.innerHTML += `<div style="margin-bottom:12px;"><b>IA:</b> ${iaMsg}</div>`;
-    chatMessages.scrollTop = chatMessages.scrollHeight;
-    chatHistory.push({role: "assistant", content: iaMsg});
-  } catch (err) {
-    document.getElementById('ia-typing').remove();
-    chatMessages.innerHTML += `<div style="color:red;">Error al conectar con IA.</div>`;
+export async function main() {
+
+  const client = ModelClient(
+    endpoint,
+    new AzureKeyCredential(token),
+  );
+
+  const response = await client.path("/chat/completions").post({
+    body: {
+      messages: [
+        { role:"system", content: "" },
+        { role:"user", content: "What is the capital of France?" }
+      ],
+      temperature: 1,
+      top_p: 1,
+      model: model
+    }
+  });
+
+  if (isUnexpected(response)) {
+    throw response.body.error;
   }
+
+  console.log(response.body.choices[0].message.content);
+}
+
+main().catch((err) => {
+  console.error("The sample encountered an error:", err);
+});
+
 });
       });
     </script>
