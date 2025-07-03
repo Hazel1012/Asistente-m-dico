@@ -540,7 +540,8 @@ hr {
     <div id="resultadoInteracciones" class="result" style="display: none;"></div>
   </div>
 </div>
-  
+
+    
     <script>
       /* Función para cambiar el tema */
       function switchTheme() {
@@ -2223,6 +2224,13 @@ function mostrarTratamientoContra() {
   
         resultadoDiv.style.display = "block";
       }
+
+      document.addEventListener("DOMContentLoaded", function () {
+        cargarDiagnosticos();
+document.getElementById('btnAdvertencia').onclick = function() {
+  alert("Esta herramienta no sustituye una consulta médica. Consulte siempre a un profesional de la salud.");
+};
+      });
     </script>
    <script type="module">
 </script>
